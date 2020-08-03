@@ -1,9 +1,4 @@
-
-MAX_BLUETOOTH_MESSAGE_SIZE = 2048
-
-SPECIAL_CHARS = {60: (61, 44), 61: (61, 45), 62: (61, 46)}
-START_MARKER = int.to_bytes(62, 1, "little")
-END_MARKER = int.to_bytes(60, 1, "little")
+from .constants import *
 
 def escape_specials(data: bytes) -> bytes:
     arr = bytearray()
@@ -17,6 +12,7 @@ def sum_checksum(data: bytes) -> bytes:
 
 def package_data_for_bt(data_type: int, command_data: bytes, unk: int) -> bytes:
     """
+    unk: Seems to be some type of ack value? Based on current understanding (1|0)
     References:
     * DataType
     * CommandBluetoothSender:sendCommandWithRetries
