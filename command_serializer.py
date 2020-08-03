@@ -68,15 +68,5 @@ class NcAndAsmSetting:
             + self.asm_level
         )
 
-class SerializableNcAsmSetting:
-    def __init__(
-        self,
-        setting: NcAndAsmSetting
-    ):
-        self.setting = setting
-
-    def to_bytes(self) -> bytes:
-        return Command.NCASM_SET_PARAM.value + self.setting.to_bytes()
-
-
-# class SerializableNcAsmSetting()
+    def to_command_bytes(self) -> bytes:
+        return Command.NCASM_SET_PARAM.value + self.to_bytes()
