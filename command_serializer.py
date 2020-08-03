@@ -16,6 +16,13 @@ def sum_checksum(data: bytes) -> bytes:
     return int.to_bytes(sum(data) & 255, 1, "little")
 
 def package_data_for_bt(data_type: int, command_data: bytes, unk: int) -> bytes:
+    """
+    References:
+    * DataType
+    * CommandBluetoothSender:sendCommandWithRetries
+    * BluetoothSenderWrapper.sendCommandViaBluetooth
+    # 
+    """ 
     if data_type > 255 or unk > 255 or data_type < 0 or unk < 0:
         raise Exception("dataType and unk must be between 0 and 255")
 
