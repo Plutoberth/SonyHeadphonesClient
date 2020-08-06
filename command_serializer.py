@@ -50,6 +50,11 @@ class NcAndAsmSetting:
         asm_id: ASM_ID,
         asm_level: int,
     ):
+        """
+        Fixed values within AscSender:
+
+        unk_nc_value: Set to 0
+        """
         self.nc_asm_effect = nc_asm_effect
         self.nc_asm_setting_type = nc_asm_setting_type
         self.unk_nc_value = unk_nc_value
