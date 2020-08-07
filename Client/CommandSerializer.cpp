@@ -76,7 +76,7 @@ namespace CommandSerializer
             throw std::runtime_error("Exceeded the max bluetooth message size, and I can't handle chunked messages");
         }
 
-        return toEscape;
+        return ret;
     }
 
     Buffer serializeNcAndAsmSetting(NC_ASM_EFFECT ncAsmEffect, NC_ASM_SETTING_TYPE ncAsmSettingType, unsigned int unk, ASM_SETTING_TYPE asmSettingType, ASM_ID asmId, unsigned char asmLevel)
