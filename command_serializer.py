@@ -15,11 +15,7 @@ def sum_checksum(data: bytes) -> bytes:
 
 def package_data_for_bt(data_type: int, command_data: bytes, unk: int) -> bytes:
     """
-    unk: Seems to be some type of ack value? Based on current understanding (1|0)
-    References:
-    * DataType
-    * CommandBluetoothSender:sendCommandWithRetries
-    * BluetoothSenderWrapper.sendCommandViaBluetooth
+
     # 
     """
     data_type_byte = ntb(data_type)

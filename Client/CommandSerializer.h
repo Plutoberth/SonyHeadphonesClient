@@ -8,7 +8,7 @@
 
 namespace CommandSerializer
 {
-	using Buffer = std::vector<unsigned char>;
+	using Buffer = std::vector<char>;
 
 	//escape special chars
 	Buffer escapeSpecials(const Buffer& src);

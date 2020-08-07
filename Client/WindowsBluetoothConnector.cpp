@@ -15,10 +15,10 @@ WindowsBluetoothConnector::WindowsBluetoothConnector(BTH_ADDR addr)
 	static bool startedUp = false;
 	if (!startedUp)
 	{
-        WSAStartupWrapper();
+        ::WSAStartupWrapper();
         startedUp = true;
 	}
-    SOCKET sock = socket(AF_BTH, SOCK_STREAM, BTHPROTO_RFCOMM);
+    SOCKET sock = ::socket(AF_BTH, SOCK_STREAM, BTHPROTO_RFCOMM);
     if (sock == INVALID_SOCKET)
     {
         throw std::runtime_error("Couldn't create socket: " + std::to_string(WSAGetLastError()));
@@ -27,14 +27,14 @@ WindowsBluetoothConnector::WindowsBluetoothConnector(BTH_ADDR addr)
 
     SOCKADDR_BTH sab = { 0 };
     sab.addressFamily = AF_BTH;
-    RPC_STATUS errCode = UuidFromStringA((RPC_CSTR)XM3_UUID, &sab.serviceClassId);
+    RPC_STATUS errCode = ::UuidFromStringA((RPC_CSTR)XM3_UUID, &sab.serviceClassId);
     if (errCode != RPC_S_OK)
     {
         throw std::runtime_error("Couldn't create GUID: " + std::to_string(errCode));
     }
     sab.btAddr = addr;
 
-    if (connect(this->_socket, (sockaddr*)&sab, sizeof(sab)))
+    if (::connect(this->_socket, (sockaddr*)&sab, sizeof(sab)))
     {
         throw std::runtime_error("Couldn't connect: " + std::to_string(WSAGetLastError()));
     }
@@ -42,10 +42,15 @@ WindowsBluetoothConnector::WindowsBluetoothConnector(BTH_ADDR addr)
 
 WindowsBluetoothConnector::~WindowsBluetoothConnector()
 {
-    closesocket(this->_socket);
+    ::closesocket(this->_socket);
 }
 
 int WindowsBluetoothConnector::send(char* buf, size_t length)
 {
-    return 0;
+    auto bytesSent = ::send(this->_socket, buf, length, 0);
+    if (bytesSent == SOCKET_ERROR)
+    {
+        throw std::runtime_error("Couldn't send: " + std::to_string(WSAGetLastError()));
+    }
+    return bytesSent;
 }

@@ -48,8 +48,10 @@ namespace CommandSerializer
     Buffer packageDataForBt(const Buffer& src, DATA_TYPE dataType, unsigned int unk)
     {
         //Reserve at least the size for the size, start&end markers, and the source
-        Buffer toEscape(src.size() + 2 + sizeof(int));
-        Buffer ret(toEscape.capacity());
+        Buffer toEscape;
+        toEscape.reserve(src.size() + 2 + sizeof(int));
+        Buffer ret;        
+        ret.reserve(toEscape.capacity());
         toEscape.push_back(static_cast<unsigned char>(dataType));
         toEscape.push_back(unk);
         auto retSize = intToBytesBE(src.size());

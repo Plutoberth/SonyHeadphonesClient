@@ -1,17 +1,17 @@
 #pragma once
 
 inline constexpr auto MAX_BLUETOOTH_MESSAGE_SIZE = 2048;
-inline constexpr unsigned char START_MARKER{ 0x62 }; 
-inline constexpr unsigned char END_MARKER{ 0x60 };
+inline constexpr char START_MARKER{ 62 }; 
+inline constexpr char END_MARKER{ 60 };
 
 inline constexpr auto SERVICE_UUID = "96CC203E-5068-46ad-B32D-E316F5E069BA";
 
-enum class DATA_TYPE : unsigned char
+enum class DATA_TYPE : char
 {
 	DATA_MDR = 12
 };
 
-enum class NC_ASM_INQUIRED_TYPE : unsigned char
+enum class NC_ASM_INQUIRED_TYPE : char
 {
 	NO_USE = 0,
 	NOISE_CANCELLING = 1,
@@ -19,7 +19,7 @@ enum class NC_ASM_INQUIRED_TYPE : unsigned char
 	AMBIENT_SOUND_MODE = 3
 };
 
-enum class NC_ASM_EFFECT : unsigned char
+enum class NC_ASM_EFFECT : char
 {
 	OFF = 0,
 	ON = 1,
@@ -27,26 +27,26 @@ enum class NC_ASM_EFFECT : unsigned char
 	ADJUSTMENT_COMPLETION = 17
 };
 
-enum class NC_ASM_SETTING_TYPE : unsigned char
+enum class NC_ASM_SETTING_TYPE : char
 {
 	ON_OFF = 0,
 	LEVEL_ADJUSTMENT = 1,
 	DUAL_SINGLE_OFF = 2
 };
 
-enum class ASM_SETTING_TYPE : unsigned char
+enum class ASM_SETTING_TYPE : char
 {
 	ON_OFF = 0,
 	LEVEL_ADJUSTMENT = 1
 };
 
-enum class ASM_ID : unsigned char
+enum class ASM_ID : char
 {
 	NORMAL = 0,
-	voice = 1
+	VOICE = 1
 };
 
-enum class COMMAND_TYPE : unsigned char
+enum class COMMAND_TYPE : char
 {
 	NCASM_SET_PARAM = 104
 };
