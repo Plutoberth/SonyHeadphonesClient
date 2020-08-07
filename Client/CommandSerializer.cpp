@@ -1,44 +1,81 @@
 #include "CommandSerializer.h"
 
-std::vector<unsigned char> CommandSerializer::EscapeSpecials(const Buffer& src)
+namespace CommandSerializer
 {
-    Buffer ret;
-    ret.reserve(src.size());
-
-    for (auto&& b: src)
+    Buffer escapeSpecials(const Buffer& src)
     {
-        switch (b)
+        Buffer ret;
+        ret.reserve(src.size());
+
+        for (auto&& b : src)
         {
-        case 60:
-            ret.push_back(61);
-            ret.push_back(44);
-            break;
+            switch (b)
+            {
+            case 60:
+                ret.push_back(61);
+                ret.push_back(44);
+                break;
 
-        case 61:
-            ret.push_back(61);
-            ret.push_back(45);
-            break;
+            case 61:
+                ret.push_back(61);
+                ret.push_back(45);
+                break;
 
-        case 62:
-            ret.push_back(61);
-            ret.push_back(46);
-            break;
-    
-        default:
-            ret.push_back(b);
-            break;
+            case 62:
+                ret.push_back(61);
+                ret.push_back(46);
+                break;
+
+            default:
+                ret.push_back(b);
+                break;
+            }
         }
+
+        return ret;
     }
 
-    return ret;
-}
-
-unsigned char CommandSerializer::sumChecksum(const Buffer& src)
-{
-    unsigned char accumulator = 0;
-    for (auto&& b: src)
+    unsigned char sumChecksum(const Buffer& src)
     {
-        accumulator += b;
+        unsigned char accumulator = 0;
+        for (auto&& b : src)
+        {
+            accumulator += b;
+        }
+        return accumulator;
     }
-    return accumulator;
+
+    Buffer packageDataForBt(const Buffer& src, DATA_TYPE dataType, unsigned int unk)
+    {
+        //Reserve at least the size for the size, start&end markers, and the source
+        Buffer toEscape(src.size() + 2 + sizeof(int));
+        Buffer ret(toEscape.capacity());
+        toEscape.push_back(static_cast<unsigned char>(dataType));
+        toEscape.push_back(unk);
+        auto retSize = intToBytesBE(src.size());
+        //Insert data size
+        toEscape.insert(toEscape.end(), retSize.begin(), retSize.end());
+        //Insert command data
+        toEscape.insert(toEscape.end(), src.begin(), src.end());
+
+        auto checksum = sumChecksum(toEscape);
+        toEscape.push_back(checksum);
+        toEscape = escapeSpecials(toEscape);
+
+        //
+        ret.push_back(START_MARKER);
+        ret.insert(ret.end(), toEscape.begin(), toEscape.end());
+        ret.push_back(END_MARKER);
+
+
+        // Message will be chunked if it's larger than MAX_BLUETOOTH_MESSAGE_SIZE, just crash to deal with it for now
+        if (ret.size() > MAX_BLUETOOTH_MESSAGE_SIZE)
+        {
+            throw std::runtime_error("Exceeded the max bluetooth message size, and I can't handle chunked messages");
+        }
+
+        return toEscape;
+    }
+
 }
+

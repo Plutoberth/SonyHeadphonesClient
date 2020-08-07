@@ -21,6 +21,9 @@
     <ClCompile Include="WindowsBluetoothConnector.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CommandSerializer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="ByteMagic.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -30,6 +33,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="IBluetoothConnector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Constants.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandSerializer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ByteMagic.h">

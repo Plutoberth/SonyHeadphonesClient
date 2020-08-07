@@ -142,10 +142,13 @@
   <ItemGroup>
     <ClCompile Include="ByteMagic.cpp" />
     <ClCompile Include="Client.cpp" />
+    <ClCompile Include="CommandSerializer.cpp" />
     <ClCompile Include="WindowsBluetoothConnector.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ByteMagic.h" />
+    <ClInclude Include="CommandSerializer.h" />
+    <ClInclude Include="Constants.h" />
     <ClInclude Include="IBluetoothConnector.h" />
     <ClInclude Include="WindowsBluetoothConnector.h" />
   </ItemGroup>

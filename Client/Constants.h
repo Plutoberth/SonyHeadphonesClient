@@ -1,10 +1,8 @@
 #pragma once
 
-#include <cstddef>
-
 inline constexpr auto MAX_BLUETOOTH_MESSAGE_SIZE = 2048;
-inline constexpr std::byte START_MARKER{ 0x62 }; 
-inline constexpr std::byte END_MARKER{ 0x60 };
+inline constexpr unsigned char START_MARKER{ 0x62 }; 
+inline constexpr unsigned char END_MARKER{ 0x60 };
 
 inline constexpr auto SERVICE_UUID = "96CC203E-5068-46ad-B32D-E316F5E069BA";
 
