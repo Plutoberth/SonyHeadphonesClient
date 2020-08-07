@@ -10,12 +10,10 @@ unsigned int byteOrderSwap(unsigned int num)
 
 std::vector<unsigned char> intToBytesBE(unsigned int num)
 {
-    std::vector<unsigned char> ret;
-    ret.reserve(4);
+    std::vector<unsigned char> ret(sizeof(num));
     for (size_t i = 0; i < sizeof(num); i++)
     {
-        ret.push_back(num & 0xff);
-        num = num >> CHAR_BIT;
+        ret[i] = (num >> (CHAR_BIT * (3-i))) & 0xff;
     }
     return ret;
 }
