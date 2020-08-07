@@ -21,12 +21,18 @@
     <ClCompile Include="WindowsBluetoothConnector.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ByteMagic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowsBluetoothConnector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="IBluetoothConnector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ByteMagic.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -140,10 +140,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ByteMagic.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="WindowsBluetoothConnector.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ByteMagic.h" />
     <ClInclude Include="IBluetoothConnector.h" />
     <ClInclude Include="WindowsBluetoothConnector.h" />
   </ItemGroup>
