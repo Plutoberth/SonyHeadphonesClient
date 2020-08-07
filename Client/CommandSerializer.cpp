@@ -2,7 +2,7 @@
 
 namespace CommandSerializer
 {
-    Buffer escapeSpecials(const Buffer& src)
+    Buffer _escapeSpecials(const Buffer& src)
     {
         Buffer ret;
         ret.reserve(src.size());
@@ -35,7 +35,7 @@ namespace CommandSerializer
         return ret;
     }
 
-    unsigned char sumChecksum(const Buffer& src)
+    unsigned char _sumChecksum(const Buffer& src)
     {
         unsigned char accumulator = 0;
         for (auto&& b : src)
@@ -45,7 +45,7 @@ namespace CommandSerializer
         return accumulator;
     }
 
-    Buffer packageDataForBt(const Buffer& src, DATA_TYPE dataType, unsigned int sequenceNumber)
+    Buffer _packageDataForBt(const Buffer& src, DATA_TYPE dataType, unsigned int sequenceNumber)
     {
         //Reserve at least the size for the size, start&end markers, and the source
         Buffer toEscape;
@@ -60,9 +60,9 @@ namespace CommandSerializer
         //Insert command data
         toEscape.insert(toEscape.end(), src.begin(), src.end());
 
-        auto checksum = sumChecksum(toEscape);
+        auto checksum = _sumChecksum(toEscape);
         toEscape.push_back(checksum);
-        toEscape = escapeSpecials(toEscape);
+        toEscape = _escapeSpecials(toEscape);
 
         //
         ret.push_back(START_MARKER);
