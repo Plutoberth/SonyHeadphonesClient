@@ -2,6 +2,7 @@
 #include <memory>
 #include "WindowsBluetoothConnector.h"
 #include "CommandSerializer.h"
+#include "BluetoothWrapper.h"
 
 constexpr BTH_ADDR XM3_ADDR = 0x38184cbf447f;
 
@@ -12,27 +13,28 @@ int main()
     try
     {
         BluetoothConnectorPtr connector = std::make_shared<WindowsBluetoothConnector>(XM3_ADDR);
+        BluetoothWrapper wrap(connector);
         auto command = CommandSerializer::serializeNcAndAsmSetting(
             NC_ASM_EFFECT::ON,
-            NC_ASM_SETTING_TYPE::ON_OFF,
+            NC_ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
             0,
             ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
             ASM_ID::NORMAL,
             0
         );
-        auto toSend = CommandSerializer::packageDataForBt(command, DATA_TYPE::DATA_MDR, 0);
-        connector->send(toSend.data(), toSend.size());
+        
+        wrap.sendCommand(command);
 
         command = CommandSerializer::serializeNcAndAsmSetting(
             NC_ASM_EFFECT::ADJUSTMENT_COMPLETION,
-            NC_ASM_SETTING_TYPE::ON_OFF,
+            NC_ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
             0,
             ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
-            ASM_ID::NORMAL,
-            2
+            ASM_ID::VOICE,
+            1
         );
-        toSend = CommandSerializer::packageDataForBt(command, DATA_TYPE::DATA_MDR, 0);
-        connector->send(toSend.data(), toSend.size());
+
+        wrap.sendCommand(command);
     }
     catch (const std::exception& e)
     {
