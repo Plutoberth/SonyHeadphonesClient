@@ -13,14 +13,25 @@ int main()
     {
         BluetoothConnectorPtr connector = std::make_shared<WindowsBluetoothConnector>(XM3_ADDR);
         auto command = CommandSerializer::serializeNcAndAsmSetting(
-            NC_ASM_EFFECT::ADJUSTMENT_IN_PROGRESS,
-            NC_ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
+            NC_ASM_EFFECT::ON,
+            NC_ASM_SETTING_TYPE::ON_OFF,
             0,
             ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
             ASM_ID::NORMAL,
-            10
+            0
         );
         auto toSend = CommandSerializer::packageDataForBt(command, DATA_TYPE::DATA_MDR, 0);
+        connector->send(toSend.data(), toSend.size());
+
+        command = CommandSerializer::serializeNcAndAsmSetting(
+            NC_ASM_EFFECT::ADJUSTMENT_COMPLETION,
+            NC_ASM_SETTING_TYPE::ON_OFF,
+            0,
+            ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
+            ASM_ID::NORMAL,
+            2
+        );
+        toSend = CommandSerializer::packageDataForBt(command, DATA_TYPE::DATA_MDR, 0);
         connector->send(toSend.data(), toSend.size());
     }
     catch (const std::exception& e)

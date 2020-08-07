@@ -23,6 +23,18 @@ WindowsBluetoothConnector::WindowsBluetoothConnector(BTH_ADDR addr)
     {
         throw std::runtime_error("Couldn't create socket: " + std::to_string(WSAGetLastError()));
     }
+
+    ULONG enable = TRUE;
+    if (::setsockopt(sock, SOL_RFCOMM, SO_BTH_AUTHENTICATE, reinterpret_cast<char*>(&enable), sizeof(enable)))
+    {
+        throw std::runtime_error("Couldn't create set SO_BTH_AUTHENTICATE: " + std::to_string(WSAGetLastError()));
+    }
+
+    if (::setsockopt(sock, SOL_RFCOMM, SO_BTH_ENCRYPT, reinterpret_cast<char*>(&enable), sizeof(enable)))
+    {
+        throw std::runtime_error("Couldn't create set SO_BTH_ENCRYPT: " + std::to_string(WSAGetLastError()));
+    }
+
     this->_socket = sock;
 
     SOCKADDR_BTH sab = { 0 };
