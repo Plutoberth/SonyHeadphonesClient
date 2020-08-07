@@ -77,5 +77,18 @@ namespace CommandSerializer
         return toEscape;
     }
 
+    Buffer serializeNcAndAsmSetting(NC_ASM_EFFECT ncAsmEffect, NC_ASM_SETTING_TYPE ncAsmSettingType, unsigned int unk, ASM_SETTING_TYPE asmSettingType, ASM_ID asmId, unsigned char asmLevel)
+    {
+        Buffer ret;
+        ret.push_back(static_cast<unsigned char>(NC_ASM_INQUIRED_TYPE::NOISE_CANCELLING_AND_AMBIENT_SOUND_MODE));
+        ret.push_back(static_cast<unsigned char>(ncAsmEffect));
+        ret.push_back(static_cast<unsigned char>(ncAsmSettingType));
+        ret.push_back(static_cast<unsigned char>(unk));
+        ret.push_back(static_cast<unsigned char>(asmSettingType));
+        ret.push_back(static_cast<unsigned char>(asmId));
+        ret.push_back(asmLevel);
+        return ret;
+    }
+
 }
 
