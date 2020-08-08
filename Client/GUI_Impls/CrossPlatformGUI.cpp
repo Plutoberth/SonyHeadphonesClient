@@ -1,10 +1,17 @@
 #include "CrossPlatformGUI.h"
 
-void CrossPlatformGUI::performGUIPass()
+void CrossPlatformGUI::performGUIPass(BluetoothWrapper& bt)
 {
     ImGui::NewFrame();
 
     static bool show_another_window = false;
+    
+    
+    static bool focusOnVoice = false;
+    static bool sentFocusOnVoice = focusOnVoice;
+    static int asmLevel = 0;
+    static int sentAsmLevel = asmLevel;
+    static char MAC[MAC_ADDR_STR_SIZE + 1] = { 0 };
     static ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
     // 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
@@ -12,20 +19,30 @@ void CrossPlatformGUI::performGUIPass()
         static float f = 0.0f;
         static int counter = 0;
 
-        ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
+        ImGui::Begin("Ambient Sound Mode");                          // Create a window called "Hello, world!" and append into it.
+        ImGui::Text("Control ambient sound for your %ss", "WH-1000-XM3");
 
-        ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
-        ImGui::Checkbox("Another Window", &show_another_window);
+        ImGui::SliderInt("ASM Level", &asmLevel, 0, 19);
+        ImGui::Checkbox("Focus on Voice", &focusOnVoice);
 
-        ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-        ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
+        if (sentAsmLevel != asmLevel || sentFocusOnVoice != focusOnVoice)
+        {
 
-        if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-            counter++;
-        ImGui::SameLine();
-        ImGui::Text("counter = %d", counter);
+        }
 
-        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+        //ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+        //ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
+
+        ImGui::InputText("Headphones MAC addr", MAC, sizeof(MAC) - 1);
+        if (ImGui::Button("Try to connect!"))
+        {
+            //bt.connect(MAC);
+        }
+            
+        //ImGui::SameLine();
+        //ImGui::Text("counter = %d", counter);
+
+        //ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
         ImGui::End();
     }
 

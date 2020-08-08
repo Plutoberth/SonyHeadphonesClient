@@ -1,12 +1,20 @@
 #include "WindowsGUI.h"
 
+/*
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+A notice to any future readers:
+This code is almost all copied from imgui/examples/example_win32_directx11.
+Don't try to understand it.
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+*/
+
 // Data
 static ID3D11Device* g_pd3dDevice = NULL;
 static ID3D11DeviceContext* g_pd3dDeviceContext = NULL;
 static IDXGISwapChain* g_pSwapChain = NULL;
 static ID3D11RenderTargetView* g_mainRenderTargetView = NULL;
 
-void EnterGUIMainLoop()
+void EnterGUIMainLoop(BluetoothWrapper& bt)
 {
     // Create application window
     WNDCLASSEX wc = { sizeof(WNDCLASSEX), CS_CLASSDC, WindowsGUIInternal::WndProc, 0L, 0L, GetModuleHandle(NULL), NULL, NULL, NULL, NULL, _T("ImGui Example"), NULL };
@@ -71,7 +79,7 @@ void EnterGUIMainLoop()
         ImGui_ImplDX11_NewFrame();
         ImGui_ImplWin32_NewFrame();
 
-        CrossPlatformGUI::performGUIPass();
+        CrossPlatformGUI::performGUIPass(bt);
 
         g_pd3dDeviceContext->OMSetRenderTargets(1, &g_mainRenderTargetView, NULL);
         g_pd3dDeviceContext->ClearRenderTargetView(g_mainRenderTargetView, (float*)&clear_color);

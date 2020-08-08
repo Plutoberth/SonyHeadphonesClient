@@ -2,6 +2,10 @@
 
 #include <stdexcept>
 
+//The inclusion order is critical here. Do not change it.
+#include "BluetoothWrapper.h"
+#include "WindowsBluetoothConnector.h"
+
 #include "imgui/imgui.h"
 #include "imgui/examples/imgui_impl_win32.h"
 #include "imgui/examples/imgui_impl_dx11.h"
@@ -18,7 +22,7 @@
 // Forward declare message handler from imgui_impl_win32.cpp
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-void EnterGUIMainLoop();
+void EnterGUIMainLoop(BluetoothWrapper& bt);
 void DisplayErrorMessagebox(const std::string& message);
 
 namespace WindowsGUIInternal
