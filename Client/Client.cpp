@@ -3,7 +3,6 @@
 #include "WindowsBluetoothConnector.h"
 #include "CommandSerializer.h"
 #include "BluetoothWrapper.h"
-#include "imgui/imgui.h"
 
 #include "GUI_Impls/WindowsGUI.h"
 

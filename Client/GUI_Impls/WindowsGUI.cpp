@@ -20,10 +20,10 @@ void EnterGUIMainLoop(BluetoothWrapper& bt)
     ShowWindow(GetConsoleWindow(), SW_HIDE); //SW_RESTORE to bring back
 
     // Create application window
-    WNDCLASSEX wc = { sizeof(WNDCLASSEX), CS_CLASSDC, WindowsGUIInternal::WndProc, 0L, 0L, GetModuleHandle(NULL), NULL, NULL, NULL, NULL, _T("ImGui Example"), NULL };
+    WNDCLASSEX wc = { sizeof(WNDCLASSEX), CS_CLASSDC, WindowsGUIInternal::WndProc, 0L, 0L, GetModuleHandle(NULL), NULL, NULL, NULL, NULL, APP_NAME_W, NULL };
     ::RegisterClassEx(&wc);
     //TODO: pass window data (size, name, etc) as params
-    HWND hwnd = ::CreateWindowW(wc.lpszClassName, _T("Sony Headphones App"), WS_OVERLAPPEDWINDOW, 100, 100, 720, 480, NULL, NULL, wc.hInstance, NULL);
+    HWND hwnd = ::CreateWindowW(wc.lpszClassName, APP_NAME_W, WS_OVERLAPPED, 100, 100, 1280, 720, NULL, NULL, wc.hInstance, NULL);
 
     // Initialize Direct3D
     if (!WindowsGUIInternal::CreateDeviceD3D(hwnd))
