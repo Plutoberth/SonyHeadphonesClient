@@ -126,7 +126,7 @@
       <AdditionalDependencies>d3d11.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy $(projectDir)\Fonts $(outputPath)\Fonts /yes</Command>
+      <Command>xcopy $(projectDir)\Fonts $(outputPath)\Fonts /yes /I</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -148,7 +148,7 @@
       <AdditionalDependencies>d3d11.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy $(projectDir)\Fonts $(outputPath)\Fonts /yes</Command>
+      <Command>xcopy $(projectDir)\Fonts $(outputPath)\Fonts /yes /I</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
