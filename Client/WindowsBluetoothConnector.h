@@ -8,15 +8,20 @@
 #include <iostream>
 #include <rpc.h>
 #include "IBluetoothConnector.h"
+#include <string>
+#include "ByteMagic.h"
 
-class WindowsBluetoothConnector : public IBluetoothConnector
+class WindowsBluetoothConnector final : public IBluetoothConnector
 {
 public:
-    WindowsBluetoothConnector(BTH_ADDR addr);
+    WindowsBluetoothConnector();
+
     ~WindowsBluetoothConnector();
 
+    virtual void connect(const std::string& addrStr);
     virtual int send(char* buf, size_t length);
 
 private:
+
     SOCKET _socket;
 };

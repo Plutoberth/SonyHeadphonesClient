@@ -1,5 +1,4 @@
 #pragma once
-
 #include "Constants.h"
 #include "ByteMagic.h"
 #include <cstddef>

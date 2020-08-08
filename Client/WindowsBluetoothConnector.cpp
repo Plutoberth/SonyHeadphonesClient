@@ -10,7 +10,7 @@ void WSAStartupWrapper()
     }
 }
 
-WindowsBluetoothConnector::WindowsBluetoothConnector(BTH_ADDR addr)
+WindowsBluetoothConnector::WindowsBluetoothConnector()
 {
 	static bool startedUp = false;
 	if (!startedUp)
@@ -36,7 +36,10 @@ WindowsBluetoothConnector::WindowsBluetoothConnector(BTH_ADDR addr)
     }
 
     this->_socket = sock;
+}
 
+void WindowsBluetoothConnector::connect(const std::string& addrStr)
+{
     SOCKADDR_BTH sab = { 0 };
     sab.addressFamily = AF_BTH;
     RPC_STATUS errCode = ::UuidFromStringA((RPC_CSTR)XM3_UUID, &sab.serviceClassId);
@@ -44,7 +47,7 @@ WindowsBluetoothConnector::WindowsBluetoothConnector(BTH_ADDR addr)
     {
         throw std::runtime_error("Couldn't create GUID: " + std::to_string(errCode));
     }
-    sab.btAddr = addr;
+    sab.btAddr = MACStringToLong(addrStr);
 
     if (::connect(this->_socket, (sockaddr*)&sab, sizeof(sab)))
     {

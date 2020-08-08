@@ -16,4 +16,5 @@ public:
 	IBluetoothConnector& operator=(IBluetoothConnector&&) = delete;
 
 	virtual int send(char* buf, size_t length) = 0;
+	virtual void connect(const std::string& addrStr) = 0;
 };

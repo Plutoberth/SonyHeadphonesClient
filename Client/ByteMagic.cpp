@@ -17,3 +17,26 @@ std::vector<unsigned char> intToBytesBE(unsigned int num)
     }
     return ret;
 }
+
+long long MACStringToLong(const std::string& str)
+{
+    if (str.size() != MAC_ADDR_STR_SIZE)
+    {
+        throw std::runtime_error("Invalid MAC address size (" + str + "): " + std::to_string(str.size()) + " != " + std::to_string(MAC_ADDR_STR_SIZE));
+    }
+
+    std::istringstream iss(str);
+    uint64_t b;
+    uint64_t result(0);
+    iss >> std::hex;
+    while (iss >> b) {
+        result = (result << 8) + b;
+        auto eaten = iss.get();
+        if (eaten != '-' && eaten != ':' && eaten != EOF)
+        {
+            throw std::runtime_error("Invalid MAC address format: " + str);
+        }
+    }
+    return result;
+}
+
