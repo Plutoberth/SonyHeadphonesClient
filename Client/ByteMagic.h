@@ -4,8 +4,8 @@
 #include <string>
 #include <algorithm>
 #include <stdexcept>
+#include "Constants.h"
 
-inline constexpr auto MAC_ADDR_STR_SIZE = 17;
 
 unsigned int byteOrderSwap(unsigned int num);
 
