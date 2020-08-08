@@ -15,7 +15,7 @@ void EnterGUIMainLoop()
     HWND hwnd = ::CreateWindowW(wc.lpszClassName, _T("Sony Headphones App"), WS_OVERLAPPEDWINDOW, 100, 100, 1280, 720, NULL, NULL, wc.hInstance, NULL);
 
     // Initialize Direct3D
-    if (WindowsGUIInternal::CreateDeviceD3D(hwnd))
+    if (!WindowsGUIInternal::CreateDeviceD3D(hwnd))
     {
         WindowsGUIInternal::CleanupDeviceD3D();
         ::UnregisterClass(wc.lpszClassName, wc.hInstance);
