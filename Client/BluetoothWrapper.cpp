@@ -18,5 +18,6 @@ void BluetoothWrapper::connect(const std::string& addr)
 
 void BluetoothWrapper::disconnect()
 {
+    this->_seqNumber = 0;
     this->_connector->disconnect();
 }

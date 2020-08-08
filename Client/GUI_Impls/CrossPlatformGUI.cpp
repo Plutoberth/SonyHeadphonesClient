@@ -14,9 +14,8 @@ void CrossPlatformGUI::performGUIPass(BluetoothWrapper& bt)
     static BluetoothDevice connectedDevice;
 
     ImGui::SetNextWindowPos({ 0,0 });
-
     {
-        ImGui::ShowDemoWindow();
+        //ImGui::ShowDemoWindow();
         ImGui::Begin("Sony Headphones", NULL, ImGuiWindowFlags_AlwaysAutoResize |  ImGuiWindowFlags_NoTitleBar);
 
         static int selectedDevice = -1;
@@ -28,7 +27,7 @@ void CrossPlatformGUI::performGUIPass(BluetoothWrapper& bt)
                 if (ImGui::Button("Disconnect"))
                 {
                     isConnected = false;
-                    //TODO: Add disconnection code
+                    bt.disconnect();
                 }
             }
             else
@@ -101,7 +100,6 @@ void CrossPlatformGUI::performGUIPass(BluetoothWrapper& bt)
                     sentAsmLevel = asmLevel;
                     sentFocusOnVoice = focusOnVoice;
                 }
-                //ImGui::End();
             }
         }
         ImGui::End();
