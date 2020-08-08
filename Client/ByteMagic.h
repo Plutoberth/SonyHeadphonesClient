@@ -2,11 +2,11 @@
 
 #include <vector>
 #include <string>
+#include <sstream>
+#include <iomanip>
 #include <algorithm>
 #include <stdexcept>
 #include "Constants.h"
-#include <sstream>
-
 
 unsigned int byteOrderSwap(unsigned int num);
 
@@ -14,3 +14,4 @@ unsigned int byteOrderSwap(unsigned int num);
 std::vector<unsigned char> intToBytesBE(unsigned int num);
 
 long long MACStringToLong(const std::string& str);
+std::string MACBytesToString(unsigned char addr[]);
