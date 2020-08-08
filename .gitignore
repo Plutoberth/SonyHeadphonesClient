@@ -523,3 +523,4 @@ MigrationBackup/
 .ionide/
 
 # End of https://www.toptal.com/developers/gitignore/api/c++,visualstudio,python
+Client/imgui.ini

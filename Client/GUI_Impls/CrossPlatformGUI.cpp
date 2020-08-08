@@ -47,4 +47,18 @@ void CrossPlatformGUI::doInit()
 {
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
+  
+    ImGuiIO& io = ImGui::GetIO(); 
+
+    //TODO: Do scaling correctly
+    //io.FontGlobalScale = 4;
+    //ImGui::GetStyle().ScaleAllSizes(4);
+
+    //TODO: remove in prod
+#ifdef _DEBUG
+    io.IniFilename = nullptr;
+    io.WantSaveIniSettings = false;
+#endif // DEBUG
+    /*ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\Arial.ttf", 15.0f);
+    IM_ASSERT(font != NULL);*/
 }

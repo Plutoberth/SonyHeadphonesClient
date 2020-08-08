@@ -13,7 +13,15 @@ constexpr BTH_ADDR XM3_ADDR = 0x38184cbf447f;
 
 int main()
 {
-    EnterGUIMainLoop();
+    try
+    {
+        EnterGUIMainLoop();
+    }
+    catch (const std::exception& e)
+    {
+        DisplayErrorMessagebox(e.what());
+    }
+
 
     try
     {
@@ -43,7 +51,7 @@ int main()
     }
     catch (const std::exception& e)
     {
-        std::cout << e.what() << std::endl;
+        
     }
 }
 

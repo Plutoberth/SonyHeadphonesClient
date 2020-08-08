@@ -2,9 +2,8 @@
 
 #include "imgui/imgui.h"
 
-class CrossPlatformGUI
+namespace CrossPlatformGUI
 {
-public:
 	//This function should be called AFTER the Dear ImGUI context is initialized.
 	void doInit();
 

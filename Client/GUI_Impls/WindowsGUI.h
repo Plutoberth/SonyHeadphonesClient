@@ -9,6 +9,9 @@
 #define DIRECTINPUT_VERSION 0x0800
 #include <dinput.h>
 #include <tchar.h>
+#include <string>
+
+#include "Windows.h"
 
 #include "CrossPlatformGUI.h"
 
@@ -16,6 +19,7 @@
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 void EnterGUIMainLoop();
+void DisplayErrorMessagebox(const std::string& message);
 
 namespace WindowsGUIInternal
 {
