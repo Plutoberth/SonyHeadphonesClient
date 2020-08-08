@@ -40,3 +40,22 @@ long long MACStringToLong(const std::string& str)
     return result;
 }
 
+
+constexpr size_t MAC_ADDR_BYTES_LEN = 6;
+std::string MACBytesToString(unsigned char addr[])
+{
+    // Create hex string from the bytes. 
+    std::stringstream mac_addr_str;
+    for (int i = 0; i < MAC_ADDR_BYTES_LEN; i++)
+    {
+        mac_addr_str << std::hex << (((addr[MAC_ADDR_BYTES_LEN - 1 - i] & 0xF0) >> 4) & 0xF);
+        mac_addr_str << std::hex << (addr[MAC_ADDR_BYTES_LEN - 1- i] & 0x0F);
+        mac_addr_str << ':';
+    }
+
+    // Pop the redundant ':'
+    auto ret = mac_addr_str.str();
+    ret.pop_back();
+
+    return ret;
+}

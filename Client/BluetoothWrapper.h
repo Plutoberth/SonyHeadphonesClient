@@ -17,6 +17,8 @@ public:
 	void connect(const std::string& addr);
 	void disconnect();
 
+	std::vector<BluetoothDevice> getConnectedDevices();
+
 	BluetoothWrapper(const BluetoothWrapper&) = delete;
 	BluetoothWrapper(BluetoothWrapper&&) = delete;
 

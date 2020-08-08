@@ -21,3 +21,9 @@ void BluetoothWrapper::disconnect()
     this->_seqNumber = 0;
     this->_connector->disconnect();
 }
+
+
+std::vector<BluetoothDevice> BluetoothWrapper::getConnectedDevices()
+{
+    return this->_connector->getConnectedDevices();
+}

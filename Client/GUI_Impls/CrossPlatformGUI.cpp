@@ -4,12 +4,11 @@ bool CrossPlatformGUI::performGUIPass(BluetoothWrapper& bt)
 {
     ImGui::NewFrame();
    
-    static char MAC[MAC_ADDR_STR_SIZE + 1] = "38:18:4c:bf:44:7f";
     static ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
     static bool isConnected = false;
-    static std::vector<BluetoothDevice> connectedDevices {{"WH-1000-XM3", "38:18:4c:bf:44:7f"},
-    {"WH-1000-XM4", "38:18:4c:bf:44:7f"}, 
-    {"WH-1000-XM5", "38:18:4c:bf:44:7f"} };
+
+    static std::vector<BluetoothDevice> connectedDevices = bt.getConnectedDevices();
+    
     //Avoid issues with changing indexes
     static BluetoothDevice connectedDevice;
     bool open = true;
