@@ -13,56 +13,81 @@ void CrossPlatformGUI::performGUIPass(BluetoothWrapper& bt)
     static int sentAsmLevel = asmLevel;
     static char MAC[MAC_ADDR_STR_SIZE + 1] = "38:18:4c:bf:44:7f";
     static ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+    static bool isConnected = false;
+    static std::vector<BluetoothDevice> connectedDevices {{"WH-1000-XM3", "38:18:4c:bf:44:7f"},
+    {"WH-1000-XM4", "38:18:4c:bf:44:7f"}, 
+    {"WH-1000-XM5", "38:18:4c:bf:44:7f"} };
 
     // 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
     {
-        static float f = 0.0f;
-        static int counter = 0;
-
-        ImGui::Begin("Ambient Sound Mode");                          // Create a window called "Hello, world!" and append into it.
-        ImGui::Text("Control ambient sound for your %ss", "WH-1000-XM3");
-
-        ImGui::SliderInt("ASM Level", &asmLevel, 0, 19);
-        ImGui::Checkbox("Focus on Voice", &focusOnVoice);
-
-        if (sentAsmLevel != asmLevel || sentFocusOnVoice != focusOnVoice)
         {
-            bt.sendCommand(CommandSerializer::serializeNcAndAsmSetting(
-                NC_ASM_EFFECT::ADJUSTMENT_IN_PROGRESS,
-                NC_ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
-                0,
-                ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
-                focusOnVoice ? ASM_ID::VOICE : ASM_ID::NORMAL,
-                asmLevel
-            ));
-            bt.sendCommand(CommandSerializer::serializeNcAndAsmSetting(
-                NC_ASM_EFFECT::ADJUSTMENT_COMPLETION,
-                NC_ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
-                0,
-                ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
-                focusOnVoice ? ASM_ID::VOICE : ASM_ID::NORMAL,
-                asmLevel
-            ));
-            sentAsmLevel = asmLevel;
-            sentFocusOnVoice = focusOnVoice;
+            static int selectedDevice = -1;
+            ImGui::Begin("Device Discovery");
+            ImGui::Text("Select from one of the available devices: ");
+
+            int temp = 0;
+            for (auto device: connectedDevices)
+            {
+                auto name = device.name + " (" + device.mac + ")";
+                ImGui::RadioButton(name.c_str(), &selectedDevice, temp++);
+            }
+
+            ImGui::Spacing();
+
+            if (ImGui::Button("Connect"))
+            {
+                if (selectedDevice != -1)
+                {
+                    ImGui::GetFrameHeightWithSpacing();
+                    //TODO: This isn't proper at all. Call may block
+                    bt.connect(connectedDevices[selectedDevice].mac);
+                    isConnected = true;
+                    ImGui::SetWindowCollapsed(true);
+                }
+            }
+
+            ImGui::SameLine();
+
+            if (ImGui::Button("Refresh devices"))
+            {
+                //refresh connectedDevices
+            }
+
+            ImGui::End();
         }
 
-        //ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-        //ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
-
-        ImGui::Text("Headphones MAC address");
-        ImGui::InputText("", MAC, sizeof(MAC) - 1);
-        if (ImGui::Button("Try to connect!"))
+        if (isConnected)
         {
-            //TODO: This isn't proper at all. Call may block
-            bt.connect(MAC);
-        }
-            
-        //ImGui::SameLine();
-        //ImGui::Text("counter = %d", counter);
+            ImGui::Begin("Ambient Sound Mode");                          // Create a window called "Hello, world!" and append into it.
+            ImGui::Text("Control ambient sound for your %ss", "WH-1000-XM3");
 
-        //ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-        ImGui::End();
+            ImGui::SliderInt("ASM Level", &asmLevel, 0, 19);
+            ImGui::Checkbox("Focus on Voice", &focusOnVoice);
+
+            if (sentAsmLevel != asmLevel || sentFocusOnVoice != focusOnVoice)
+            {
+                bt.sendCommand(CommandSerializer::serializeNcAndAsmSetting(
+                    NC_ASM_EFFECT::ADJUSTMENT_IN_PROGRESS,
+                    NC_ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
+                    0,
+                    ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
+                    focusOnVoice ? ASM_ID::VOICE : ASM_ID::NORMAL,
+                    asmLevel
+                ));
+                bt.sendCommand(CommandSerializer::serializeNcAndAsmSetting(
+                    NC_ASM_EFFECT::ADJUSTMENT_COMPLETION,
+                    NC_ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
+                    0,
+                    ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
+                    focusOnVoice ? ASM_ID::VOICE : ASM_ID::NORMAL,
+                    asmLevel
+                ));
+                sentAsmLevel = asmLevel;
+                sentFocusOnVoice = focusOnVoice;
+                
+            }
+            ImGui::End();
+        }
     }
 
     // 3. Show another simple window.
