@@ -3,6 +3,13 @@
 
 inline constexpr auto XM3_UUID = "96CC203E-5068-46ad-B32D-E316F5E069BA";
 
+struct BluetoothDevice
+{
+	//UTF-8
+	std::string name;
+	std::string mac;
+};
+
 class IBluetoothConnector
 {
 public:

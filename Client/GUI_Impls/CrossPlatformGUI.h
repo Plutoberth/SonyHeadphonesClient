@@ -2,6 +2,7 @@
 
 #include "imgui/imgui.h"
 #include "Constants.h"
+#include "IBluetoothConnector.h"
 #include "BluetoothWrapper.h"
 #include "CommandSerializer.h"
 

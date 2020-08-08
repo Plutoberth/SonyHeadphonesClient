@@ -6,6 +6,8 @@
 #include "BluetoothWrapper.h"
 #include "WindowsBluetoothConnector.h"
 
+#include "Constants.h"
+
 #include "imgui/imgui.h"
 #include "imgui/examples/imgui_impl_win32.h"
 #include "imgui/examples/imgui_impl_dx11.h"

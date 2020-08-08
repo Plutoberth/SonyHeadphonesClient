@@ -8,6 +8,8 @@ inline constexpr auto MAC_ADDR_STR_SIZE = 17;
 
 inline constexpr auto SERVICE_UUID = "96CC203E-5068-46ad-B32D-E316F5E069BA";
 
+inline constexpr auto APP_NAME_W = L"Sony Headphones App";
+
 enum class DATA_TYPE : char
 {
 	DATA_MDR = 12

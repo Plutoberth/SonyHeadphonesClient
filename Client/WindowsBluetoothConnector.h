@@ -24,4 +24,5 @@ public:
 private:
 
     SOCKET _socket = INVALID_SOCKET;
+    void _initSocket();
 };
