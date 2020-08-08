@@ -14,7 +14,7 @@
 class WindowsBluetoothConnector final : public IBluetoothConnector
 {
 public:
-    WindowsBluetoothConnector() noexcept(false);
+    WindowsBluetoothConnector();
 
     ~WindowsBluetoothConnector();
 

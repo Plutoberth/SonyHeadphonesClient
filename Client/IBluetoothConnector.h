@@ -6,7 +6,7 @@ inline constexpr auto XM3_UUID = "96CC203E-5068-46ad-B32D-E316F5E069BA";
 class IBluetoothConnector
 {
 public:
-	IBluetoothConnector() noexcept(false) = default;
+	IBluetoothConnector() = default;
 	virtual ~IBluetoothConnector() = default;
 
 	IBluetoothConnector(const IBluetoothConnector&) = delete;
