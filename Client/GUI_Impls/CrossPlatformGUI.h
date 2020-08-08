@@ -4,6 +4,7 @@
 #include "Constants.h"
 #include "BluetoothWrapper.h"
 #include "CommandSerializer.h"
+#include "Windows.h"
 
 namespace CrossPlatformGUI
 {

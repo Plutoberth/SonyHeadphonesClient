@@ -32,7 +32,7 @@ long long MACStringToLong(const std::string& str)
     while (iss >> b) {
         result = (result << 8) + b;
         auto eaten = iss.get();
-        if (eaten != '-' && eaten != ':')
+        if (eaten != '-' && eaten != ':' && eaten != EOF)
         {
             throw std::runtime_error("Invalid MAC address format: " + str);
         }

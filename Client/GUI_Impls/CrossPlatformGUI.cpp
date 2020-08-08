@@ -11,7 +11,7 @@ void CrossPlatformGUI::performGUIPass(BluetoothWrapper& bt)
     static bool sentFocusOnVoice = focusOnVoice;
     static int asmLevel = 0;
     static int sentAsmLevel = asmLevel;
-    static char MAC[MAC_ADDR_STR_SIZE + 1] = { 0 };
+    static char MAC[MAC_ADDR_STR_SIZE + 1] = "38:18:4c:bf:44:7f";
     static ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
     // 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
@@ -27,16 +27,36 @@ void CrossPlatformGUI::performGUIPass(BluetoothWrapper& bt)
 
         if (sentAsmLevel != asmLevel || sentFocusOnVoice != focusOnVoice)
         {
-
+            bt.sendCommand(CommandSerializer::serializeNcAndAsmSetting(
+                NC_ASM_EFFECT::ADJUSTMENT_IN_PROGRESS,
+                NC_ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
+                0,
+                ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
+                focusOnVoice ? ASM_ID::VOICE : ASM_ID::NORMAL,
+                asmLevel
+            ));
+            bt.sendCommand(CommandSerializer::serializeNcAndAsmSetting(
+                NC_ASM_EFFECT::ADJUSTMENT_COMPLETION,
+                NC_ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
+                0,
+                ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
+                focusOnVoice ? ASM_ID::VOICE : ASM_ID::NORMAL,
+                asmLevel
+            ));
+            sentAsmLevel = asmLevel;
+            sentFocusOnVoice = focusOnVoice;
+            Sleep(1000);
         }
 
         //ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
         //ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
 
-        ImGui::InputText("Headphones MAC addr", MAC, sizeof(MAC) - 1);
+        ImGui::Text("Headphones MAC address");
+        ImGui::InputText("", MAC, sizeof(MAC) - 1);
         if (ImGui::Button("Try to connect!"))
         {
-            //bt.connect(MAC);
+            //TODO: This isn't proper at all. Call may block
+            bt.connect(MAC);
         }
             
         //ImGui::SameLine();

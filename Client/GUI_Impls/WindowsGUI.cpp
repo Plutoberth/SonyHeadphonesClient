@@ -16,6 +16,9 @@ static ID3D11RenderTargetView* g_mainRenderTargetView = NULL;
 
 void EnterGUIMainLoop(BluetoothWrapper& bt)
 {
+    //Kinda broken but it works :)
+    ShowWindow(GetConsoleWindow(), SW_HIDE); //SW_RESTORE to bring back
+
     // Create application window
     WNDCLASSEX wc = { sizeof(WNDCLASSEX), CS_CLASSDC, WindowsGUIInternal::WndProc, 0L, 0L, GetModuleHandle(NULL), NULL, NULL, NULL, NULL, _T("ImGui Example"), NULL };
     ::RegisterClassEx(&wc);
