@@ -25,18 +25,18 @@ long long MACStringToLong(const std::string& str)
         throw std::runtime_error("Invalid MAC address size (" + str + "): " + std::to_string(str.size()) + " != " + std::to_string(MAC_ADDR_STR_SIZE));
     }
 
-    unsigned char bytes[6];
-    int convertedFields = sscanf_s(str.c_str(), "%hhx:%hhx:%hhx:%hhx:%hhx:%hhx",
-        bytes + 0, bytes + 1, bytes + 2, bytes + 3, bytes + 4, bytes + 5);
-
-    if (convertedFields != 6)
-        throw std::runtime_error("Invalid MAC address format (" + str + ")");
-    return
-        uint64_t(bytes[0]) << 40 |
-        uint64_t(bytes[1]) << 32 |
-        uint64_t(bytes[2]) << 24 |
-        uint64_t(bytes[3]) << 16 |
-        uint64_t(bytes[4]) << 8 |
-        uint64_t(bytes[5]);
+    std::istringstream iss(str);
+    uint64_t b;
+    uint64_t result(0);
+    iss >> std::hex;
+    while (iss >> b) {
+        result = (result << 8) + b;
+        auto eaten = iss.get();
+        if (eaten != '-' && eaten != ':')
+        {
+            throw std::runtime_error("Invalid MAC address format: " + str);
+        }
+    }
+    return result;
 }
 

@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <stdexcept>
 #include "Constants.h"
+#include <sstream>
 
 
 unsigned int byteOrderSwap(unsigned int num);
