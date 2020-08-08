@@ -14,12 +14,12 @@
 class WindowsBluetoothConnector final : public IBluetoothConnector
 {
 public:
-    WindowsBluetoothConnector();
+    WindowsBluetoothConnector() noexcept(false);
 
     ~WindowsBluetoothConnector();
 
-    virtual void connect(const std::string& addrStr);
-    virtual int send(char* buf, size_t length);
+    virtual void connect(const std::string& addrStr) noexcept(false);
+    virtual int send(char* buf, size_t length) noexcept(false);
 
 private:
 
