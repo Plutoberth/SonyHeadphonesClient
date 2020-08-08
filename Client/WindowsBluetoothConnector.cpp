@@ -151,6 +151,19 @@ void WindowsBluetoothConnector::_initSocket()
 
     this->_socket = sock;
 }
+std::string convert_from_wstring(const std::wstring& wstr)
+{
+	std::string strTo;
+	const int num_chars = WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), wstr.length(), NULL, 0, NULL, NULL);
+
+	if (num_chars > 0)
+	{
+		strTo.resize(num_chars);
+		WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), wstr.length(), &strTo[0], num_chars, NULL, NULL);
+	}
+	return strTo;
+}
+
 std::vector<BluetoothDevice> WindowsBluetoothConnector::findDevicesInRadio(BLUETOOTH_DEVICE_SEARCH_PARAMS* search_params)
 {
 	std::vector<BluetoothDevice> res;
@@ -167,7 +180,7 @@ std::vector<BluetoothDevice> WindowsBluetoothConnector::findDevicesInRadio(BLUET
 
 	// Get the device info
 	do {
-		res.emplace_back(BluetoothDevice{ std::wstring(device_info.szName), MACBytesToString(device_info.Address.rgBytes) });
+		res.emplace_back(BluetoothDevice{ convert_from_wstring(device_info.szName), MACBytesToString(device_info.Address.rgBytes) });
 	} while (BluetoothFindNextDevice(dev_find_handle, &device_info));
 
 	// NO more device, close the device handle
