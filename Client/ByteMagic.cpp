@@ -26,7 +26,7 @@ long long MACStringToLong(const std::string& str)
     }
 
     unsigned char bytes[6];
-    int convertedFields = sscanf(str.c_str(), "%hhx:%hhx:%hhx:%hhx:%hhx:%hhx",
+    int convertedFields = sscanf_s(str.c_str(), "%hhx:%hhx:%hhx:%hhx:%hhx:%hhx",
         bytes + 0, bytes + 1, bytes + 2, bytes + 3, bytes + 4, bytes + 5);
 
     if (convertedFields != 6)
