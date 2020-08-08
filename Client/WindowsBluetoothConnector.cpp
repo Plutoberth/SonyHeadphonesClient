@@ -91,12 +91,12 @@ void WindowsBluetoothConnector::_initSocket()
     ULONG enable = TRUE;
     if (::setsockopt(sock, SOL_RFCOMM, SO_BTH_AUTHENTICATE, reinterpret_cast<char*>(&enable), sizeof(enable)))
     {
-        throw std::runtime_error("Couldn't create set SO_BTH_AUTHENTICATE: " + std::to_string(WSAGetLastError()));
+        throw std::runtime_error("Couldn't set SO_BTH_AUTHENTICATE: " + std::to_string(WSAGetLastError()));
     }
 
     if (::setsockopt(sock, SOL_RFCOMM, SO_BTH_ENCRYPT, reinterpret_cast<char*>(&enable), sizeof(enable)))
     {
-        throw std::runtime_error("Couldn't create set SO_BTH_ENCRYPT: " + std::to_string(WSAGetLastError()));
+        throw std::runtime_error("Couldn't set SO_BTH_ENCRYPT: " + std::to_string(WSAGetLastError()));
     }
 
     this->_socket = sock;
