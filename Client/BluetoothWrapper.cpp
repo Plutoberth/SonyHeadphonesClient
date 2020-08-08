@@ -16,3 +16,8 @@ void BluetoothWrapper::connect(const std::string& addr)
 {
     this->_connector->connect(addr);
 }
+
+void BluetoothWrapper::disconnect()
+{
+    this->_connector->disconnect();
+}

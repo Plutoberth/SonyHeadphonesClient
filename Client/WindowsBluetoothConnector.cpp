@@ -69,3 +69,16 @@ int WindowsBluetoothConnector::send(char* buf, size_t length)
     }
     return bytesSent;
 }
+
+void WindowsBluetoothConnector::disconnect() noexcept(false)
+{
+    if (this->_socket != INVALID_SOCKET)
+    {
+        closesocket(this->_socket);
+        this->_socket = INVALID_SOCKET;
+    }
+    else
+    {
+        throw std::runtime_error("The socket was already closed, or it was never open");
+    }
+}

@@ -15,6 +15,7 @@ public:
 	int sendCommand(const std::vector<char>& bytes);
 	//Try to connect to the headphones
 	void connect(const std::string& addr);
+	void disconnect();
 
 	BluetoothWrapper(const BluetoothWrapper&) = delete;
 	BluetoothWrapper(BluetoothWrapper&&) = delete;
