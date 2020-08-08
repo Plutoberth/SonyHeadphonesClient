@@ -45,7 +45,6 @@ void CrossPlatformGUI::performGUIPass(BluetoothWrapper& bt)
             ));
             sentAsmLevel = asmLevel;
             sentFocusOnVoice = focusOnVoice;
-            Sleep(1000);
         }
 
         //ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f

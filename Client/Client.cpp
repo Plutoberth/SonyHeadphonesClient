@@ -13,7 +13,7 @@ constexpr auto MY_XM3_ADDR = "38:18:4c:bf:44:7f";
 
 int main()
 {
-    std::cout << "Initializing... If you see this message, something has gone wrong" << std::endl;
+    std::cout << "Initializing... If can't see the GUI, something has gone wrong." << std::endl;
     try
     {
         BluetoothConnectorPtr connector = std::make_unique<WindowsBluetoothConnector>();
