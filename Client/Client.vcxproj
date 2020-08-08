@@ -88,11 +88,20 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir)/imgui;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>d3d11.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy $(projectDir)\Fonts $(outputPath)\Fonts /yes /I</Command>
+    </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>xcopy $(projectDir)\Fonts $(outputPath)\Fonts /yes /I</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -102,13 +111,22 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir)/imgui;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>d3d11.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy $(projectDir)\Fonts $(outputPath)\Fonts /yes /I</Command>
+    </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>xcopy $(projectDir)\Fonts $(outputPath)\Fonts /yes /I</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -128,6 +146,9 @@
     <PostBuildEvent>
       <Command>xcopy $(projectDir)\Fonts $(outputPath)\Fonts /yes /I</Command>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>xcopy $(projectDir)\Fonts $(outputPath)\Fonts /yes /I</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -150,6 +171,9 @@
     <PostBuildEvent>
       <Command>xcopy $(projectDir)\Fonts $(outputPath)\Fonts /yes /I</Command>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>xcopy $(projectDir)\Fonts $(outputPath)\Fonts /yes /I</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BluetoothWrapper.cpp" />
