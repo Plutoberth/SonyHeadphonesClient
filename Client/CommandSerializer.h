@@ -9,7 +9,9 @@ namespace CommandSerializer
 {
 	using Buffer = std::vector<char>;
 	//escape special chars
+
 	Buffer _escapeSpecials(const Buffer& src);
+	//TODO: Buffer _unescapeSpecials(const Buffer& src);
 	unsigned char _sumChecksum(const Buffer& src);
 	//Package a serialized command according to the protocol
 	/*

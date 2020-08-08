@@ -1,6 +1,6 @@
 #include "CrossPlatformGUI.h"
 
-void CrossPlatformGUI::performGUIPass(BluetoothWrapper& bt)
+bool CrossPlatformGUI::performGUIPass(BluetoothWrapper& bt)
 {
     ImGui::NewFrame();
    
@@ -12,14 +12,16 @@ void CrossPlatformGUI::performGUIPass(BluetoothWrapper& bt)
     {"WH-1000-XM5", "38:18:4c:bf:44:7f"} };
     //Avoid issues with changing indexes
     static BluetoothDevice connectedDevice;
+    bool open = true;
 
     ImGui::SetNextWindowPos({ 0,0 });
     {
         //ImGui::ShowDemoWindow();
-        ImGui::Begin("Sony Headphones", NULL, ImGuiWindowFlags_AlwaysAutoResize |  ImGuiWindowFlags_NoTitleBar);
+        //TODO: Figure out how to get rid of the Windows window, make everything transparent, and just use ImGui for everything.
+        ImGui::Begin("Sony Headphones", &open, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoTitleBar);
 
         static int selectedDevice = -1;
-        if (ImGui::CollapsingHeader("Device Discovery   "))
+        if (ImGui::CollapsingHeader("Device Discovery   ", ImGuiTreeNodeFlags_DefaultOpen))
         {
             if (isConnected)
             {
@@ -87,13 +89,16 @@ void CrossPlatformGUI::performGUIPass(BluetoothWrapper& bt)
                 if (sentAsmLevel != asmLevel || sentFocusOnVoice != focusOnVoice)
                 {
                     auto ncAsmEffect = sliderActive ? NC_ASM_EFFECT::ADJUSTMENT_IN_PROGRESS : NC_ASM_EFFECT::ADJUSTMENT_COMPLETION;
+                    auto asmId = focusOnVoice ? ASM_ID::VOICE : ASM_ID::NORMAL;
+
+                    //TODO: Check if sliderActive actually works properly
 
                     bt.sendCommand(CommandSerializer::serializeNcAndAsmSetting(
                         ncAsmEffect,
                         NC_ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
                         0,
                         ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
-                        focusOnVoice ? ASM_ID::VOICE : ASM_ID::NORMAL,
+                        asmId,
                         asmLevel
                     ));
                    
@@ -108,7 +113,7 @@ void CrossPlatformGUI::performGUIPass(BluetoothWrapper& bt)
     // Rendering
     ImGui::Render();
 
-
+    return open;
 }
 
 void CrossPlatformGUI::doInit()

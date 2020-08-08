@@ -23,7 +23,7 @@ void EnterGUIMainLoop(BluetoothWrapper& bt)
     WNDCLASSEX wc = { sizeof(WNDCLASSEX), CS_CLASSDC, WindowsGUIInternal::WndProc, 0L, 0L, GetModuleHandle(NULL), NULL, NULL, NULL, NULL, APP_NAME_W, NULL };
     ::RegisterClassEx(&wc);
     //TODO: pass window data (size, name, etc) as params
-    HWND hwnd = ::CreateWindowW(wc.lpszClassName, APP_NAME_W, WS_OVERLAPPED, 100, 100, 1280, 720, NULL, NULL, wc.hInstance, NULL);
+    HWND hwnd = ::CreateWindowW(wc.lpszClassName, APP_NAME_W, WS_OVERLAPPEDWINDOW, 100, 100, 1280, 720, NULL, NULL, wc.hInstance, NULL);
 
     // Initialize Direct3D
     if (!WindowsGUIInternal::CreateDeviceD3D(hwnd))
@@ -82,7 +82,12 @@ void EnterGUIMainLoop(BluetoothWrapper& bt)
         ImGui_ImplDX11_NewFrame();
         ImGui_ImplWin32_NewFrame();
 
-        CrossPlatformGUI::performGUIPass(bt);
+        //if the user wants to quit
+        if (!CrossPlatformGUI::performGUIPass(bt))
+        {
+            break;
+        }
+        
 
         g_pd3dDeviceContext->OMSetRenderTargets(1, &g_mainRenderTargetView, NULL);
         g_pd3dDeviceContext->ClearRenderTargetView(g_mainRenderTargetView, (float*)&clear_color);
@@ -151,6 +156,10 @@ namespace WindowsGUIInternal
     {
         ID3D11Texture2D* pBackBuffer = NULL;
         g_pSwapChain->GetBuffer(0, IID_PPV_ARGS(&pBackBuffer));
+        if (pBackBuffer == nullptr)
+        {
+            throw std::runtime_error("Unexpected: pBackBuffer is null");
+        }
         g_pd3dDevice->CreateRenderTargetView(pBackBuffer, NULL, &g_mainRenderTargetView);
         pBackBuffer->Release();
     }
