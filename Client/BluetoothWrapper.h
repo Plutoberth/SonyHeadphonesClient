@@ -12,18 +12,18 @@ class BluetoothWrapper
 public:
 	BluetoothWrapper(std::unique_ptr<IBluetoothConnector> connector);
 
+	BluetoothWrapper(const BluetoothWrapper&) = delete;
+	BluetoothWrapper& operator=(const BluetoothWrapper&) = delete;
+
+	BluetoothWrapper(BluetoothWrapper&& other) noexcept;
+	BluetoothWrapper& operator=(BluetoothWrapper&& other) noexcept;
+
 	int sendCommand(const std::vector<char>& bytes);
 	//Try to connect to the headphones
 	void connect(const std::string& addr);
 	void disconnect();
 
 	std::vector<BluetoothDevice> getConnectedDevices();
-
-	BluetoothWrapper(const BluetoothWrapper&) = delete;
-	BluetoothWrapper(BluetoothWrapper&&) = delete;
-
-	BluetoothWrapper& operator=(const BluetoothWrapper&) = delete;
-	BluetoothWrapper& operator=(BluetoothWrapper&&) = delete;
 
 private:
 	std::unique_ptr<IBluetoothConnector> _connector;

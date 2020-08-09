@@ -5,6 +5,17 @@ BluetoothWrapper::BluetoothWrapper(std::unique_ptr<IBluetoothConnector> connecto
 	this->_connector.swap(connector);
 }
 
+BluetoothWrapper::BluetoothWrapper(BluetoothWrapper&& other) noexcept
+{
+	this->_connector.swap(other._connector);
+	this->_seqNumber = other._seqNumber;
+}
+
+BluetoothWrapper& BluetoothWrapper::operator=(BluetoothWrapper&& other) noexcept
+{
+	BluetoothWrapper::BluetoothWrapper(std::move(other));
+}
+
 int BluetoothWrapper::sendCommand(const std::vector<char>& bytes)
 {
 	auto data = CommandSerializer::_packageDataForBt(bytes, DATA_TYPE::DATA_MDR, this->_seqNumber++);
