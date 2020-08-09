@@ -37,7 +37,7 @@
 ## Motivation
 
 I recently bought the WH-1000-XM3s, and I was frustrated that I couldn't change their settings while using my PC. 
-So I reverse-engineered the application (for intercompatibility purposes, of course), defined the protocol, and created with an alternative application with [Mr-M33533K5](https://github.com/Mr-M33533K5]) according to the definition.
+So I reverse-engineered the application (for intercompatibility purposes, of course), defined the protocol, and created with an alternative application with [Mr-M33533K5](https://github.com/Mr-M33533K5]).
 
 ## Features
 
@@ -79,7 +79,7 @@ For Bluetooth, you need to implement `IBluetoothConnector` for your desired plat
 
 ## Contact
 
-I prefer getting contacted via issues on this repository. If you have a private question, you may contact me via Twitter at `@Plutoberth`.
+I prefer to get contacted via issues on this repository. If you have a private question, you may contact me via Twitter at `@Plutoberth`.
 
 <!-- LICENSE -->
 ## License
