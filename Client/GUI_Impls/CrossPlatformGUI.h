@@ -8,7 +8,6 @@
 #include "RecoverableException.h"
 #include "TimedMessageQueue.h"
 
-#include <optional>
 #include <future>
 
 constexpr auto GUI_MAX_MESSAGES = 10;
@@ -27,7 +26,7 @@ private:
 	bool _isConnectedDevicesFutureReady();
 
 	BluetoothWrapper _bt;
-	std::optional<std::future<std::vector<BluetoothDevice>>> _optionalConnectedDevicesFuture;
+	std::future<std::vector<BluetoothDevice>> _connectedDevicesFuture;
 	TimedMessageQueue _mq;
 };
 

@@ -75,24 +75,21 @@ bool CrossPlatformGUI::performGUIPass()
 
 				ImGui::SameLine();
 
-				if (this->_optionalConnectedDevicesFuture.has_value())
+				if (this->_connectedDevicesFuture.valid())
 				{
 					if (this->_isConnectedDevicesFutureReady())
 					{ 
 						try
 						{
-							connectedDevices = this->_optionalConnectedDevicesFuture.value().get();
+							connectedDevices = this->_connectedDevicesFuture.get();
 						}
 						catch (const RecoverableException& exc)
 						{
 							this->_mq.addMessage(exc.what());
 						}
-						
-						this->_optionalConnectedDevicesFuture.reset();
 					}
 					else
 					{
-						auto dots = { ".", "..", "..." };
 						ImGui::Text("Discovering Devices %c", "|/-\\"[(int)(ImGui::GetTime() / 0.05f) & 3]);
 					}
 				}
@@ -106,7 +103,6 @@ bool CrossPlatformGUI::performGUIPass()
 				
 			}
 		}
-
 
 		ImGui::Spacing();
 
@@ -157,17 +153,21 @@ bool CrossPlatformGUI::performGUIPass()
 
 void CrossPlatformGUI::_setConnectedDevicesFuture()
 {
+	if (this->_connectedDevicesFuture.valid())
+	{
+		throw std::runtime_error("The asynchronous action was cancelled before it finished executing");
+	}
 	auto boundFunction = std::bind(&BluetoothWrapper::getConnectedDevices, std::ref(this->_bt));
-	this->_optionalConnectedDevicesFuture.emplace(std::async(std::launch::async, boundFunction));
+	this->_connectedDevicesFuture = std::async(std::launch::async, boundFunction);
 }
 
 bool CrossPlatformGUI::_isConnectedDevicesFutureReady()
 {
-	if (!this->_optionalConnectedDevicesFuture.has_value())
+	if (!this->_connectedDevicesFuture.valid())
 	{
 		return false;
 	}
-	return this->_optionalConnectedDevicesFuture.value().wait_for(std::chrono::seconds(0))  == std::future_status::ready;
+	return this->_connectedDevicesFuture.wait_for(std::chrono::seconds(0))  == std::future_status::ready;
 }
 
 CrossPlatformGUI::CrossPlatformGUI(BluetoothWrapper bt) : _bt(std::move(bt))
