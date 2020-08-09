@@ -1,13 +1,10 @@
 #include "CrossPlatformGUI.h"
 
-bool CrossPlatformGUI::performGUIPass(BluetoothWrapper& bt)
+bool CrossPlatformGUI::performGUIPass()
 {
 	ImGui::NewFrame();
 
-	static ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 	static bool isConnected = false;
-
-	static std::vector<BluetoothDevice> connectedDevices = bt.getConnectedDevices();
 
 	//Avoid issues with changing indexes
 	static BluetoothDevice connectedDevice;
@@ -22,13 +19,15 @@ bool CrossPlatformGUI::performGUIPass(BluetoothWrapper& bt)
 		static int selectedDevice = -1;
 		if (ImGui::CollapsingHeader("Device Discovery   ", ImGuiTreeNodeFlags_DefaultOpen))
 		{
+			static std::vector<BluetoothDevice> connectedDevices;
+
 			if (isConnected)
 			{
 				ImGui::Text("Connected to %s (%s)", connectedDevice.name.c_str(), connectedDevice.mac.c_str());
 				if (ImGui::Button("Disconnect"))
 				{
 					isConnected = false;
-					bt.disconnect();
+					this->_bt.disconnect();
 				}
 			}
 			else
@@ -50,7 +49,7 @@ bool CrossPlatformGUI::performGUIPass(BluetoothWrapper& bt)
 					{
 						connectedDevice = connectedDevices[selectedDevice];
 						//TODO: This isn't proper at all. Call may block
-						bt.connect(connectedDevice.mac);
+						this->_bt.connect(connectedDevice.mac);
 						isConnected = true;
 					}
 				}
@@ -74,10 +73,9 @@ bool CrossPlatformGUI::performGUIPass(BluetoothWrapper& bt)
 			static int asmLevel = 0;
 			static int sentAsmLevel = asmLevel;
 
-			if (ImGui::CollapsingHeader("Ambient Sound Mode   "))
+			if (ImGui::CollapsingHeader("Ambient Sound Mode   ", ImGuiTreeNodeFlags_DefaultOpen))
 			{
-				//ImGui::Begin("Ambient Sound Mode");                          // Create a window called "Hello, world!" and append into it.
-				ImGui::Text("Control ambient sound for your %ss", "WH-1000-XM3");
+				ImGui::Text("Control ambient sound for your %ss", connectedDevice.name.c_str());
 
 				ImGui::SliderInt("Ambient Sound Level", &asmLevel, 0, 19);
 
@@ -92,7 +90,7 @@ bool CrossPlatformGUI::performGUIPass(BluetoothWrapper& bt)
 
 					//TODO: Check if sliderActive actually works properly
 
-					bt.sendCommand(CommandSerializer::serializeNcAndAsmSetting(
+					this->_bt.sendCommand(CommandSerializer::serializeNcAndAsmSetting(
 						ncAsmEffect,
 						NC_ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
 						0,
@@ -115,7 +113,6 @@ bool CrossPlatformGUI::performGUIPass(BluetoothWrapper& bt)
 	return open;
 }
 
-void CrossPlatformGUI::doInit()
 {
 	// Setup Dear ImGui style
 	ImGui::StyleColorsDark();

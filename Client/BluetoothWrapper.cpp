@@ -13,7 +13,13 @@ BluetoothWrapper::BluetoothWrapper(BluetoothWrapper&& other) noexcept
 
 BluetoothWrapper& BluetoothWrapper::operator=(BluetoothWrapper&& other) noexcept
 {
-	BluetoothWrapper::BluetoothWrapper(std::move(other));
+	//self assignment
+	if (this == &other) return *this;
+
+	this->_connector.swap(other._connector);
+	this->_seqNumber = other._seqNumber;
+
+	return *this;
 }
 
 int BluetoothWrapper::sendCommand(const std::vector<char>& bytes)

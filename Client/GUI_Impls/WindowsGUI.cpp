@@ -14,7 +14,7 @@ static ID3D11DeviceContext* g_pd3dDeviceContext = NULL;
 static IDXGISwapChain* g_pSwapChain = NULL;
 static ID3D11RenderTargetView* g_mainRenderTargetView = NULL;
 
-void EnterGUIMainLoop(BluetoothWrapper& bt)
+void EnterGUIMainLoop(BluetoothWrapper bt)
 {
 	//Kinda broken but it works :)
 	ShowWindow(GetConsoleWindow(), SW_HIDE); //SW_RESTORE to bring back
@@ -59,7 +59,7 @@ void EnterGUIMainLoop(BluetoothWrapper& bt)
 
 	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
-	CrossPlatformGUI::doInit();
+	CrossPlatformGUI gui(std::move(bt));
 
 	// Main loop
 	MSG msg;
@@ -83,7 +83,7 @@ void EnterGUIMainLoop(BluetoothWrapper& bt)
 		ImGui_ImplWin32_NewFrame();
 
 		//if the user wants to quit
-		if (!CrossPlatformGUI::performGUIPass(bt))
+		if (!gui.performGUIPass())
 		{
 			break;
 		}
