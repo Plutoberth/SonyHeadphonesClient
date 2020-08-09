@@ -92,7 +92,7 @@ std::vector<BluetoothDevice> WindowsBluetoothConnector::getConnectedDevices()
 	{
 		if (ERROR_NO_MORE_ITEMS == GetLastError())
 		{
-			throw RecoverableException("No Bluetooth devices were found");
+			throw RecoverableException(NO_BLUETOOTH_DEVICES_ERROR);
 		}
 		else
 		{

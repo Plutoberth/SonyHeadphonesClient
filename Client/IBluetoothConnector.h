@@ -5,6 +5,8 @@
 
 inline constexpr auto SONY_UUID = "96CC203E-5068-46ad-B32D-E316F5E069BA";
 
+inline constexpr auto NO_BLUETOOTH_DEVICES_ERROR = "No Bluetooth radios were found - is your adapter connected?";
+
 struct BluetoothDevice
 {
 	//UTF-8
