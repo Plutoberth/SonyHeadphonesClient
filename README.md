@@ -84,7 +84,4 @@ I prefer to get contacted via issues on this repository. If you have a private q
 <!-- LICENSE -->
 ## License
 
-Distributed under the [MIT License](license-url). See LICENSE for more information.
-
-<!-- MARKDOWN LINKS & IMAGES -->
-[license-url]: https://choosealicense.com/licenses/mit
+Distributed under the [MIT License](https://github.com/Plutoberth/SonyHeadphonesClient/blob/master/LICENSE). See LICENSE for more information.
