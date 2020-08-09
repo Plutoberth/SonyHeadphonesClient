@@ -76,7 +76,7 @@ For Bluetooth, you need to implement `IBluetoothConnector` for your desired plat
 <!-- LICENSE -->
 ## License
 
-Distributed under the (MIT License)[license-url]. See LICENSE for more information.
+Distributed under the [MIT License](license-url). See LICENSE for more information.
 
 <!-- MARKDOWN LINKS & IMAGES -->
 [license-url]: https://choosealicense.com/licenses/mit
