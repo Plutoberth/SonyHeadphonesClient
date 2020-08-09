@@ -2,7 +2,6 @@
 <!-- [![Contributors][contributors-shield]]() -->
 
 <!-- PROJECT LOGO -->
-<br />
 <p align="center">
   <a href="https://github.com/Plutoberth/SonyHeadphonesClient">
     <!-- img src="" alt="Logo" width="80" height="80"-->
@@ -45,9 +44,9 @@ So I reverse-engineered the application (for intercompatibility purposes, of cou
 - [x] Ambient Sound Control
 - [ ] Equalizer
 
-#### If you'd like to implement the equalizer (I can implement the GUI, you'll need to do the rest), please contact me privately via Twitter `@Plutoberth`. 
+#### If you'd like to implement the equalizer (I can implement the GUI, you'll need to do the rest), please contact me privately via Twitter at `@Plutoberth`. 
 
-### TODO: FILL IN
+### TODO: ADD SCREENSHOTS
 
 ## Supported Platforms & Headsets
 
