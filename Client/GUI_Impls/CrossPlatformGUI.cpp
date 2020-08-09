@@ -10,17 +10,36 @@ bool CrossPlatformGUI::performGUIPass()
 	static BluetoothDevice connectedDevice;
 	bool open = true;
 
+	//To report errors that don't cause any invalid state, and may be retried.
+
 	ImGui::SetNextWindowPos({ 0,0 });
+
+	{
+
+	}
+
 	{
 		//ImGui::ShowDemoWindow();
 		//TODO: Figure out how to get rid of the Windows window, make everything transparent, and just use ImGui for everything.
 		ImGui::Begin("Sony Headphones", &open, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoTitleBar);
 
-		static int selectedDevice = -1;
+		//There's a slight race condition here but I don't care
+		if (this->_mq.begin() != this->_mq.end())
+		{
+			ImGui::Text("Errors:");
+			for (auto&& message : this->_mq)
+			{
+				ImGui::Text(message.message.c_str());
+			}
+			//TODO: add a better ending separator
+			ImGui::Text("----------------------------");
+		}
+
 		if (ImGui::CollapsingHeader("Device Discovery   ", ImGuiTreeNodeFlags_DefaultOpen))
 		{
 			static std::vector<BluetoothDevice> connectedDevices;
-
+			static int selectedDevice = -1;
+	
 			if (isConnected)
 			{
 				ImGui::Text("Connected to %s (%s)", connectedDevice.name.c_str(), connectedDevice.mac.c_str());
@@ -56,10 +75,35 @@ bool CrossPlatformGUI::performGUIPass()
 
 				ImGui::SameLine();
 
-				if (ImGui::Button("Refresh devices"))
+				if (this->_optionalConnectedDevicesFuture.has_value())
 				{
-					//TODO: Refresh with std::async
+					if (this->_isConnectedDevicesFutureReady())
+					{ 
+						try
+						{
+							connectedDevices = this->_optionalConnectedDevicesFuture.value().get();
+						}
+						catch (const RecoverableException& exc)
+						{
+							this->_mq.addMessage(exc.what());
+						}
+						
+						this->_optionalConnectedDevicesFuture.reset();
+					}
+					else
+					{
+						auto dots = { ".", "..", "..." };
+						ImGui::Text("Discovering Devices %c", "|/-\\"[(int)(ImGui::GetTime() / 0.05f) & 3]);
+					}
 				}
+				else
+				{
+					if (ImGui::Button("Refresh devices"))
+					{
+						this->_setConnectedDevicesFuture();
+					}
+				}
+				
 			}
 		}
 
@@ -113,22 +157,41 @@ bool CrossPlatformGUI::performGUIPass()
 	return open;
 }
 
+void CrossPlatformGUI::_setConnectedDevicesFuture()
+{
+	auto boundFunction = std::bind(&BluetoothWrapper::getConnectedDevices, std::ref(this->_bt));
+	this->_optionalConnectedDevicesFuture.emplace(std::async(std::launch::async, boundFunction));
+}
+
+bool CrossPlatformGUI::_isConnectedDevicesFutureReady()
+{
+	if (!this->_optionalConnectedDevicesFuture.has_value())
+	{
+		return false;
+	}
+	return this->_optionalConnectedDevicesFuture.value().wait_for(std::chrono::seconds(0))  == std::future_status::ready;
+}
+
+CrossPlatformGUI::CrossPlatformGUI(BluetoothWrapper bt) : _bt(std::move(bt))
 {
 	// Setup Dear ImGui style
 	ImGui::StyleColorsDark();
-
 	ImGuiIO& io = ImGui::GetIO();
+	this->_mq = TimedMessageQueue(GUI_MAX_MESSAGES);
+	this->_setConnectedDevicesFuture();
 
 	//TODO: Do scaling correctly
 	//io.FontGlobalScale = 4;
 	//ImGui::GetStyle().ScaleAllSizes(4);
 
-	//TODO: remove in prod
 #ifdef _DEBUG
 	io.IniFilename = nullptr;
 	io.WantSaveIniSettings = false;
 #endif // DEBUG
 
-	/*ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\Arial.ttf", 15.0f);
-	IM_ASSERT(font != NULL);*/
+	//For saner development
+#ifdef _DEBUG
+	ImFont* font = io.Fonts->AddFontFromFileTTF("./Fonts/CascadiaCode.ttf", 15.0f);
+	IM_ASSERT(font != NULL);
+#endif
 }

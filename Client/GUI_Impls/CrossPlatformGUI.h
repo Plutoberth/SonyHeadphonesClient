@@ -5,9 +5,13 @@
 #include "IBluetoothConnector.h"
 #include "BluetoothWrapper.h"
 #include "CommandSerializer.h"
+#include "RecoverableException.h"
+#include "TimedMessageQueue.h"
 
 #include <optional>
 #include <future>
+
+constexpr auto GUI_MAX_MESSAGES = 10;
 
 //This class should be constructed after AFTER the Dear ImGUI context is initialized.
 class CrossPlatformGUI
@@ -20,9 +24,11 @@ public:
 	bool performGUIPass();
 private:
 	void _setConnectedDevicesFuture();
+	bool _isConnectedDevicesFutureReady();
 
 	BluetoothWrapper _bt;
 	std::optional<std::future<std::vector<BluetoothDevice>>> _optionalConnectedDevicesFuture;
+	TimedMessageQueue _mq;
 };
 
 
