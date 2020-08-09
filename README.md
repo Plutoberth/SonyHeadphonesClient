@@ -84,7 +84,7 @@ I prefer to get contacted via issues on this repository. If you have a private q
 <!-- LICENSE -->
 ## License
 
-Distributed under the (MIT License)[license-url]. See LICENSE for more information.
+Distributed under the [MIT License](license-url). See LICENSE for more information.
 
 <!-- MARKDOWN LINKS & IMAGES -->
 [license-url]: https://choosealicense.com/licenses/mit
