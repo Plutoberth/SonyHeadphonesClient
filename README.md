@@ -23,7 +23,7 @@
 * [Legal Disclaimer](#legal-disclaimer)
 * [Motivation](#motivation)
 * [Features](#features)
-* [Supported Platforms](#supported-platforms)
+* [Supported Platforms](#supported-platforms-and-headsets)
 * [For Developers](#for-developers)
 * [Contact](#contact)
 * [License](#license)
@@ -48,7 +48,7 @@ So I reverse-engineered the application (for intercompatibility purposes, of cou
 
 ### TODO: ADD SCREENSHOTS
 
-## Supported Platforms & Headsets
+## Supported Platforms And Headsets
 
 For now, only the WH-1000-XM3 is supported. Other headsets may work, but I haven't tested them.
 
