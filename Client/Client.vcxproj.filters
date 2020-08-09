@@ -110,5 +110,8 @@
     <ClInclude Include="imgui\imconfig.h">
       <Filter>Header Files\IMGUI</Filter>
     </ClInclude>
+    <ClInclude Include="RecoverableException.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

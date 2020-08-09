@@ -1,8 +1,9 @@
 #pragma once
 #include <string>
 #include <vector>
+#include "RecoverableException.h"
 
-inline constexpr auto XM3_UUID = "96CC203E-5068-46ad-B32D-E316F5E069BA";
+inline constexpr auto SONY_UUID = "96CC203E-5068-46ad-B32D-E316F5E069BA";
 
 struct BluetoothDevice
 {

@@ -41,7 +41,7 @@ void WindowsBluetoothConnector::connect(const std::string& addrStr)
 {
 	SOCKADDR_BTH sab = { 0 };
 	sab.addressFamily = AF_BTH;
-	RPC_STATUS errCode = ::UuidFromStringA((RPC_CSTR)XM3_UUID, &sab.serviceClassId);
+	RPC_STATUS errCode = ::UuidFromStringA((RPC_CSTR)SONY_UUID, &sab.serviceClassId);
 	if (errCode != RPC_S_OK)
 	{
 		throw std::runtime_error("Couldn't create GUID: " + std::to_string(errCode));
@@ -90,7 +90,14 @@ std::vector<BluetoothDevice> WindowsBluetoothConnector::getConnectedDevices()
 	radio_find_handle = BluetoothFindFirstRadio(&radio_search_params, &radio);
 	if (!radio_find_handle)
 	{
-		throw std::runtime_error("BluetoothFindFirstRadio() failed with error code " + std::to_string(GetLastError()));
+		if (ERROR_NO_MORE_ITEMS == GetLastError())
+		{
+			throw RecoverableException("No Bluetooth devices were found");
+		}
+		else
+		{
+			throw std::runtime_error("BluetoothFindFirstRadio() failed with error code " + std::to_string(GetLastError()));
+		}
 	}
 
 	do {
@@ -174,9 +181,19 @@ std::vector<BluetoothDevice> WindowsBluetoothConnector::findDevicesInRadio(BLUET
 	// For each radio, get the first device
 	dev_find_handle = BluetoothFindFirstDevice(search_params, &device_info);
 	//TODO: This fails if there aren't any devices, check the conditions and return an empty vector
+
 	if (!dev_find_handle)
 	{
-		throw std::runtime_error("BluetoothFindFirstDevice() failed with error code: " + std::to_string(GetLastError()));
+		if (ERROR_NO_MORE_ITEMS == GetLastError())
+		{
+			//No devices were found, so we can just return an empty vector
+			return res;
+		}
+		else
+		{
+			throw std::runtime_error("BluetoothFindFirstDevice() failed with error code: " + std::to_string(GetLastError()));
+		}
+		
 	}
 
 	// Get the device info
@@ -186,7 +203,7 @@ std::vector<BluetoothDevice> WindowsBluetoothConnector::findDevicesInRadio(BLUET
 
 	// NO more device, close the device handle
 	if (!BluetoothFindDeviceClose(dev_find_handle))
-		throw std::runtime_error("\nBluetoothFindDeviceClose(bt_dev) failed with error code: " + std::to_string(GetLastError()));
+		throw std::runtime_error("BluetoothFindDeviceClose(bt_dev) failed with error code: " + std::to_string(GetLastError()));
 
 	return res;
 }
