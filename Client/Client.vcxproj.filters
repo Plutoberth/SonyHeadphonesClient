@@ -60,6 +60,9 @@
     <ClCompile Include="imgui\imgui_widgets.cpp">
       <Filter>Source Files\IMGUI</Filter>
     </ClCompile>
+    <ClCompile Include="TimedMessageQueue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowsBluetoothConnector.h">
@@ -111,6 +114,9 @@
       <Filter>Header Files\IMGUI</Filter>
     </ClInclude>
     <ClInclude Include="RecoverableException.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TimedMessageQueue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
