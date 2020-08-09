@@ -132,8 +132,6 @@ bool CrossPlatformGUI::performGUIPass()
 					auto ncAsmEffect = sliderActive ? NC_ASM_EFFECT::ADJUSTMENT_IN_PROGRESS : NC_ASM_EFFECT::ADJUSTMENT_COMPLETION;
 					auto asmId = focusOnVoice ? ASM_ID::VOICE : ASM_ID::NORMAL;
 
-					//TODO: Check if sliderActive actually works properly
-
 					this->_bt.sendCommand(CommandSerializer::serializeNcAndAsmSetting(
 						ncAsmEffect,
 						NC_ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
