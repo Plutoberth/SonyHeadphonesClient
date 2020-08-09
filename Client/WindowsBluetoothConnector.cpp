@@ -34,7 +34,7 @@ WindowsBluetoothConnector::WindowsBluetoothConnector()
 	{
 		throw std::runtime_error("Couldn't create set SO_BTH_ENCRYPT: " + std::to_string(WSAGetLastError()));
 	}
-    WindowsBluetoothConnector::_initSocket();
+	WindowsBluetoothConnector::_initSocket();
 }
 
 void WindowsBluetoothConnector::connect(const std::string& addrStr)
@@ -56,10 +56,10 @@ void WindowsBluetoothConnector::connect(const std::string& addrStr)
 
 WindowsBluetoothConnector::~WindowsBluetoothConnector()
 {
-    if (this->_socket != INVALID_SOCKET)
-    {
-        ::closesocket(this->_socket);
-    }
+	if (this->_socket != INVALID_SOCKET)
+	{
+		::closesocket(this->_socket);
+	}
 }
 
 int WindowsBluetoothConnector::send(char* buf, size_t length)
@@ -80,7 +80,7 @@ std::vector<BluetoothDevice> WindowsBluetoothConnector::getConnectedDevices()
 	HANDLE radio = NULL;
 	BLUETOOTH_FIND_RADIO_PARAMS radio_search_params = { sizeof(BLUETOOTH_FIND_RADIO_PARAMS) };
 	HBLUETOOTH_RADIO_FIND radio_find_handle = NULL;
-	
+
 	// Search only for connected devices
 	BLUETOOTH_DEVICE_SEARCH_PARAMS dev_search_params = {
 	  sizeof(BLUETOOTH_DEVICE_SEARCH_PARAMS), 0, 0, 0, 1, 0, 15, NULL
@@ -108,50 +108,50 @@ std::vector<BluetoothDevice> WindowsBluetoothConnector::getConnectedDevices()
 
 void WindowsBluetoothConnector::disconnect() noexcept(false)
 {
-    if (this->_socket != INVALID_SOCKET)
-    {
-        
-        if (::shutdown(this->_socket, SD_BOTH))
-        {
-            throw std::runtime_error("Couldn't shutdown connection: " + std::to_string(WSAGetLastError()));
-        }
+	if (this->_socket != INVALID_SOCKET)
+	{
 
-        if (::closesocket(this->_socket))
-        {
-            throw std::runtime_error("Couldn't disconnect: " + std::to_string(WSAGetLastError()));
-        }
-        
-        this->_socket = INVALID_SOCKET;
-        WindowsBluetoothConnector::_initSocket();
-    }
-    else
-    {
-        throw std::runtime_error("The socket was already closed, or it was never open");
-    }
+		if (::shutdown(this->_socket, SD_BOTH))
+		{
+			throw std::runtime_error("Couldn't shutdown connection: " + std::to_string(WSAGetLastError()));
+		}
+
+		if (::closesocket(this->_socket))
+		{
+			throw std::runtime_error("Couldn't disconnect: " + std::to_string(WSAGetLastError()));
+		}
+
+		this->_socket = INVALID_SOCKET;
+		WindowsBluetoothConnector::_initSocket();
+	}
+	else
+	{
+		throw std::runtime_error("The socket was already closed, or it was never open");
+	}
 }
 
 void WindowsBluetoothConnector::_initSocket()
 {
-    SOCKET sock = ::socket(AF_BTH, SOCK_STREAM, BTHPROTO_RFCOMM);
-    if (sock == INVALID_SOCKET)
-    {
-        throw std::runtime_error("Couldn't create socket: " + std::to_string(WSAGetLastError()));
-    }
+	SOCKET sock = ::socket(AF_BTH, SOCK_STREAM, BTHPROTO_RFCOMM);
+	if (sock == INVALID_SOCKET)
+	{
+		throw std::runtime_error("Couldn't create socket: " + std::to_string(WSAGetLastError()));
+	}
 
-    ULONG enable = TRUE;
-    if (::setsockopt(sock, SOL_RFCOMM, SO_BTH_AUTHENTICATE, reinterpret_cast<char*>(&enable), sizeof(enable)))
-    {
-        throw std::runtime_error("Couldn't set SO_BTH_AUTHENTICATE: " + std::to_string(WSAGetLastError()));
-    }
+	ULONG enable = TRUE;
+	if (::setsockopt(sock, SOL_RFCOMM, SO_BTH_AUTHENTICATE, reinterpret_cast<char*>(&enable), sizeof(enable)))
+	{
+		throw std::runtime_error("Couldn't set SO_BTH_AUTHENTICATE: " + std::to_string(WSAGetLastError()));
+	}
 
-    if (::setsockopt(sock, SOL_RFCOMM, SO_BTH_ENCRYPT, reinterpret_cast<char*>(&enable), sizeof(enable)))
-    {
-        throw std::runtime_error("Couldn't set SO_BTH_ENCRYPT: " + std::to_string(WSAGetLastError()));
-    }
+	if (::setsockopt(sock, SOL_RFCOMM, SO_BTH_ENCRYPT, reinterpret_cast<char*>(&enable), sizeof(enable)))
+	{
+		throw std::runtime_error("Couldn't set SO_BTH_ENCRYPT: " + std::to_string(WSAGetLastError()));
+	}
 
-    this->_socket = sock;
+	this->_socket = sock;
 }
-std::string convert_from_wstring(const std::wstring& wstr)
+std::string wstringToUtf8(const std::wstring& wstr)
 {
 	std::string strTo;
 	const int num_chars = WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), wstr.length(), NULL, 0, NULL, NULL);
@@ -173,19 +173,20 @@ std::vector<BluetoothDevice> WindowsBluetoothConnector::findDevicesInRadio(BLUET
 
 	// For each radio, get the first device
 	dev_find_handle = BluetoothFindFirstDevice(search_params, &device_info);
+	//TODO: This fails if there aren't any devices, check the conditions and return an empty vector
 	if (!dev_find_handle)
 	{
-		throw std::runtime_error("BluetoothFindFirstDevice() failed with error code " + std::to_string(GetLastError()));
+		throw std::runtime_error("BluetoothFindFirstDevice() failed with error code: " + std::to_string(GetLastError()));
 	}
 
 	// Get the device info
 	do {
-		res.emplace_back(BluetoothDevice{ convert_from_wstring(device_info.szName), MACBytesToString(device_info.Address.rgBytes) });
+		res.emplace_back(BluetoothDevice{ wstringToUtf8(device_info.szName), MACBytesToString(device_info.Address.rgBytes) });
 	} while (BluetoothFindNextDevice(dev_find_handle, &device_info));
 
 	// NO more device, close the device handle
 	if (!BluetoothFindDeviceClose(dev_find_handle))
-		throw std::runtime_error("\nBluetoothFindDeviceClose(bt_dev) failed with error code " + std::to_string(GetLastError()));
+		throw std::runtime_error("\nBluetoothFindDeviceClose(bt_dev) failed with error code: " + std::to_string(GetLastError()));
 
 	return res;
 }

@@ -100,7 +100,8 @@
       <Command>xcopy $(projectDir)\Fonts $(outputPath)\Fonts /yes /I</Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>xcopy $(projectDir)\Fonts $(outputPath)\Fonts /yes /I</Command>
+      <Command>
+      </Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -125,7 +126,8 @@
       <Command>xcopy $(projectDir)\Fonts $(outputPath)\Fonts /yes /I</Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>xcopy $(projectDir)\Fonts $(outputPath)\Fonts /yes /I</Command>
+      <Command>
+      </Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -147,7 +149,8 @@
       <Command>xcopy $(projectDir)\Fonts $(outputPath)\Fonts /yes /I</Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>xcopy $(projectDir)\Fonts $(outputPath)\Fonts /yes /I</Command>
+      <Command>
+      </Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -172,7 +175,8 @@
       <Command>xcopy $(projectDir)\Fonts $(outputPath)\Fonts /yes /I</Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>xcopy $(projectDir)\Fonts $(outputPath)\Fonts /yes /I</Command>
+      <Command>
+      </Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

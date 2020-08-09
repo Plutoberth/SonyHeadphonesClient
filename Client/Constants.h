@@ -1,7 +1,7 @@
 #pragma once
 
 inline constexpr auto MAX_BLUETOOTH_MESSAGE_SIZE = 2048;
-inline constexpr char START_MARKER{ 62 }; 
+inline constexpr char START_MARKER{ 62 };
 inline constexpr char END_MARKER{ 60 };
 
 inline constexpr auto MAC_ADDR_STR_SIZE = 17;

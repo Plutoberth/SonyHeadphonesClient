@@ -16,10 +16,10 @@ namespace CommandSerializer
 	//Package a serialized command according to the protocol
 	/*
 	unk: Seems to be some type of ack value? Based on current understanding (1|0)
-    References:
-    * DataType
-    * CommandBluetoothSender:sendCommandWithRetries
-    * BluetoothSenderWrapper.sendCommandViaBluetooth
+	References:
+	* DataType
+	* CommandBluetoothSender:sendCommandWithRetries
+	* BluetoothSenderWrapper.sendCommandViaBluetooth
 	*/
 	Buffer _packageDataForBt(const Buffer& src, DATA_TYPE dataType, unsigned int unk);
 	//Probably set unk to zero

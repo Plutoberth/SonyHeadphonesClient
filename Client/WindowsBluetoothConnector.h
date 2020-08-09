@@ -15,19 +15,19 @@
 class WindowsBluetoothConnector final : public IBluetoothConnector
 {
 public:
-    WindowsBluetoothConnector();
+	WindowsBluetoothConnector();
 
-    ~WindowsBluetoothConnector();
+	~WindowsBluetoothConnector();
 
-    virtual void connect(const std::string& addrStr) noexcept(false);
-    virtual int send(char* buf, size_t length) noexcept(false);
-    virtual void disconnect() noexcept(false);
+	virtual void connect(const std::string& addrStr) noexcept(false);
+	virtual int send(char* buf, size_t length) noexcept(false);
+	virtual void disconnect() noexcept(false);
 
-    virtual std::vector<BluetoothDevice> getConnectedDevices() noexcept(false);
+	virtual std::vector<BluetoothDevice> getConnectedDevices() noexcept(false);
 
 private:
-    std::vector<BluetoothDevice> findDevicesInRadio(BLUETOOTH_DEVICE_SEARCH_PARAMS* search_params);
+	std::vector<BluetoothDevice> findDevicesInRadio(BLUETOOTH_DEVICE_SEARCH_PARAMS* search_params);
 
-    SOCKET _socket = INVALID_SOCKET;
-    void _initSocket();
+	SOCKET _socket = INVALID_SOCKET;
+	void _initSocket();
 };
