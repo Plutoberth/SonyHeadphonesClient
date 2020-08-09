@@ -23,11 +23,11 @@
 
 * [Legal Disclaimer](#legal-disclaimer)
 * [Motivation](#motivation)
-* [Usage](#usage)
+* [Features](#features)
 * [Supported Platforms](#supported-platforms)
-* [License](#license)
 * [For Developers](#for-developers)
-
+* [Contact](#contact)
+* [License](#license)
 
 <!-- Legal disclaimer -->
 ## Legal Disclaimer
@@ -38,9 +38,14 @@
 ## Motivation
 
 I recently bought the WH-1000-XM3s, and I was frustrated that I couldn't change their settings while using my PC. 
-So I reverse-engineered the application (for intercompatibility purposes, of course), and created with an alternative application with [Mr-M33533K5](https://github.com/Mr-M33533K5]).
+So I reverse-engineered the application (for intercompatibility purposes, of course), defined the protocol, and created with an alternative application with [Mr-M33533K5](https://github.com/Mr-M33533K5]) according to the definition.
 
-## Usage
+## Features
+
+- [x] Ambient Sound Control
+- [ ] Equalizer
+
+#### If you'd like to implement the equalizer (I can implement the GUI, you'll need to do the rest), please contact me privately via Twitter `@Plutoberth`. 
 
 ### TODO: FILL IN
 
@@ -72,6 +77,10 @@ There are two platform dependent parts in the code - the GUI and Bluetooth commu
 For the GUI, you need to copy the relevant parts from ImGui. 
 
 For Bluetooth, you need to implement `IBluetoothConnector` for your desired platform.
+
+## Contact
+
+I prefer getting contacted via issues on this repository. If you have a private question, you may contact me via Twitter at `@Plutoberth`.
 
 <!-- LICENSE -->
 ## License

@@ -23,6 +23,9 @@ bool CrossPlatformGUI::performGUIPass()
 		//TODO: Figure out how to get rid of the Windows window, make everything transparent, and just use ImGui for everything.
 		ImGui::Begin("Sony Headphones", &open, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoTitleBar);
 
+		//Legal disclaimer
+		ImGui::Text("! This product is not affiliated with Sony. Use at your own risk. !");
+
 		//There's a slight race condition here but I don't care
 		if (this->_mq.begin() != this->_mq.end())
 		{

@@ -23,7 +23,7 @@ void EnterGUIMainLoop(BluetoothWrapper bt)
 	WNDCLASSEX wc = { sizeof(WNDCLASSEX), CS_CLASSDC, WindowsGUIInternal::WndProc, 0L, 0L, GetModuleHandle(NULL), NULL, NULL, NULL, NULL, APP_NAME_W, NULL };
 	::RegisterClassEx(&wc);
 	//TODO: pass window data (size, name, etc) as params and autoscale
-	HWND hwnd = ::CreateWindowW(wc.lpszClassName, APP_NAME_W, WS_OVERLAPPEDWINDOW, 100, 100, 480, 480, NULL, NULL, wc.hInstance, NULL);
+	HWND hwnd = ::CreateWindowW(wc.lpszClassName, APP_NAME_W, WS_OVERLAPPEDWINDOW, 100, 100, 555, 360, NULL, NULL, wc.hInstance, NULL);
 
 	// Initialize Direct3D
 	if (!WindowsGUIInternal::CreateDeviceD3D(hwnd))
