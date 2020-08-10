@@ -6,8 +6,6 @@ bool CrossPlatformGUI::performGUIPass()
 
 	static bool isConnected = false;
 
-	//Avoid issues with changing indexes
-	static BluetoothDevice connectedDevice;
 	bool open = true;
 
 	//To report errors that don't cause any invalid state, and may be retried.
@@ -45,7 +43,7 @@ bool CrossPlatformGUI::performGUIPass()
 	
 			if (isConnected)
 			{
-				ImGui::Text("Connected to %s (%s)", connectedDevice.name.c_str(), connectedDevice.mac.c_str());
+				ImGui::Text("Connected to %s (%s)", this->_connectedDevice.name.c_str(), this->_connectedDevice.mac.c_str());
 				if (ImGui::Button("Disconnect"))
 				{
 					isConnected = false;
@@ -69,9 +67,9 @@ bool CrossPlatformGUI::performGUIPass()
 				{
 					if (selectedDevice != -1)
 					{
-						connectedDevice = connectedDevices[selectedDevice];
+						this->_connectedDevice = connectedDevices[selectedDevice];
 						//TODO: This isn't proper at all. Call may block
-						this->_bt.connect(connectedDevice.mac);
+						this->_bt.connect(this->_connectedDevice.mac);
 						isConnected = true;
 					}
 				}
@@ -118,7 +116,7 @@ bool CrossPlatformGUI::performGUIPass()
 
 			if (ImGui::CollapsingHeader("Ambient Sound Mode   ", ImGuiTreeNodeFlags_DefaultOpen))
 			{
-				ImGui::Text("Control ambient sound for your %ss", connectedDevice.name.c_str());
+				ImGui::Text("Control ambient sound for your %ss", this->_connectedDevice.name.c_str());
 
 				ImGui::SliderInt("Ambient Sound Level", &asmLevel, 0, 19);
 
@@ -160,7 +158,8 @@ void CrossPlatformGUI::_setConnectedDevicesFuture()
 	{
 		throw std::runtime_error("The asynchronous action was cancelled before it finished executing");
 	}
-	auto boundFunction = std::bind(&BluetoothWrapper::getConnectedDevices, std::ref(this->_bt));
+	
+	auto boundFunction = [this]() { return this->_bt.getConnectedDevices(); };
 	this->_connectedDevicesFuture = std::async(std::launch::async, boundFunction);
 }
 

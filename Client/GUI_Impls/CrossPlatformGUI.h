@@ -25,6 +25,7 @@ private:
 	void _setConnectedDevicesFuture();
 	bool _isConnectedDevicesFutureReady();
 
+	BluetoothDevice _connectedDevice;
 	BluetoothWrapper _bt;
 	std::future<std::vector<BluetoothDevice>> _connectedDevicesFuture;
 	TimedMessageQueue _mq;
