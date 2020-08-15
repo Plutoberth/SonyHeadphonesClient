@@ -47,6 +47,7 @@ So I reverse-engineered the application (for intercompatibility purposes, of cou
 ## Features
 
 - [x] Ambient Sound Control
+- [ ] Display battery life and fetch existing settings from device
 - [ ] Equalizer
 
 #### If you'd like to implement the equalizer (I can implement the GUI, you'll need to do the rest), please contact me privately via Twitter at `@Plutoberth`. 
