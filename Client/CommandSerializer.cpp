@@ -1,5 +1,10 @@
 #include "CommandSerializer.h"
 
+constexpr unsigned char ESCAPED_BYTE_SENTRY = 61;
+constexpr unsigned char ESCAPED_60 = 44;
+constexpr unsigned char ESCAPED_61 = 45;
+constexpr unsigned char ESCAPED_62 = 46;
+
 namespace CommandSerializer
 {
 	Buffer _escapeSpecials(const Buffer& src)
@@ -12,23 +17,66 @@ namespace CommandSerializer
 			switch (b)
 			{
 			case 60:
-				ret.push_back(61);
-				ret.push_back(44);
+				ret.push_back(ESCAPED_BYTE_SENTRY);
+				ret.push_back(ESCAPED_60);
 				break;
 
 			case 61:
-				ret.push_back(61);
-				ret.push_back(45);
+				ret.push_back(ESCAPED_BYTE_SENTRY);
+				ret.push_back(ESCAPED_61);
 				break;
 
 			case 62:
-				ret.push_back(61);
-				ret.push_back(46);
+				ret.push_back(ESCAPED_BYTE_SENTRY);
+				ret.push_back(ESCAPED_62);
 				break;
 
 			default:
 				ret.push_back(b);
 				break;
+			}
+		}
+
+		return ret;
+	}
+
+	Buffer _unescapeSpecials(const Buffer& src)
+	{
+		Buffer ret;
+		ret.reserve(src.size());
+
+		for (size_t i = 0; i < src.size(); i++)
+		{
+			auto currByte = src[i];
+			if (currByte == ESCAPED_BYTE_SENTRY)
+			{
+				if (i == src.size() - 1)
+				{
+					throw std::runtime_error("No data left for escaped byte data");
+				}
+				i = i + 1;
+				switch (src[i])
+				{
+				case ESCAPED_60:
+					ret.push_back(60);
+					break;
+
+				case ESCAPED_61:
+					ret.push_back(61);
+					break;
+
+				case ESCAPED_62:
+					ret.push_back(62);
+					break;
+
+				default:
+					throw std::runtime_error("Unexpected escaped byte");
+					break;
+				}
+			}
+			else
+			{
+				ret.push_back(currByte);
 			}
 		}
 

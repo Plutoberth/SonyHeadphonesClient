@@ -12,6 +12,7 @@ inline constexpr auto APP_NAME_W = L"Sony Headphones App";
 
 enum class DATA_TYPE : char
 {
+	ACK = 1,
 	DATA_MDR = 12
 };
 
