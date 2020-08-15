@@ -29,8 +29,9 @@ private:
 
 	BluetoothDevice _connectedDevice;
 	BluetoothWrapper _bt;
-	std::future<int> _adjustASMFuture;
 	SingleInstanceFuture<std::vector<BluetoothDevice>> _connectedDevicesFuture;
+	SingleInstanceFuture<int> _sendCommandFuture;
+	SingleInstanceFuture<void> _connectFuture;
 	TimedMessageQueue _mq;
 };
 

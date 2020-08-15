@@ -28,6 +28,7 @@ public:
 
 private:
 	std::vector<BluetoothDevice> findDevicesInRadio(BLUETOOTH_DEVICE_SEARCH_PARAMS* search_params);
+	std::string _wstringToUtf8(const std::wstring& wstr);
 
 	SOCKET _socket = INVALID_SOCKET;
 	bool _connected = false;

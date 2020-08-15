@@ -6,7 +6,10 @@
 #include <memory>
 #include <vector>
 #include <string>
+#include <mutex>
 
+
+//Thread-safety: This class is thread-safe.
 class BluetoothWrapper
 {
 public:
@@ -29,5 +32,6 @@ public:
 
 private:
 	std::unique_ptr<IBluetoothConnector> _connector;
+	std::mutex _wrapperMtx;
 	unsigned int _seqNumber = 0;
 };

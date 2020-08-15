@@ -23,10 +23,9 @@ bool CrossPlatformGUI::performGUIPass()
 
 		if (this->_bt.isConnected())
 		{
+			ImGui::Spacing();
 			this->_drawASMControls();
 		}
-
-		ImGui::Spacing();
 	}
 
 	ImGui::End();
@@ -78,17 +77,36 @@ void CrossPlatformGUI::_drawDeviceDiscovery()
 
 			ImGui::Spacing();
 
-			if (ImGui::Button("Connect"))
+			if (this->_connectFuture.valid())
 			{
-				if (selectedDevice != -1)
+				if (this->_connectFuture.ready())
 				{
-					this->_connectedDevice = connectedDevices[selectedDevice];
-					//TODO: This isn't proper at all. Call may block
-					this->_bt.connect(this->_connectedDevice.mac);
+					try
+					{
+						this->_connectFuture.get();
+					}
+					catch (const RecoverableException& exc)
+					{
+						this->_mq.addMessage(exc.what());
+					}
+				}
+				else
+				{
+					ImGui::Text("Connecting %c", "|/-\\"[(int)(ImGui::GetTime() / 0.05f) & 3]);
 				}
 			}
-
-			ImGui::SameLine();
+			else
+			{
+				if (ImGui::Button("Connect"))
+				{
+					if (selectedDevice != -1)
+					{
+						this->_connectedDevice = connectedDevices[selectedDevice];
+						this->_connectFuture.setFromAsync([this]() { this->_bt.connect(this->_connectedDevice.mac); });
+					}
+				}
+				ImGui::SameLine();
+			}
 
 			if (this->_connectedDevicesFuture.valid())
 			{
@@ -138,20 +156,35 @@ void CrossPlatformGUI::_drawASMControls()
 
 		if (sentAsmLevel != asmLevel || sentFocusOnVoice != focusOnVoice)
 		{
-			auto ncAsmEffect = sliderActive ? NC_ASM_EFFECT::ADJUSTMENT_IN_PROGRESS : NC_ASM_EFFECT::ADJUSTMENT_COMPLETION;
-			auto asmId = focusOnVoice ? ASM_ID::VOICE : ASM_ID::NORMAL;
+			if (!this->_sendCommandFuture.valid())
+			{
+				auto ncAsmEffect = sliderActive ? NC_ASM_EFFECT::ADJUSTMENT_IN_PROGRESS : NC_ASM_EFFECT::ADJUSTMENT_COMPLETION;
+				auto asmId = focusOnVoice ? ASM_ID::VOICE : ASM_ID::NORMAL;
 
-			this->_bt.sendCommand(CommandSerializer::serializeNcAndAsmSetting(
-				ncAsmEffect,
-				NC_ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
-				0,
-				ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
-				asmId,
-				asmLevel
-			));
-
-			sentAsmLevel = asmLevel;
-			sentFocusOnVoice = focusOnVoice;
+				this->_sendCommandFuture.setFromAsync([=]() {
+					return this->_bt.sendCommand(CommandSerializer::serializeNcAndAsmSetting(
+						ncAsmEffect,
+						NC_ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
+						0,
+						ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
+						asmId,
+						asmLevel
+					));
+				});
+				sentAsmLevel = asmLevel;
+				sentFocusOnVoice = focusOnVoice;
+			}
+			else if (this->_sendCommandFuture.ready())
+			{
+				try
+				{
+					this->_sendCommandFuture.get();
+				}
+				catch (const RecoverableException& exc)
+				{
+					this->_mq.addMessage(exc.what());
+				}
+			}
 		}
 	}
 }
