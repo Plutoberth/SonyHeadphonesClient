@@ -83,17 +83,22 @@ namespace CommandSerializer
 		return ret;
 	}
 
-	unsigned char _sumChecksum(const Buffer& src)
+	unsigned char _sumChecksum(const char* src, size_t size)
 	{
 		unsigned char accumulator = 0;
-		for (auto&& b : src)
+		for (size_t i = 0; i < size; i++)
 		{
-			accumulator += b;
+			accumulator += src[i];
 		}
 		return accumulator;
 	}
 
-	Buffer _packageDataForBt(const Buffer& src, DATA_TYPE dataType, unsigned int sequenceNumber)
+	unsigned char _sumChecksum(const Buffer& src)
+	{
+		return _sumChecksum(src.data(), src.size());
+	}
+
+	Buffer packageDataForBt(const Buffer& src, DATA_TYPE dataType, unsigned int seqNumber)
 	{
 		//Reserve at least the size for the size, start&end markers, and the source
 		Buffer toEscape;
@@ -101,7 +106,7 @@ namespace CommandSerializer
 		Buffer ret;
 		ret.reserve(toEscape.capacity());
 		toEscape.push_back(static_cast<unsigned char>(dataType));
-		toEscape.push_back(sequenceNumber);
+		toEscape.push_back(seqNumber);
 		auto retSize = intToBytesBE(src.size());
 		//Insert data size
 		toEscape.insert(toEscape.end(), retSize.begin(), retSize.end());
@@ -112,7 +117,7 @@ namespace CommandSerializer
 		toEscape.push_back(checksum);
 		toEscape = _escapeSpecials(toEscape);
 
-		//
+		
 		ret.push_back(START_MARKER);
 		ret.insert(ret.end(), toEscape.begin(), toEscape.end());
 		ret.push_back(END_MARKER);
@@ -124,6 +129,26 @@ namespace CommandSerializer
 			throw std::runtime_error("Exceeded the max bluetooth message size, and I can't handle chunked messages");
 		}
 
+		return ret;
+	}
+
+	Message unpackBtMessage(const Buffer& src)
+	{
+		//Message data format: ESCAPE_SPECIALS(<DATA_TYPE><SEQ_NUMBER><BIG ENDIAN 4 BYTE SIZE OF UNESCAPED DATA><DATA><1 BYTE CHECKSUM>)
+		auto unescaped = _unescapeSpecials(src);
+
+		if (src.size() < 7)
+		{
+			throw std::runtime_error("Invalid message: Smaller than the minimum message size");
+		}
+
+		Message ret;
+		ret.dataType = static_cast<DATA_TYPE>(src[0]);
+		ret.seqNumber = src[1];
+		if (src[src.size() - 1] != _sumChecksum(src.data(), src.size() - 1))
+		{
+			throw std::runtime_error("Invalid Checksum!");
+		}
 		return ret;
 	}
 
