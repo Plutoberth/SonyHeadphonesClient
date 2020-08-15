@@ -15,7 +15,7 @@
   </p>
 </p>
 
-
+![Program Showcase](https://github.com/Plutoberth/SonyHeadphonesClient/blob/releasePrep/static/showcase.gif)
 
 <!-- TABLE OF CONTENTS -->
 ## Table of Contents
