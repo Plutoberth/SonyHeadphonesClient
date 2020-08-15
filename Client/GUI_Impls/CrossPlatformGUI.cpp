@@ -105,8 +105,9 @@ void CrossPlatformGUI::_drawDeviceDiscovery()
 						this->_connectFuture.setFromAsync([this]() { this->_bt.connect(this->_connectedDevice.mac); });
 					}
 				}
-				ImGui::SameLine();
 			}
+
+			ImGui::SameLine();
 
 			if (this->_connectedDevicesFuture.valid())
 			{
