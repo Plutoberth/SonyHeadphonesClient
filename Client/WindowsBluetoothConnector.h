@@ -22,6 +22,7 @@ public:
 	virtual void connect(const std::string& addrStr) noexcept(false);
 	virtual int send(char* buf, size_t length) noexcept(false);
 	virtual void disconnect() noexcept(false);
+	virtual bool isConnected() noexcept;
 
 	virtual std::vector<BluetoothDevice> getConnectedDevices() noexcept(false);
 
@@ -29,5 +30,6 @@ private:
 	std::vector<BluetoothDevice> findDevicesInRadio(BLUETOOTH_DEVICE_SEARCH_PARAMS* search_params);
 
 	SOCKET _socket = INVALID_SOCKET;
+	bool _connected = false;
 	void _initSocket();
 };

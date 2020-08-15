@@ -34,6 +34,11 @@ int BluetoothWrapper::sendCommand(const std::vector<char>& bytes)
 	return this->_connector->send(data.data(), data.size());
 }
 
+bool BluetoothWrapper::isConnected()
+{
+	return this->_connector->isConnected();
+}
+
 void BluetoothWrapper::connect(const std::string& addr)
 {
 	this->_connector->connect(addr);

@@ -19,6 +19,8 @@ public:
 	BluetoothWrapper& operator=(BluetoothWrapper&& other) noexcept;
 
 	int sendCommand(const std::vector<char>& bytes);
+
+	bool isConnected();
 	//Try to connect to the headphones
 	void connect(const std::string& addr);
 	void disconnect();

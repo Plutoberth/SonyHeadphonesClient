@@ -52,6 +52,7 @@ void WindowsBluetoothConnector::connect(const std::string& addrStr)
 	{
 		throw std::runtime_error("Couldn't connect: " + std::to_string(WSAGetLastError()));
 	}
+	this->_connected = true;
 }
 
 WindowsBluetoothConnector::~WindowsBluetoothConnector()
@@ -117,7 +118,7 @@ void WindowsBluetoothConnector::disconnect() noexcept(false)
 {
 	if (this->_socket != INVALID_SOCKET)
 	{
-
+		this->_connected = false;
 		if (::shutdown(this->_socket, SD_BOTH))
 		{
 			throw std::runtime_error("Couldn't shutdown connection: " + std::to_string(WSAGetLastError()));
@@ -135,6 +136,11 @@ void WindowsBluetoothConnector::disconnect() noexcept(false)
 	{
 		throw std::runtime_error("The socket was already closed, or it was never open");
 	}
+}
+
+bool WindowsBluetoothConnector::isConnected() noexcept
+{
+	return this->_connected;
 }
 
 void WindowsBluetoothConnector::_initSocket()

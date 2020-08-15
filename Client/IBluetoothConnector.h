@@ -27,6 +27,9 @@ public:
 	virtual int send(char* buf, size_t length) noexcept(false) = 0;
 	virtual void connect(const std::string& addrStr) noexcept(false) = 0;
 	virtual void disconnect() noexcept(false) = 0;
+	
+	//Cost directive: This function must be as cheap as possible.
+	virtual bool isConnected() noexcept = 0;
 
 	virtual std::vector<BluetoothDevice> getConnectedDevices() = 0;
 };
