@@ -42,7 +42,7 @@ You can download compiled versions of the client from the [releases page](https:
 ## Motivation
 
 I recently bought the WH-1000-XM3s, and I was annoyed by the fact that I couldn't change their settings while using my PC. 
-So I reverse-engineered the application (for intercompatibility purposes, of course), defined the protocol, and created with an alternative application with [Mr-M33533K5](https://github.com/Mr-M33533K5]).
+So I reverse-engineered the application (for intercompatibility purposes, of course), defined the protocol, and created with an alternative application with [Mr-M33533K5](https://github.com/Mr-M33533K5).
 
 ## Features
 
