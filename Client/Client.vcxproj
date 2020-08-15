@@ -212,6 +212,7 @@
     <ClInclude Include="imgui\imstb_textedit.h" />
     <ClInclude Include="imgui\imstb_truetype.h" />
     <ClInclude Include="RecoverableException.h" />
+    <ClInclude Include="SingleInstanceFuture.h" />
     <ClInclude Include="TimedMessageQueue.h" />
     <ClInclude Include="WindowsBluetoothConnector.h" />
   </ItemGroup>

@@ -12,6 +12,7 @@ bool CrossPlatformGUI::performGUIPass()
 
 	{
 		//TODO: Figure out how to get rid of the Windows window, make everything transparent, and just use ImGui for everything.
+		//TODO: ImGuiWindowFlags_AlwaysAutoResize causes some flickering. Figure out how to stop it
 		ImGui::Begin("Sony Headphones", &open, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoTitleBar);
 
 		//Legal disclaimer
@@ -32,26 +33,6 @@ bool CrossPlatformGUI::performGUIPass()
 	ImGui::Render();
 
 	return open;
-}
-
-void CrossPlatformGUI::_setConnectedDevicesFuture()
-{
-	if (this->_connectedDevicesFuture.valid())
-	{
-		throw std::runtime_error("The asynchronous action was cancelled before it finished executing");
-	}
-	
-	auto boundFunction = [this]() { return this->_bt.getConnectedDevices(); };
-	this->_connectedDevicesFuture = std::async(std::launch::async, boundFunction);
-}
-
-bool CrossPlatformGUI::_isConnectedDevicesFutureReady()
-{
-	if (!this->_connectedDevicesFuture.valid())
-	{
-		return false;
-	}
-	return this->_connectedDevicesFuture.wait_for(std::chrono::seconds(0))  == std::future_status::ready;
 }
 
 void CrossPlatformGUI::_drawErrors()
@@ -111,7 +92,7 @@ void CrossPlatformGUI::_drawDeviceDiscovery()
 
 			if (this->_connectedDevicesFuture.valid())
 			{
-				if (this->_isConnectedDevicesFutureReady())
+				if (this->_connectedDevicesFuture.ready())
 				{
 					try
 					{
@@ -131,7 +112,7 @@ void CrossPlatformGUI::_drawDeviceDiscovery()
 			{
 				if (ImGui::Button("Refresh devices"))
 				{
-					this->_setConnectedDevicesFuture();
+					this->_connectedDevicesFuture.setFromAsync([this]() { return this->_bt.getConnectedDevices(); });
 				}
 			}
 		}
@@ -181,7 +162,7 @@ CrossPlatformGUI::CrossPlatformGUI(BluetoothWrapper bt) : _bt(std::move(bt))
 	ImGui::StyleColorsDark();
 	ImGuiIO& io = ImGui::GetIO();
 	this->_mq = TimedMessageQueue(GUI_MAX_MESSAGES);
-	this->_setConnectedDevicesFuture();
+	this->_connectedDevicesFuture.setFromAsync([this]() { return this->_bt.getConnectedDevices(); });
 
 	//TODO: Do scaling correctly
 	//io.FontGlobalScale = 4;

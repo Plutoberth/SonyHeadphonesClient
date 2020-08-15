@@ -7,6 +7,7 @@
 #include "CommandSerializer.h"
 #include "RecoverableException.h"
 #include "TimedMessageQueue.h"
+#include "SingleInstanceFuture.h"
 
 #include <future>
 
@@ -22,16 +23,14 @@ public:
 	//O: true if the user wants to close the window
 	bool performGUIPass();
 private:
-	void _setConnectedDevicesFuture();
-	bool _isConnectedDevicesFutureReady();
-
 	void _drawErrors();
 	void _drawDeviceDiscovery();
 	void _drawASMControls();
 
 	BluetoothDevice _connectedDevice;
 	BluetoothWrapper _bt;
-	std::future<std::vector<BluetoothDevice>> _connectedDevicesFuture;
+	std::future<int> _adjustASMFuture;
+	SingleInstanceFuture<std::vector<BluetoothDevice>> _connectedDevicesFuture;
 	TimedMessageQueue _mq;
 };
 
