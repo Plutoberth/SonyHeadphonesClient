@@ -15,7 +15,7 @@
   </p>
 </p>
 
-
+![Program Showcase](https://github.com/Plutoberth/SonyHeadphonesClient/blob/master/static/showcase.gif)
 
 <!-- TABLE OF CONTENTS -->
 ## Table of Contents
@@ -34,9 +34,11 @@
 ### THIS PROGRAM IS NOT AFFILIATED IN ANY WAY, SHAPE, OR FORM WITH THE SONY CORPORATION. 
 ### YOU ARE RESPONSIBLE FOR ANY DAMAGE THAT MAY OCCUR WHILE USING THIS PROGRAM.
 
+
+
 ## Motivation
 
-I recently bought the WH-1000-XM3s, and I was frustrated that I couldn't change their settings while using my PC. 
+I recently bought the WH-1000-XM3s, and I was annoyed by the fact that I couldn't change their settings while using my PC. 
 So I reverse-engineered the application (for intercompatibility purposes, of course), defined the protocol, and created with an alternative application with [Mr-M33533K5](https://github.com/Mr-M33533K5]).
 
 ## Features

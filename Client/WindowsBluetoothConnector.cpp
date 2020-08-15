@@ -197,7 +197,6 @@ std::vector<BluetoothDevice> WindowsBluetoothConnector::findDevicesInRadio(BLUET
 
 	// For each radio, get the first device
 	dev_find_handle = BluetoothFindFirstDevice(search_params, &device_info);
-	//TODO: This fails if there aren't any devices, check the conditions and return an empty vector
 
 	if (!dev_find_handle)
 	{
@@ -210,7 +209,6 @@ std::vector<BluetoothDevice> WindowsBluetoothConnector::findDevicesInRadio(BLUET
 		{
 			throw std::runtime_error("BluetoothFindFirstDevice() failed with error code: " + std::to_string(GetLastError()));
 		}
-		
 	}
 
 	// Get the device info

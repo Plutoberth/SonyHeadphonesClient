@@ -17,6 +17,8 @@ bool CrossPlatformGUI::performGUIPass()
 
 		//Legal disclaimer
 		ImGui::Text("! This product is not affiliated with Sony. Use at your own risk. !");
+		ImGui::Text("Source: https://github.com/Plutoberth/SonyHeadphonesClient");
+		ImGui::Spacing();
 
 		this->_drawErrors();
 		this->_drawDeviceDiscovery();
@@ -58,9 +60,10 @@ void CrossPlatformGUI::_drawDeviceDiscovery()
 
 		if (this->_bt.isConnected())
 		{
-			ImGui::Text("Connected to %s (%s)", this->_connectedDevice.name.c_str(), this->_connectedDevice.mac.c_str());
+			ImGui::Text("Connected to %s", this->_connectedDevice.name.c_str());
 			if (ImGui::Button("Disconnect"))
 			{
+				selectedDevice = -1;
 				this->_bt.disconnect();
 			}
 		}
@@ -71,8 +74,7 @@ void CrossPlatformGUI::_drawDeviceDiscovery()
 			int temp = 0;
 			for (auto device : connectedDevices)
 			{
-				auto name = device.name + " (" + device.mac + ")";
-				ImGui::RadioButton(name.c_str(), &selectedDevice, temp++);
+				ImGui::RadioButton(device.name.c_str(), &selectedDevice, temp++);
 			}
 
 			ImGui::Spacing();
