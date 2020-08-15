@@ -61,8 +61,8 @@ For now, only the WH-1000-XM3 is supported. Other headsets may work, but I haven
 It shouldn't be too much work to add support for a new platform. Open a PR if you'd like to do so. See [For Developers - Adding a new platform](#adding-a-new-platform).
 
 - [x] Windows
-- [ ] Linux
-- [ ] OSX
+- [ ] [Linux](https://github.com/Plutoberth/SonyHeadphonesClient/issues/7)
+- [ ] [OSX](https://github.com/Plutoberth/SonyHeadphonesClient/issues/6)
 
 
 ## For Developers
