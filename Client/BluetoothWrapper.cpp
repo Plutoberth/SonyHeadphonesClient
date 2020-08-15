@@ -1,9 +1,5 @@
 #include "BluetoothWrapper.h"
 
-#if (defined(_WIN32) || defined(_WIN64)) && defined(_DEBUG)
-#include "windows.h"
-#endif
-
 BluetoothWrapper::BluetoothWrapper(std::unique_ptr<IBluetoothConnector> connector)
 {
 	this->_connector.swap(connector);
@@ -59,10 +55,6 @@ void BluetoothWrapper::disconnect()
 
 std::vector<BluetoothDevice> BluetoothWrapper::getConnectedDevices()
 {
-#if (defined(_WIN32) || defined(_WIN64)) && defined(_DEBUG)
-	Sleep(1000);
-#endif
-
 	return this->_connector->getConnectedDevices();
 }
 
