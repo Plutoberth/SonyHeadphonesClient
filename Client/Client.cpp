@@ -13,7 +13,7 @@ int main()
 	{
 		std::unique_ptr<IBluetoothConnector> connector = std::make_unique<WindowsBluetoothConnector>();
 		BluetoothWrapper wrap(std::move(connector));
-		EnterGUIMainLoop(wrap);
+		EnterGUIMainLoop(std::move(wrap));
 	}
 	catch (const std::exception& e)
 	{

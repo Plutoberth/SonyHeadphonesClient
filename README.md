@@ -2,7 +2,6 @@
 <!-- [![Contributors][contributors-shield]]() -->
 
 <!-- PROJECT LOGO -->
-<br />
 <p align="center">
   <a href="https://github.com/Plutoberth/SonyHeadphonesClient">
     <!-- img src="" alt="Logo" width="80" height="80"-->
@@ -23,11 +22,11 @@
 
 * [Legal Disclaimer](#legal-disclaimer)
 * [Motivation](#motivation)
-* [Usage](#usage)
-* [Supported Platforms](#supported-platforms)
-* [License](#license)
+* [Features](#features)
+* [Supported Platforms](#supported-platforms-and-headsets)
 * [For Developers](#for-developers)
-
+* [Contact](#contact)
+* [License](#license)
 
 <!-- Legal disclaimer -->
 ## Legal Disclaimer
@@ -38,13 +37,18 @@
 ## Motivation
 
 I recently bought the WH-1000-XM3s, and I was frustrated that I couldn't change their settings while using my PC. 
-So I reverse-engineered the application (for intercompatibility purposes, of course), and created with an alternative application with [Mr-M33533K5](https://github.com/Mr-M33533K5]).
+So I reverse-engineered the application (for intercompatibility purposes, of course), defined the protocol, and created with an alternative application with [Mr-M33533K5](https://github.com/Mr-M33533K5]).
 
-## Usage
+## Features
 
-### TODO: FILL IN
+- [x] Ambient Sound Control
+- [ ] Equalizer
 
-## Supported Platforms & Headsets
+#### If you'd like to implement the equalizer (I can implement the GUI, you'll need to do the rest), please contact me privately via Twitter at `@Plutoberth`. 
+
+### TODO: ADD SCREENSHOTS
+
+## Supported Platforms And Headsets
 
 For now, only the WH-1000-XM3 is supported. Other headsets may work, but I haven't tested them.
 
@@ -72,6 +76,10 @@ There are two platform dependent parts in the code - the GUI and Bluetooth commu
 For the GUI, you need to copy the relevant parts from ImGui. 
 
 For Bluetooth, you need to implement `IBluetoothConnector` for your desired platform.
+
+## Contact
+
+I prefer to get contacted via issues on this repository. If you have a private question, you may contact me via Twitter at `@Plutoberth`.
 
 <!-- LICENSE -->
 ## License

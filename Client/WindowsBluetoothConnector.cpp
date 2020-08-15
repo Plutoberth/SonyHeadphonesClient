@@ -41,7 +41,7 @@ void WindowsBluetoothConnector::connect(const std::string& addrStr)
 {
 	SOCKADDR_BTH sab = { 0 };
 	sab.addressFamily = AF_BTH;
-	RPC_STATUS errCode = ::UuidFromStringA((RPC_CSTR)XM3_UUID, &sab.serviceClassId);
+	RPC_STATUS errCode = ::UuidFromStringA((RPC_CSTR)SONY_UUID, &sab.serviceClassId);
 	if (errCode != RPC_S_OK)
 	{
 		throw std::runtime_error("Couldn't create GUID: " + std::to_string(errCode));
@@ -52,6 +52,7 @@ void WindowsBluetoothConnector::connect(const std::string& addrStr)
 	{
 		throw std::runtime_error("Couldn't connect: " + std::to_string(WSAGetLastError()));
 	}
+	this->_connected = true;
 }
 
 WindowsBluetoothConnector::~WindowsBluetoothConnector()
@@ -90,7 +91,14 @@ std::vector<BluetoothDevice> WindowsBluetoothConnector::getConnectedDevices()
 	radio_find_handle = BluetoothFindFirstRadio(&radio_search_params, &radio);
 	if (!radio_find_handle)
 	{
-		throw std::runtime_error("BluetoothFindFirstRadio() failed with error code " + std::to_string(GetLastError()));
+		if (ERROR_NO_MORE_ITEMS == GetLastError())
+		{
+			throw RecoverableException(NO_BLUETOOTH_DEVICES_ERROR);
+		}
+		else
+		{
+			throw std::runtime_error("BluetoothFindFirstRadio() failed with error code " + std::to_string(GetLastError()));
+		}
 	}
 
 	do {
@@ -110,7 +118,7 @@ void WindowsBluetoothConnector::disconnect() noexcept(false)
 {
 	if (this->_socket != INVALID_SOCKET)
 	{
-
+		this->_connected = false;
 		if (::shutdown(this->_socket, SD_BOTH))
 		{
 			throw std::runtime_error("Couldn't shutdown connection: " + std::to_string(WSAGetLastError()));
@@ -128,6 +136,11 @@ void WindowsBluetoothConnector::disconnect() noexcept(false)
 	{
 		throw std::runtime_error("The socket was already closed, or it was never open");
 	}
+}
+
+bool WindowsBluetoothConnector::isConnected() noexcept
+{
+	return this->_connected;
 }
 
 void WindowsBluetoothConnector::_initSocket()
@@ -151,7 +164,8 @@ void WindowsBluetoothConnector::_initSocket()
 
 	this->_socket = sock;
 }
-std::string wstringToUtf8(const std::wstring& wstr)
+
+std::string WindowsBluetoothConnector::_wstringToUtf8(const std::wstring& wstr)
 {
 	std::string strTo;
 	const int num_chars = WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), wstr.length(), NULL, 0, NULL, NULL);
@@ -174,19 +188,29 @@ std::vector<BluetoothDevice> WindowsBluetoothConnector::findDevicesInRadio(BLUET
 	// For each radio, get the first device
 	dev_find_handle = BluetoothFindFirstDevice(search_params, &device_info);
 	//TODO: This fails if there aren't any devices, check the conditions and return an empty vector
+
 	if (!dev_find_handle)
 	{
-		throw std::runtime_error("BluetoothFindFirstDevice() failed with error code: " + std::to_string(GetLastError()));
+		if (ERROR_NO_MORE_ITEMS == GetLastError())
+		{
+			//No devices were found, so we can just return an empty vector
+			return res;
+		}
+		else
+		{
+			throw std::runtime_error("BluetoothFindFirstDevice() failed with error code: " + std::to_string(GetLastError()));
+		}
+		
 	}
 
 	// Get the device info
 	do {
-		res.emplace_back(BluetoothDevice{ wstringToUtf8(device_info.szName), MACBytesToString(device_info.Address.rgBytes) });
+		res.emplace_back(BluetoothDevice{ _wstringToUtf8(device_info.szName), MACBytesToString(device_info.Address.rgBytes) });
 	} while (BluetoothFindNextDevice(dev_find_handle, &device_info));
 
 	// NO more device, close the device handle
 	if (!BluetoothFindDeviceClose(dev_find_handle))
-		throw std::runtime_error("\nBluetoothFindDeviceClose(bt_dev) failed with error code: " + std::to_string(GetLastError()));
+		throw std::runtime_error("BluetoothFindDeviceClose(bt_dev) failed with error code: " + std::to_string(GetLastError()));
 
 	return res;
 }

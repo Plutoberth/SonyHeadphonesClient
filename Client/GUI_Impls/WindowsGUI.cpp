@@ -14,7 +14,7 @@ static ID3D11DeviceContext* g_pd3dDeviceContext = NULL;
 static IDXGISwapChain* g_pSwapChain = NULL;
 static ID3D11RenderTargetView* g_mainRenderTargetView = NULL;
 
-void EnterGUIMainLoop(BluetoothWrapper& bt)
+void EnterGUIMainLoop(BluetoothWrapper bt)
 {
 	//Kinda broken but it works :)
 	ShowWindow(GetConsoleWindow(), SW_HIDE); //SW_RESTORE to bring back
@@ -22,8 +22,8 @@ void EnterGUIMainLoop(BluetoothWrapper& bt)
 	// Create application window
 	WNDCLASSEX wc = { sizeof(WNDCLASSEX), CS_CLASSDC, WindowsGUIInternal::WndProc, 0L, 0L, GetModuleHandle(NULL), NULL, NULL, NULL, NULL, APP_NAME_W, NULL };
 	::RegisterClassEx(&wc);
-	//TODO: pass window data (size, name, etc) as params
-	HWND hwnd = ::CreateWindowW(wc.lpszClassName, APP_NAME_W, WS_OVERLAPPEDWINDOW, 100, 100, 1280, 720, NULL, NULL, wc.hInstance, NULL);
+	//TODO: pass window data (size, name, etc) as params and autoscale
+	HWND hwnd = ::CreateWindowW(wc.lpszClassName, APP_NAME_W, WS_OVERLAPPEDWINDOW, 100, 100, 555, 360, NULL, NULL, wc.hInstance, NULL);
 
 	// Initialize Direct3D
 	if (!WindowsGUIInternal::CreateDeviceD3D(hwnd))
@@ -59,7 +59,7 @@ void EnterGUIMainLoop(BluetoothWrapper& bt)
 
 	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
-	CrossPlatformGUI::doInit();
+	CrossPlatformGUI gui(std::move(bt));
 
 	// Main loop
 	MSG msg;
@@ -83,7 +83,7 @@ void EnterGUIMainLoop(BluetoothWrapper& bt)
 		ImGui_ImplWin32_NewFrame();
 
 		//if the user wants to quit
-		if (!CrossPlatformGUI::performGUIPass(bt))
+		if (!gui.performGUIPass())
 		{
 			break;
 		}

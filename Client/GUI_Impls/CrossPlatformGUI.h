@@ -5,16 +5,34 @@
 #include "IBluetoothConnector.h"
 #include "BluetoothWrapper.h"
 #include "CommandSerializer.h"
+#include "RecoverableException.h"
+#include "TimedMessageQueue.h"
+#include "SingleInstanceFuture.h"
 
-namespace CrossPlatformGUI
+#include <future>
+
+constexpr auto GUI_MAX_MESSAGES = 10;
+
+//This class should be constructed after AFTER the Dear ImGUI context is initialized.
+class CrossPlatformGUI
 {
-	//This function should be called AFTER the Dear ImGUI context is initialized.
-	void doInit();
+public:
+	CrossPlatformGUI(BluetoothWrapper bt);
 
 	//Run the GUI code once. This function should be called from a loop from one of the GUI impls (Windows, OSX, Linux...)
-	//I: BluetoothWrapper
 	//O: true if the user wants to close the window
-	bool performGUIPass(BluetoothWrapper& bt);
+	bool performGUIPass();
+private:
+	void _drawErrors();
+	void _drawDeviceDiscovery();
+	void _drawASMControls();
+
+	BluetoothDevice _connectedDevice;
+	BluetoothWrapper _bt;
+	SingleInstanceFuture<std::vector<BluetoothDevice>> _connectedDevicesFuture;
+	SingleInstanceFuture<int> _sendCommandFuture;
+	SingleInstanceFuture<void> _connectFuture;
+	TimedMessageQueue _mq;
 };
 
 
