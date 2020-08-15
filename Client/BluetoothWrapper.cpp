@@ -29,8 +29,11 @@ BluetoothWrapper& BluetoothWrapper::operator=(BluetoothWrapper&& other) noexcept
 int BluetoothWrapper::sendCommand(const std::vector<char>& bytes)
 {
 	std::lock_guard guard(this->_wrapperMtx);
-	auto data = CommandSerializer::_packageDataForBt(bytes, DATA_TYPE::DATA_MDR, this->_seqNumber++);
+	auto data = CommandSerializer::packageDataForBt(bytes, DATA_TYPE::DATA_MDR, this->_seqNumber++);
 	auto bytesSent = this->_connector->send(data.data(), data.size());
+
+	this->_waitForAck();
+
 	return bytesSent;
 }
 
@@ -62,3 +65,43 @@ std::vector<BluetoothDevice> BluetoothWrapper::getConnectedDevices()
 
 	return this->_connector->getConnectedDevices();
 }
+
+void BluetoothWrapper::_waitForAck()
+{
+	bool ongoingMessage = false;
+	bool messageFinished = false;
+	char buf[MAX_BLUETOOTH_MESSAGE_SIZE] = { 0 };
+	Buffer msgBytes;
+
+	do
+	{
+		auto numRecvd = this->_connector->recv(buf, sizeof(buf));
+		size_t messageStart = 0;
+		size_t messageEnd = numRecvd;
+
+		for (size_t i = 0; i < numRecvd; i++)
+		{
+			if (buf[i] == START_MARKER)
+			{
+				if (ongoingMessage)
+				{
+					throw std::runtime_error("Invalid: Multiple start markers without an end marker");
+				}
+				messageStart = i + 1;
+				ongoingMessage = true;
+			}
+			else if (ongoingMessage && buf[i] == END_MARKER)
+			{
+				messageEnd = i;
+				ongoingMessage = false;
+				messageFinished = true;
+			}
+		}
+
+		msgBytes.insert(msgBytes.end(), buf + messageStart, buf + messageEnd);
+	} while (!messageFinished);
+
+	auto msg = CommandSerializer::unpackBtMessage(msgBytes);
+	this->_seqNumber = msg.seqNumber;
+}
+

@@ -1,5 +1,10 @@
 #include "CommandSerializer.h"
 
+constexpr unsigned char ESCAPED_BYTE_SENTRY = 61;
+constexpr unsigned char ESCAPED_60 = 44;
+constexpr unsigned char ESCAPED_61 = 45;
+constexpr unsigned char ESCAPED_62 = 46;
+
 namespace CommandSerializer
 {
 	Buffer _escapeSpecials(const Buffer& src)
@@ -12,18 +17,18 @@ namespace CommandSerializer
 			switch (b)
 			{
 			case 60:
-				ret.push_back(61);
-				ret.push_back(44);
+				ret.push_back(ESCAPED_BYTE_SENTRY);
+				ret.push_back(ESCAPED_60);
 				break;
 
 			case 61:
-				ret.push_back(61);
-				ret.push_back(45);
+				ret.push_back(ESCAPED_BYTE_SENTRY);
+				ret.push_back(ESCAPED_61);
 				break;
 
 			case 62:
-				ret.push_back(61);
-				ret.push_back(46);
+				ret.push_back(ESCAPED_BYTE_SENTRY);
+				ret.push_back(ESCAPED_62);
 				break;
 
 			default:
@@ -35,17 +40,65 @@ namespace CommandSerializer
 		return ret;
 	}
 
-	unsigned char _sumChecksum(const Buffer& src)
+	Buffer _unescapeSpecials(const Buffer& src)
+	{
+		Buffer ret;
+		ret.reserve(src.size());
+
+		for (size_t i = 0; i < src.size(); i++)
+		{
+			auto currByte = src[i];
+			if (currByte == ESCAPED_BYTE_SENTRY)
+			{
+				if (i == src.size() - 1)
+				{
+					throw std::runtime_error("No data left for escaped byte data");
+				}
+				i = i + 1;
+				switch (src[i])
+				{
+				case ESCAPED_60:
+					ret.push_back(60);
+					break;
+
+				case ESCAPED_61:
+					ret.push_back(61);
+					break;
+
+				case ESCAPED_62:
+					ret.push_back(62);
+					break;
+
+				default:
+					throw std::runtime_error("Unexpected escaped byte");
+					break;
+				}
+			}
+			else
+			{
+				ret.push_back(currByte);
+			}
+		}
+
+		return ret;
+	}
+
+	unsigned char _sumChecksum(const char* src, size_t size)
 	{
 		unsigned char accumulator = 0;
-		for (auto&& b : src)
+		for (size_t i = 0; i < size; i++)
 		{
-			accumulator += b;
+			accumulator += src[i];
 		}
 		return accumulator;
 	}
 
-	Buffer _packageDataForBt(const Buffer& src, DATA_TYPE dataType, unsigned int sequenceNumber)
+	unsigned char _sumChecksum(const Buffer& src)
+	{
+		return _sumChecksum(src.data(), src.size());
+	}
+
+	Buffer packageDataForBt(const Buffer& src, DATA_TYPE dataType, unsigned int seqNumber)
 	{
 		//Reserve at least the size for the size, start&end markers, and the source
 		Buffer toEscape;
@@ -53,7 +106,7 @@ namespace CommandSerializer
 		Buffer ret;
 		ret.reserve(toEscape.capacity());
 		toEscape.push_back(static_cast<unsigned char>(dataType));
-		toEscape.push_back(sequenceNumber);
+		toEscape.push_back(seqNumber);
 		auto retSize = intToBytesBE(src.size());
 		//Insert data size
 		toEscape.insert(toEscape.end(), retSize.begin(), retSize.end());
@@ -64,7 +117,7 @@ namespace CommandSerializer
 		toEscape.push_back(checksum);
 		toEscape = _escapeSpecials(toEscape);
 
-		//
+		
 		ret.push_back(START_MARKER);
 		ret.insert(ret.end(), toEscape.begin(), toEscape.end());
 		ret.push_back(END_MARKER);
@@ -76,6 +129,26 @@ namespace CommandSerializer
 			throw std::runtime_error("Exceeded the max bluetooth message size, and I can't handle chunked messages");
 		}
 
+		return ret;
+	}
+
+	Message unpackBtMessage(const Buffer& src)
+	{
+		//Message data format: ESCAPE_SPECIALS(<DATA_TYPE><SEQ_NUMBER><BIG ENDIAN 4 BYTE SIZE OF UNESCAPED DATA><DATA><1 BYTE CHECKSUM>)
+		auto unescaped = _unescapeSpecials(src);
+
+		if (src.size() < 7)
+		{
+			throw std::runtime_error("Invalid message: Smaller than the minimum message size");
+		}
+
+		Message ret;
+		ret.dataType = static_cast<DATA_TYPE>(src[0]);
+		ret.seqNumber = src[1];
+		if (src[src.size() - 1] != _sumChecksum(src.data(), src.size() - 1))
+		{
+			throw std::runtime_error("Invalid Checksum!");
+		}
 		return ret;
 	}
 

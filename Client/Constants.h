@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 inline constexpr auto MAX_BLUETOOTH_MESSAGE_SIZE = 2048;
 inline constexpr char START_MARKER{ 62 };
 inline constexpr char END_MARKER{ 60 };
@@ -10,8 +12,11 @@ inline constexpr auto SERVICE_UUID = "96CC203E-5068-46ad-B32D-E316F5E069BA";
 
 inline constexpr auto APP_NAME_W = L"Sony Headphones App";
 
+using Buffer = std::vector<char>;
+
 enum class DATA_TYPE : char
 {
+	ACK = 1,
 	DATA_MDR = 12
 };
 
