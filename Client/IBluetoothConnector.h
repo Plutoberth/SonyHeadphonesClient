@@ -25,6 +25,7 @@ public:
 
 	//O: The number of bytes sent.
 	virtual int send(char* buf, size_t length) noexcept(false) = 0;
+	virtual int recv(char* buf, size_t length) noexcept(false) = 0;
 	virtual void connect(const std::string& addrStr) noexcept(false) = 0;
 	virtual void disconnect() noexcept(false) = 0;
 	

@@ -73,6 +73,16 @@ int WindowsBluetoothConnector::send(char* buf, size_t length)
 	return bytesSent;
 }
 
+int WindowsBluetoothConnector::recv(char* buf, size_t length)
+{
+	auto bytesReceived = ::recv(this->_socket, buf, length, 0);
+	if (bytesReceived == SOCKET_ERROR)
+	{
+		throw std::runtime_error("Couldn't recv: " + std::to_string(WSAGetLastError()));
+	}
+	return bytesReceived;
+}
+
 std::vector<BluetoothDevice> WindowsBluetoothConnector::getConnectedDevices()
 {
 	std::vector<BluetoothDevice> res;
