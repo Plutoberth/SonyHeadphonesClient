@@ -25,6 +25,10 @@ private:
 	void _setConnectedDevicesFuture();
 	bool _isConnectedDevicesFutureReady();
 
+	void _drawErrors();
+	void _drawDeviceDiscovery();
+	void _drawASMControls();
+
 	BluetoothDevice _connectedDevice;
 	BluetoothWrapper _bt;
 	std::future<std::vector<BluetoothDevice>> _connectedDevicesFuture;
