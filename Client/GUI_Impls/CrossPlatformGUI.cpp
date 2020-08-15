@@ -198,18 +198,12 @@ CrossPlatformGUI::CrossPlatformGUI(BluetoothWrapper bt) : _bt(std::move(bt))
 	this->_mq = TimedMessageQueue(GUI_MAX_MESSAGES);
 	this->_connectedDevicesFuture.setFromAsync([this]() { return this->_bt.getConnectedDevices(); });
 
-	//TODO: Do scaling correctly
-	//io.FontGlobalScale = 4;
-	//ImGui::GetStyle().ScaleAllSizes(4);
-
-#ifdef _DEBUG
 	io.IniFilename = nullptr;
 	io.WantSaveIniSettings = false;
-#endif // DEBUG
 
-	//For saner development
-#ifdef _DEBUG
-	ImFont* font = io.Fonts->AddFontFromFileTTF("./Fonts/CascadiaCode.ttf", 15.0f);
+	//AddFontFromMemory will own the pointer, so there's no leak
+	char* fileData = new char[sizeof(CascadiaCodeTTF)];
+	memcpy(fileData, CascadiaCodeTTF, sizeof(CascadiaCodeTTF));
+	ImFont* font = io.Fonts->AddFontFromMemoryTTF(reinterpret_cast<void*>(fileData), sizeof(CascadiaCodeTTF), 15.0f);
 	IM_ASSERT(font != NULL);
-#endif
 }

@@ -8,6 +8,7 @@
 #include "RecoverableException.h"
 #include "TimedMessageQueue.h"
 #include "SingleInstanceFuture.h"
+#include "CascadiaCodeFont.h"
 
 #include <future>
 
