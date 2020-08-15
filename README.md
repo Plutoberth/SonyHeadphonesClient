@@ -21,6 +21,7 @@
 ## Table of Contents
 
 * [Legal Disclaimer](#legal-disclaimer)
+* [Download](#download)
 * [Motivation](#motivation)
 * [Features](#features)
 * [Supported Platforms](#supported-platforms-and-headsets)
@@ -34,7 +35,9 @@
 ### THIS PROGRAM IS NOT AFFILIATED IN ANY WAY, SHAPE, OR FORM WITH THE SONY CORPORATION. 
 ### YOU ARE RESPONSIBLE FOR ANY DAMAGE THAT MAY OCCUR WHILE USING THIS PROGRAM.
 
+## Download
 
+You can download compiled versions of the client from the [releases page](https://github.com/Plutoberth/SonyHeadphonesClient/releases).
 
 ## Motivation
 
