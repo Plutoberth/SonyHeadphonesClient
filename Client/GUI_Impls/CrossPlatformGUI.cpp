@@ -155,7 +155,15 @@ void CrossPlatformGUI::_drawASMControls()
 
 		bool sliderActive = ImGui::IsItemActive();
 
-		ImGui::Checkbox("Focus on Voice", &focusOnVoice);
+		if (asmLevel >= MINIMUM_VOICE_FOCUS_STEP)
+		{
+			ImGui::Checkbox("Focus on Voice", &focusOnVoice);
+		}
+		else
+		{
+			ImGui::Text("Focus on Voice isn't enabled on this level.");
+		}
+		
 
 		if (sentAsmLevel != asmLevel || sentFocusOnVoice != focusOnVoice)
 		{
@@ -168,7 +176,6 @@ void CrossPlatformGUI::_drawASMControls()
 					return this->_bt.sendCommand(CommandSerializer::serializeNcAndAsmSetting(
 						ncAsmEffect,
 						NC_ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
-						0,
 						ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
 						asmId,
 						asmLevel
