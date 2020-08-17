@@ -55,6 +55,13 @@ enum class ASM_ID : char
 	VOICE = 1
 };
 
+enum class NC_DUAL_SINGLE_VALUE : char
+{
+	OFF = 0,
+	SINGLE = 1,
+	DUAL = 2
+};
+
 enum class COMMAND_TYPE : char
 {
 	NCASM_SET_PARAM = 104

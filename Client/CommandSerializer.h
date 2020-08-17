@@ -5,7 +5,7 @@
 #include <vector>
 #include <stdexcept>
 
-
+constexpr unsigned int MINIMUM_VOICE_FOCUS_STEP = 2;
 
 namespace CommandSerializer
 {
@@ -35,7 +35,8 @@ namespace CommandSerializer
 	Buffer packageDataForBt(const Buffer& src, DATA_TYPE dataType, unsigned int seqNumber);
 
 	Message unpackBtMessage(const Buffer& src);
-	//Probably set seqNumber to zero
-	Buffer serializeNcAndAsmSetting(NC_ASM_EFFECT ncAsmEffect, NC_ASM_SETTING_TYPE ncAsmSettingType, unsigned int unk, ASM_SETTING_TYPE asmSettingType, ASM_ID asmId, unsigned char asmLevel);
+
+	NC_DUAL_SINGLE_VALUE getDualSingleForAsmLevel(unsigned char asmLevel);
+	Buffer serializeNcAndAsmSetting(NC_ASM_EFFECT ncAsmEffect, NC_ASM_SETTING_TYPE ncAsmSettingType, ASM_SETTING_TYPE asmSettingType, ASM_ID asmId, unsigned char asmLevel);
 }
 
