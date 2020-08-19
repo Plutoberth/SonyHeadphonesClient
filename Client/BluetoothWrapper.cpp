@@ -24,98 +24,38 @@ BluetoothWrapper& BluetoothWrapper::operator=(BluetoothWrapper&& other) noexcept
 
 int BluetoothWrapper::sendCommand(const std::vector<char>& bytes)
 {
-	
+	std::lock_guard guard(this->_connectorMtx);
 	auto data = CommandSerializer::packageDataForBt(bytes, DATA_TYPE::DATA_MDR, this->_seqNumber++);
-	int bytesSent = 0;
-	try
-	{
-		std::lock_guard guard(this->_connectorMtx);
-		bytesSent = this->_connector->send(data.data(), data.size());
-		this->_waitForAck();
-	}
-	catch (const RecoverableException& e)
-	{
-		if (e.shouldDisconnect)
-		{
-			this->disconnect();
-		}
-		throw;
-	}
-	
+	auto bytesSent = this->_connector->send(data.data(), data.size());
+
+	this->_waitForAck();
+
 	return bytesSent;
 }
 
 bool BluetoothWrapper::isConnected() noexcept
 {
-	
-	try
-	{
-		std::lock_guard guard(this->_connectorMtx);
-		return this->_connector->isConnected();
-	}
-	catch (const RecoverableException& e)
-	{
-		if (e.shouldDisconnect)
-		{
-			this->disconnect();
-		}
-		throw;
-	}
+	std::lock_guard guard(this->_connectorMtx);
+	return this->_connector->isConnected();
 }
 
 void BluetoothWrapper::connect(const std::string& addr)
 {
-	try
-	{
-		std::lock_guard guard(this->_connectorMtx);
-		return this->_connector->connect(addr);
-	}
-	catch (const RecoverableException& e)
-	{
-		if (e.shouldDisconnect)
-		{
-			this->disconnect();
-		}
-		throw;
-	}
+	std::lock_guard guard(this->_connectorMtx);
+	this->_connector->connect(addr);
 }
 
 void BluetoothWrapper::disconnect() noexcept
 {
-	
+	std::lock_guard guard(this->_connectorMtx);
 	this->_seqNumber = 0;
-	try
-	{
-		std::lock_guard guard(this->_connectorMtx);
-		return this->_connector->disconnect();
-	}
-	catch (const RecoverableException& e)
-	{
-		if (e.shouldDisconnect)
-		{
-			this->disconnect();
-		}
-		throw;
-	}
-	
+	this->_connector->disconnect();
 }
 
 
 std::vector<BluetoothDevice> BluetoothWrapper::getConnectedDevices()
 {
-	try
-	{
-		std::lock_guard guard(this->_connectorMtx);
-		return this->_connector->getConnectedDevices();
-	}
-	catch (const RecoverableException& e)
-	{
-		if (e.shouldDisconnect)
-		{
-			this->disconnect();
-		}
-		throw;
-	}
+	return this->_connector->getConnectedDevices();
 }
 
 void BluetoothWrapper::_waitForAck()
