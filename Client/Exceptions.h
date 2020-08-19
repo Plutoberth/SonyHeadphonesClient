@@ -9,3 +9,4 @@ public:
 	//I: what - This string WILL BE SHOWN TO THE USER.
 	RecoverableException(const std::string& what) : std::runtime_error(what) {}
 };
+

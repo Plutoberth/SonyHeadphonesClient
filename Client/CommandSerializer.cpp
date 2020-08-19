@@ -148,7 +148,7 @@ namespace CommandSerializer
 		ret.seqNumber = src[1];
 		if (src[src.size() - 1] != _sumChecksum(src.data(), src.size() - 1))
 		{
-			throw std::runtime_error("Invalid Checksum!");
+			throw RecoverableException("Invalid checksum!");
 		}
 		return ret;
 	}
