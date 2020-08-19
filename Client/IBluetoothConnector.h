@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
-#include "RecoverableException.h"
+#include "Exceptions.h"
 
 inline constexpr auto SONY_UUID = "96CC203E-5068-46ad-B32D-E316F5E069BA";
 
@@ -27,7 +27,7 @@ public:
 	virtual int send(char* buf, size_t length) noexcept(false) = 0;
 	virtual int recv(char* buf, size_t length) noexcept(false) = 0;
 	virtual void connect(const std::string& addrStr) noexcept(false) = 0;
-	virtual void disconnect() noexcept(false) = 0;
+	virtual void disconnect() noexcept = 0;
 	
 	//Cost directive: This function must be as cheap as possible.
 	virtual bool isConnected() noexcept = 0;

@@ -24,6 +24,11 @@ WindowsBluetoothConnector::WindowsBluetoothConnector()
 
 void WindowsBluetoothConnector::connect(const std::string& addrStr)
 {
+	if (this->_socket == INVALID_SOCKET)
+	{
+		WindowsBluetoothConnector::_initSocket();
+	}
+
 	SOCKADDR_BTH sab = { 0 };
 	sab.addressFamily = AF_BTH;
 	RPC_STATUS errCode = ::UuidFromStringA((RPC_CSTR)SONY_UUID, &sab.serviceClassId);
@@ -98,7 +103,7 @@ std::vector<BluetoothDevice> WindowsBluetoothConnector::getConnectedDevices()
 
 	do {
 		dev_search_params.hRadio = radio;
-		devsInRadio = findDevicesInRadio(&dev_search_params);
+		devsInRadio = _findDevicesInRadio(&dev_search_params);
 		res.insert(res.end(), devsInRadio.begin(), devsInRadio.end());
 	} while (BluetoothFindNextRadio(radioFindHandle, &radio));
 
@@ -109,27 +114,14 @@ std::vector<BluetoothDevice> WindowsBluetoothConnector::getConnectedDevices()
 	return res;
 }
 
-void WindowsBluetoothConnector::disconnect() noexcept(false)
+void WindowsBluetoothConnector::disconnect() noexcept
 {
 	if (this->_socket != INVALID_SOCKET)
 	{
 		this->_connected = false;
-		if (::shutdown(this->_socket, SD_BOTH))
-		{
-			throw std::runtime_error("Couldn't shutdown connection: " + std::to_string(WSAGetLastError()));
-		}
-
-		if (::closesocket(this->_socket))
-		{
-			throw std::runtime_error("Couldn't disconnect: " + std::to_string(WSAGetLastError()));
-		}
-
+		shutdown(this->_socket, SD_BOTH);
+		closesocket(this->_socket);
 		this->_socket = INVALID_SOCKET;
-		WindowsBluetoothConnector::_initSocket();
-	}
-	else
-	{
-		throw std::runtime_error("The socket was already closed, or it was never open");
 	}
 }
 
@@ -173,7 +165,7 @@ std::string WindowsBluetoothConnector::_wstringToUtf8(const std::wstring& wstr)
 	return strTo;
 }
 
-std::vector<BluetoothDevice> WindowsBluetoothConnector::findDevicesInRadio(BLUETOOTH_DEVICE_SEARCH_PARAMS* search_params)
+std::vector<BluetoothDevice> WindowsBluetoothConnector::_findDevicesInRadio(BLUETOOTH_DEVICE_SEARCH_PARAMS* search_params)
 {
 	std::vector<BluetoothDevice> res;
 
