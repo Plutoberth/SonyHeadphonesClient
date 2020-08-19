@@ -41,7 +41,8 @@ void CrossPlatformGUI::_drawErrors()
 	//There's a slight race condition here but I don't care, it'd only be for one frame.
 	if (this->_mq.begin() != this->_mq.end())
 	{
-		ImGui::Text("Errors:");
+		ImGui::Text("Errors");
+		ImGui::Text("----------------------------");
 		for (auto&& message : this->_mq)
 		{
 			ImGui::Text(message.message.c_str());
@@ -141,6 +142,7 @@ void CrossPlatformGUI::_drawDeviceDiscovery()
 			{
 				if (ImGui::Button("Refresh devices"))
 				{
+					selectedDevice = -1;
 					this->_connectedDevicesFuture.setFromAsync([this]() { return this->_bt.getConnectedDevices(); });
 				}
 			}
@@ -154,6 +156,8 @@ void CrossPlatformGUI::_drawASMControls()
 	static bool sentFocusOnVoice = focusOnVoice;
 	static int asmLevel = 0;
 	static int sentAsmLevel = asmLevel;
+	//Don't show if the command only takes a few frames to send
+	static int commandLinger = 0;
 
 	if (ImGui::CollapsingHeader("Ambient Sound Mode   ", ImGuiTreeNodeFlags_DefaultOpen))
 	{
@@ -171,46 +175,52 @@ void CrossPlatformGUI::_drawASMControls()
 		{
 			ImGui::Text("Focus on Voice isn't enabled on this level.");
 		}
-		
 
-		if (sentAsmLevel != asmLevel || sentFocusOnVoice != focusOnVoice)
+		if (this->_sendCommandFuture.ready())
 		{
-			if (!this->_sendCommandFuture.valid())
+			commandLinger = 0;
+			try
 			{
-				auto ncAsmEffect = sliderActive ? NC_ASM_EFFECT::ADJUSTMENT_IN_PROGRESS : NC_ASM_EFFECT::ADJUSTMENT_COMPLETION;
-				auto asmId = focusOnVoice ? ASM_ID::VOICE : ASM_ID::NORMAL;
+				this->_sendCommandFuture.get();
+			}
+			catch (const RecoverableException& exc)
+			{
+				std::string excString;
+				//We kinda have to do it here and not in the wrapper, due to async causing timing issues. To fix it, the messagequeue can be made
+				//static, but I'm not sure if I wanna do that.
+				if (exc.shouldDisconnect)
+				{
+					this->_bt.disconnect();
+					excString = "Disconnected due to: ";
+				}
+				this->_mq.addMessage(excString + exc.what());
+			}
+		}
+		//This means that we're waiting
+		else if (this->_sendCommandFuture.valid()) 
+		{
+			if (commandLinger++ > FPS / 10)
+			{
+				ImGui::Text("Sending command %c", "|/-\\"[(int)(ImGui::GetTime() / 0.05f) & 3]);
+			}
+		}
+		//We're not waiting, and there's no command in the air, so we can evaluate sending a new command
+		else if (sentAsmLevel != asmLevel || sentFocusOnVoice != focusOnVoice) 
+		{
+			auto ncAsmEffect = sliderActive ? NC_ASM_EFFECT::ADJUSTMENT_IN_PROGRESS : NC_ASM_EFFECT::ADJUSTMENT_COMPLETION;
+			auto asmId = focusOnVoice ? ASM_ID::VOICE : ASM_ID::NORMAL;
 
-				this->_sendCommandFuture.setFromAsync([=]() {
-					return this->_bt.sendCommand(CommandSerializer::serializeNcAndAsmSetting(
-						ncAsmEffect,
-						NC_ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
-						ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
-						asmId,
-						asmLevel
-					));
-				});
-				sentAsmLevel = asmLevel;
-				sentFocusOnVoice = focusOnVoice;
-			}
-			else if (this->_sendCommandFuture.ready())
-			{
-				try
-				{
-					this->_sendCommandFuture.get();
-				}
-				catch (const RecoverableException& exc)
-				{
-					std::string excString;
-					//We kinda have to do it here and not in the wrapper, due to async causing timing issues. To fix it, the messagequeue can be made
-					//static, but I'm not sure if I wanna do that.
-					if (exc.shouldDisconnect)
-					{
-						this->_bt.disconnect();
-						excString = "Disconnected due to: ";
-					}
-					this->_mq.addMessage(excString + exc.what());
-				}
-			}
+			this->_sendCommandFuture.setFromAsync([=]() {
+				return this->_bt.sendCommand(CommandSerializer::serializeNcAndAsmSetting(
+					ncAsmEffect,
+					NC_ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
+					ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
+					asmId,
+					asmLevel
+				));
+			});
+			sentAsmLevel = asmLevel;
+			sentFocusOnVoice = focusOnVoice;
 		}
 	}
 }
