@@ -35,7 +35,6 @@ int BluetoothWrapper::sendCommand(const std::vector<char>& bytes)
 
 bool BluetoothWrapper::isConnected() noexcept
 {
-	std::lock_guard guard(this->_connectorMtx);
 	return this->_connector->isConnected();
 }
 

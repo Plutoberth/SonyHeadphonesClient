@@ -21,6 +21,7 @@ General notes: Please look at the implementation of WindowsBluetoothConnector.
 * See notes below
 */
 
+//Thread-safety: IBluetoothConnector implementations don't need to be thread safe, except calls to isConnected;
 class IBluetoothConnector
 {
 public:
@@ -39,7 +40,8 @@ public:
 	//This function should not block.
 	virtual void disconnect() noexcept = 0;
 	
-	//Cost directive: This function must be as cheap as possible, and not block.
+	//Cost directive: This function must be as cheap as possible.
+	//!!! Thread-safety: This function must be thread safe. !!!
 	virtual bool isConnected() noexcept = 0;
 
 	//getConnectedDevices can block.

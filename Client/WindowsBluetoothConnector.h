@@ -11,6 +11,7 @@
 #include "IBluetoothConnector.h"
 #include <string>
 #include "ByteMagic.h"
+#include <atomic>
 
 class WindowsBluetoothConnector final : public IBluetoothConnector
 {
@@ -32,6 +33,6 @@ private:
 	std::string _wstringToUtf8(const std::wstring& wstr);
 
 	SOCKET _socket = INVALID_SOCKET;
-	bool _connected = false;
+	std::atomic<bool> _connected = false;
 	void _initSocket();
 };
