@@ -89,6 +89,10 @@ void CrossPlatformGUI::_drawDeviceDiscovery()
 					}
 					catch (const RecoverableException& exc)
 					{
+						if (exc.shouldDisconnect)
+						{
+							this->_bt.disconnect();
+						}
 						this->_mq.addMessage(exc.what());
 					}
 				}
@@ -121,6 +125,10 @@ void CrossPlatformGUI::_drawDeviceDiscovery()
 					}
 					catch (const RecoverableException& exc)
 					{
+						if (exc.shouldDisconnect)
+						{
+							this->_bt.disconnect();
+						}
 						this->_mq.addMessage(exc.what());
 					}
 				}
@@ -193,13 +201,14 @@ void CrossPlatformGUI::_drawASMControls()
 				catch (const RecoverableException& exc)
 				{
 					std::string excString;
+					//We kinda have to do it here and not in the wrapper, due to async causing timing issues. To fix it, the messagequeue can be made
+					//static, but I'm not sure if I wanna do that.
 					if (exc.shouldDisconnect)
 					{
 						this->_bt.disconnect();
 						excString = "Disconnected due to: ";
 					}
 					this->_mq.addMessage(excString + exc.what());
-					
 				}
 			}
 		}
