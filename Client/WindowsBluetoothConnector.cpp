@@ -18,15 +18,13 @@ WindowsBluetoothConnector::WindowsBluetoothConnector()
 		::WSAStartupWrapper();
 		startedUp = true;
 	}
-
-	WindowsBluetoothConnector::_initSocket();
 }
 
 void WindowsBluetoothConnector::connect(const std::string& addrStr)
 {
 	if (this->_socket == INVALID_SOCKET)
 	{
-		WindowsBluetoothConnector::_initSocket();
+		this->_initSocket();
 	}
 
 	SOCKADDR_BTH sab = { 0 };
@@ -40,7 +38,7 @@ void WindowsBluetoothConnector::connect(const std::string& addrStr)
 
 	if (::connect(this->_socket, (sockaddr*)&sab, sizeof(sab)))
 	{
-		throw std::runtime_error("Couldn't connect: " + std::to_string(WSAGetLastError()));
+		throw RecoverableException("Couldn't connect: " + std::to_string(WSAGetLastError()), true);
 	}
 	this->_connected = true;
 }
@@ -58,7 +56,7 @@ int WindowsBluetoothConnector::send(char* buf, size_t length)
 	auto bytesSent = ::send(this->_socket, buf, length, 0);
 	if (bytesSent == SOCKET_ERROR)
 	{
-		throw std::runtime_error("Couldn't send: " + std::to_string(WSAGetLastError()));
+		throw RecoverableException("Couldn't send (" + std::to_string(WSAGetLastError()) + ")", true);
 	}
 	return bytesSent;
 }
@@ -68,7 +66,7 @@ int WindowsBluetoothConnector::recv(char* buf, size_t length)
 	auto bytesReceived = ::recv(this->_socket, buf, length, 0);
 	if (bytesReceived == SOCKET_ERROR)
 	{
-		throw std::runtime_error("Couldn't recv: " + std::to_string(WSAGetLastError()));
+		throw RecoverableException("Couldn't recv (" + std::to_string(WSAGetLastError()) + ")", true);
 	}
 	return bytesReceived;
 }

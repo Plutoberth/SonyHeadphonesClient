@@ -192,11 +192,14 @@ void CrossPlatformGUI::_drawASMControls()
 				}
 				catch (const RecoverableException& exc)
 				{
+					std::string excString;
 					if (exc.shouldDisconnect)
 					{
 						this->_bt.disconnect();
+						excString = "Disconnected due to: ";
 					}
-					this->_mq.addMessage(exc.what());
+					this->_mq.addMessage(excString + exc.what());
+					
 				}
 			}
 		}

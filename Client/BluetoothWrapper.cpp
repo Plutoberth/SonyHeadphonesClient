@@ -77,7 +77,7 @@ void BluetoothWrapper::_waitForAck()
 			{
 				if (ongoingMessage)
 				{
-					throw std::runtime_error("Invalid: Multiple start markers without an end marker");
+					throw RecoverableException("Invalid: Multiple start markers without an end marker", true);
 				}
 				messageStart = i + 1;
 				ongoingMessage = true;
