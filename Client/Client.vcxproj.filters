@@ -63,6 +63,9 @@
     <ClCompile Include="TimedMessageQueue.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CascadiaCodeFont.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowsBluetoothConnector.h">
@@ -113,13 +116,16 @@
     <ClInclude Include="imgui\imconfig.h">
       <Filter>Header Files\IMGUI</Filter>
     </ClInclude>
-    <ClInclude Include="RecoverableException.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="TimedMessageQueue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SingleInstanceFuture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CascadiaCodeFont.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Exceptions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

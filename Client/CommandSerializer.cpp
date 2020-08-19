@@ -108,7 +108,7 @@ namespace CommandSerializer
 		ret.reserve(toEscape.capacity());
 		toEscape.push_back(static_cast<unsigned char>(dataType));
 		toEscape.push_back(seqNumber);
-		auto retSize = intToBytesBE(src.size());
+		auto retSize = intToBytesBE(static_cast<unsigned int>(src.size()));
 		//Insert data size
 		toEscape.insert(toEscape.end(), retSize.begin(), retSize.end());
 		//Insert command data
@@ -148,7 +148,7 @@ namespace CommandSerializer
 		ret.seqNumber = src[1];
 		if (src[src.size() - 1] != _sumChecksum(src.data(), src.size() - 1))
 		{
-			throw std::runtime_error("Invalid Checksum!");
+			throw RecoverableException("Invalid checksum!", true);
 		}
 		return ret;
 	}

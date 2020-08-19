@@ -5,7 +5,7 @@
 #include "IBluetoothConnector.h"
 #include "BluetoothWrapper.h"
 #include "CommandSerializer.h"
-#include "RecoverableException.h"
+#include "Exceptions.h"
 #include "TimedMessageQueue.h"
 #include "SingleInstanceFuture.h"
 #include "CascadiaCodeFont.h"
@@ -13,6 +13,9 @@
 #include <future>
 
 constexpr auto GUI_MAX_MESSAGES = 10;
+constexpr auto FPS = 60;
+constexpr auto GUI_HEIGHT = 350;
+constexpr auto GUI_WIDTH = 540;
 
 //This class should be constructed after AFTER the Dear ImGUI context is initialized.
 class CrossPlatformGUI

@@ -23,10 +23,10 @@ public:
 
 	int sendCommand(const std::vector<char>& bytes);
 
-	bool isConnected();
+	bool isConnected() noexcept;
 	//Try to connect to the headphones
 	void connect(const std::string& addr);
-	void disconnect();
+	void disconnect() noexcept;
 
 	std::vector<BluetoothDevice> getConnectedDevices();
 
@@ -34,6 +34,6 @@ private:
 	void _waitForAck();
 
 	std::unique_ptr<IBluetoothConnector> _connector;
-	std::mutex _wrapperMtx;
+	std::mutex _connectorMtx;
 	unsigned int _seqNumber = 0;
 };

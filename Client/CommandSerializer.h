@@ -4,6 +4,7 @@
 #include <cstddef>
 #include <vector>
 #include <stdexcept>
+#include "Exceptions.h"
 
 constexpr unsigned int MINIMUM_VOICE_FOCUS_STEP = 2;
 
