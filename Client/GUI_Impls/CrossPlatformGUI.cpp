@@ -192,6 +192,10 @@ void CrossPlatformGUI::_drawASMControls()
 				}
 				catch (const RecoverableException& exc)
 				{
+					if (exc.shouldDisconnect)
+					{
+						this->_bt.disconnect();
+					}
 					this->_mq.addMessage(exc.what());
 				}
 			}

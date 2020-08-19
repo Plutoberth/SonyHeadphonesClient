@@ -24,7 +24,7 @@ BluetoothWrapper& BluetoothWrapper::operator=(BluetoothWrapper&& other) noexcept
 
 int BluetoothWrapper::sendCommand(const std::vector<char>& bytes)
 {
-	std::lock_guard guard(this->_wrapperMtx);
+	std::lock_guard guard(this->_connectorMtx);
 	auto data = CommandSerializer::packageDataForBt(bytes, DATA_TYPE::DATA_MDR, this->_seqNumber++);
 	auto bytesSent = this->_connector->send(data.data(), data.size());
 
@@ -33,21 +33,21 @@ int BluetoothWrapper::sendCommand(const std::vector<char>& bytes)
 	return bytesSent;
 }
 
-bool BluetoothWrapper::isConnected()
+bool BluetoothWrapper::isConnected() noexcept
 {
-	std::lock_guard guard(this->_wrapperMtx);
+	std::lock_guard guard(this->_connectorMtx);
 	return this->_connector->isConnected();
 }
 
 void BluetoothWrapper::connect(const std::string& addr)
 {
-	std::lock_guard guard(this->_wrapperMtx);
+	std::lock_guard guard(this->_connectorMtx);
 	this->_connector->connect(addr);
 }
 
-void BluetoothWrapper::disconnect()
+void BluetoothWrapper::disconnect() noexcept
 {
-	std::lock_guard guard(this->_wrapperMtx);
+	std::lock_guard guard(this->_connectorMtx);
 	this->_seqNumber = 0;
 	this->_connector->disconnect();
 }
