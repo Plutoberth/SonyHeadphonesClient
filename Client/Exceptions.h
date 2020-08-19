@@ -10,3 +10,8 @@ public:
 	RecoverableException(const std::string& what) : std::runtime_error(what) {}
 };
 
+//This exception will make the connection disconnect, as well as show the error to the user.
+class DisconnectingException : public RecoverableException {
+public:
+	DisconnectingException(const std::string& what) : RecoverableException(what) {}
+};

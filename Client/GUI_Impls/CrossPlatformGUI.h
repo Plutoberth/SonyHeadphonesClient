@@ -5,7 +5,7 @@
 #include "IBluetoothConnector.h"
 #include "BluetoothWrapper.h"
 #include "CommandSerializer.h"
-#include "RecoverableException.h"
+#include "Exceptions.h"
 #include "TimedMessageQueue.h"
 #include "SingleInstanceFuture.h"
 #include "CascadiaCodeFont.h"
