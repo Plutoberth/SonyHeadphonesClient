@@ -38,6 +38,8 @@
 
 You can download compiled versions of the client from the [releases page](https://github.com/Plutoberth/SonyHeadphonesClient/releases).
 
+**Note:** If you're getting an error like `VCRUNTIME140_1.dll was not found`, you need to install the `Microsoft VC++ Redistributable`.
+
 ## Motivation
 
 I recently bought the WH-1000-XM3s, and I was annoyed by the fact that I couldn't change their settings while using my PC. 
