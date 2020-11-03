@@ -29,7 +29,7 @@ MacOSBluetoothConnector::~MacOSBluetoothConnector()
 	// }
 }
 
-// generates error
+// doesn't generate error anymore, but doesn't close connection yet, because the channel is not stored globaly 
 void MacOSBluetoothConnector::connect(const std::string& addrStr)
 {
 	// convert mac adress to nsstring
@@ -38,7 +38,15 @@ void MacOSBluetoothConnector::connect(const std::string& addrStr)
 	IOBluetoothDevice *device = [IOBluetoothDevice deviceWithAddressString:addressNSString];
 	// create new channel
 	IOBluetoothRFCOMMChannel *channel = [[IOBluetoothRFCOMMChannel alloc] init];
-	if ([device openRFCOMMChannelSync: &channel withChannelID:1 delegate: nil] == kIOReturnSuccess) {
+	// create sppServiceid
+	IOBluetoothSDPUUID *sppServiceUUID = [IOBluetoothSDPUUID uuid16: kBluetoothSDPUUID16RFCOMM];
+	// get sppServiceRecord
+    IOBluetoothSDPServiceRecord *sppServiceRecord = [device getServiceRecordForUUID:sppServiceUUID];
+    // get rfcommChannelID from sppServiceRecord
+	UInt8 rfcommChannelID;
+    [sppServiceRecord getRFCOMMChannelID:&rfcommChannelID];
+
+	if ([device openRFCOMMChannelSync: &channel withChannelID: rfcommChannelID delegate: nil] == kIOReturnSuccess) {
 		const int connectResult = kIOReturnSuccess;
 		printf("%d", connectResult);
 		this->_connected = true;
@@ -95,6 +103,7 @@ void MacOSBluetoothConnector::disconnect() noexcept
 	// 	closesocket(this->_socket);
 	// 	this->_socket = INVALID_SOCKET;
 	// }
+	// [this->channel closeChannel];
 }
 
 bool MacOSBluetoothConnector::isConnected() noexcept
