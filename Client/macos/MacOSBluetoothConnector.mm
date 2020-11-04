@@ -143,10 +143,12 @@ void MacOSBluetoothConnector::closeConnection() {
     IOBluetoothRFCOMMChannel *chan = (__bridge IOBluetoothRFCOMMChannel*) rfcommchannel;
 	// close the channel
     [chan closeChannel];
+
 	// get the device
 	IOBluetoothDevice *device =(__bridge IOBluetoothDevice*) rfcommDevice;
 	// disconnect from the device
 	[device closeConnection];
+	
     fprintf(stderr,"closing");
 }
 
