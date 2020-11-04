@@ -129,11 +129,17 @@ void MacOSBluetoothConnector::disconnect() noexcept
     running = 0;
 	// wait for the thread to finish
     uthread->join();
+	// close connection
+    closeConnection();
+}
+void MacOSBluetoothConnector::closeConnection() {
 	// get the channel
     IOBluetoothRFCOMMChannel *chan = (__bridge IOBluetoothRFCOMMChannel*) rfcommchannel;
 	// close the channel
     [chan closeChannel];
+    fprintf(stderr,"closing");
 }
+
 
 bool MacOSBluetoothConnector::isConnected() noexcept
 {
