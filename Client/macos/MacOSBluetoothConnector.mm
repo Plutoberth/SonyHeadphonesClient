@@ -9,7 +9,9 @@ MacOSBluetoothConnector::MacOSBluetoothConnector()
 MacOSBluetoothConnector::~MacOSBluetoothConnector()
 {
 	//onclose event
-	disconnect();
+	if (isConnected()){
+		disconnect();
+	}
 }
 
 @interface AsyncCommDelegate : NSObject <IOBluetoothRFCOMMChannelDelegate> {
@@ -86,6 +88,10 @@ void MacOSBluetoothConnector::connect(const std::string& addrStr){
 	NSString *addressNSString = [NSString stringWithCString:addrStr.c_str() encoding:[NSString defaultCStringEncoding]];
 	// get device based on mac adress
 	IOBluetoothDevice *device = [IOBluetoothDevice deviceWithAddressString:addressNSString];
+	// if device is not connected
+	if (![device isConnected]) {
+		[device openConnection];
+	}
 	// store the device in an variable
 	rfcommDevice = (__bridge void*) device;
 	uthread = new std::thread(MacOSBluetoothConnector::connectToMac, this);
@@ -137,6 +143,10 @@ void MacOSBluetoothConnector::closeConnection() {
     IOBluetoothRFCOMMChannel *chan = (__bridge IOBluetoothRFCOMMChannel*) rfcommchannel;
 	// close the channel
     [chan closeChannel];
+	// get the device
+	IOBluetoothDevice *device =(__bridge IOBluetoothDevice*) rfcommDevice;
+	// disconnect from the device
+	[device closeConnection];
     fprintf(stderr,"closing");
 }
 
