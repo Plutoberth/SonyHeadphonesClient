@@ -7,13 +7,15 @@
 #include <string>
 #include "ByteMagic.h"
 #include <atomic>
+
+#include <thread>
 class MacOSBluetoothConnector final : public IBluetoothConnector
 {
 public:
 	MacOSBluetoothConnector();
-
 	~MacOSBluetoothConnector();
-
+	static void connectToMac(MacOSBluetoothConnector* MacOSBluetoothConnector) noexcept(false);
+	virtual void dataRec(const char *dataReceived) noexcept(false);
 	virtual void connect(const std::string& addrStr) noexcept(false);
 	virtual int send(char* buf, size_t length) noexcept(false);
 	virtual int recv(char* buf, size_t length) noexcept(false);
@@ -23,10 +25,9 @@ public:
 	virtual std::vector<BluetoothDevice> getConnectedDevices() noexcept(false);
 
 private:
-	std::vector<BluetoothDevice> _findDevicesInRadio();
-	std::string _wstringToUtf8(const std::wstring& wstr);
+    void *rfcommDevice;
+    void *rfcommchannel;
+    std::thread* uthread = NULL;
+    int running = 0;
 
-	// SOCKET _socket = INVALID_SOCKET;
-	std::atomic<bool> _connected = false;
-	void _initSocket();
 };

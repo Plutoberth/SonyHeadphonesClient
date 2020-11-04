@@ -1,41 +1,61 @@
+// #import <Foundation/Foundation.h>
 #include "MacOSBluetoothConnector.h"
-
-// don't know if this is needed
-void WSAStartupWrapper()
-{
-	// int iResult;
-	// WSADATA wsaData;
-	// iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
-	// if (iResult != 0) {
-	// 	throw std::runtime_error("WSAStartup failed: " + std::to_string(iResult));
-	// }
-}
+#include <thread>
 
 MacOSBluetoothConnector::MacOSBluetoothConnector()
 {
-	// static bool startedUp = false;
-	// if (!startedUp)
-	// {
-	// 	::WSAStartupWrapper();
-	// 	startedUp = true;
-	// }
+	
 }
-
 MacOSBluetoothConnector::~MacOSBluetoothConnector()
 {
-	// if (this->_socket != INVALID_SOCKET)
-	// {
-	// 	::closesocket(this->_socket);
-	// }
+	//onclose event
+	disconnect();
+}
+
+@interface AsyncCommDelegate : NSObject <IOBluetoothRFCOMMChannelDelegate> {
+    @public
+    MacOSBluetoothConnector* delegateCPP;
+}
+@end
+
+@implementation AsyncCommDelegate {
+}
+
+-(void)rfcommChannelOpenComplete:(IOBluetoothRFCOMMChannel *)rfcommChannel status:(IOReturn)error
+{
+    
+    if ( error != kIOReturnSuccess ) {
+        fprintf(stderr,"Error - could not open the RFCOMM channel. Error code = %08x.\n",error);
+        return;
+    }
+    else{
+        fprintf(stderr,"Connected. Yeah!\n");
+    }
+    
+}
+
+-(void)rfcommChannelData:(IOBluetoothRFCOMMChannel *)rfcommChannel data:(void *)dataPointer length:(size_t)dataLength
+{
+    NSString  *message = [[NSString alloc] initWithBytes:dataPointer length:dataLength encoding:NSUTF8StringEncoding];
+    delegateCPP->dataRec([message UTF8String]);
+}
+
+
+@end
+
+int MacOSBluetoothConnector::send(char* buf, size_t length)
+{
+    fprintf(stderr,"Sending Message\n");
+    [(__bridge IOBluetoothRFCOMMChannel*)rfcommchannel writeSync:(void*)buf length:length];
+	return 1;
 }
 
 // doesn't generate error anymore, but doesn't close connection yet, because the channel is not stored globaly 
-void MacOSBluetoothConnector::connect(const std::string& addrStr)
+void MacOSBluetoothConnector::connectToMac(MacOSBluetoothConnector* MacOSBluetoothConnector)
 {
-	// convert mac adress to nsstring
-	NSString *addressNSString = [NSString stringWithCString:addrStr.c_str() encoding:[NSString defaultCStringEncoding]];
-	// get device based on mac adress
-	IOBluetoothDevice *device = [IOBluetoothDevice deviceWithAddressString:addressNSString];
+	MacOSBluetoothConnector->running = 1;
+	//get device
+	IOBluetoothDevice *device = (__bridge IOBluetoothDevice *)MacOSBluetoothConnector->rfcommDevice;
 	// create new channel
 	IOBluetoothRFCOMMChannel *channel = [[IOBluetoothRFCOMMChannel alloc] init];
 	// create sppServiceid
@@ -45,32 +65,42 @@ void MacOSBluetoothConnector::connect(const std::string& addrStr)
     // get rfcommChannelID from sppServiceRecord
 	UInt8 rfcommChannelID;
     [sppServiceRecord getRFCOMMChannelID:&rfcommChannelID];
-
-	if ([device openRFCOMMChannelSync: &channel withChannelID: rfcommChannelID delegate: nil] == kIOReturnSuccess) {
-		const int connectResult = kIOReturnSuccess;
-		printf("%d", connectResult);
-		this->_connected = true;
+	// setup delegate
+	AsyncCommDelegate* asyncCommDelegate = [[AsyncCommDelegate alloc] init];
+	asyncCommDelegate->delegateCPP = MacOSBluetoothConnector;
+	// try to open channel
+	if ( [device openRFCOMMChannelAsync:&channel withChannelID:rfcommChannelID delegate:asyncCommDelegate] != kIOReturnSuccess ) {
+		throw "Error - could not open the rfcomm.\n";
+	}
+	// store the channel
+	MacOSBluetoothConnector->rfcommchannel = (__bridge void*) channel;
+	
+	printf("Successfully connected");
+	// keep thread running
+	while (MacOSBluetoothConnector->running) {
+		[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:1]];
 	}
 }
+void MacOSBluetoothConnector::connect(const std::string& addrStr){
+	// convert mac adress to nsstring
+	NSString *addressNSString = [NSString stringWithCString:addrStr.c_str() encoding:[NSString defaultCStringEncoding]];
+	// get device based on mac adress
+	IOBluetoothDevice *device = [IOBluetoothDevice deviceWithAddressString:addressNSString];
+	// store the device in an variable
+	rfcommDevice = (__bridge void*) device;
+	uthread = new std::thread(MacOSBluetoothConnector::connectToMac, this);
+}
 
-int MacOSBluetoothConnector::send(char* buf, size_t length)
+void MacOSBluetoothConnector::dataRec(const char *dataReceived)
 {
-	// auto bytesSent = ::send(this->_socket, buf, length, 0);
-	// if (bytesSent == SOCKET_ERROR)
-	// {
-	// 	throw RecoverableException("Couldn't send (" + std::to_string(WSAGetLastError()) + ")", true);
-	// }
-	// return bytesSent;
+    printf("%s\n",dataReceived); // do something more sensible than just printing it! For example establishing a callback here.
 }
 
 int MacOSBluetoothConnector::recv(char* buf, size_t length)
 {
-	// auto bytesReceived = ::recv(this->_socket, buf, length, 0);
-	// if (bytesReceived == SOCKET_ERROR)
-	// {
-	// 	throw RecoverableException("Couldn't recv (" + std::to_string(WSAGetLastError()) + ")", true);
-	// }
-	// return bytesReceived;
+	return 1;
+    // printf("%s\n",dataReceived); // do something more sensible than just printing it! For example establishing a callback here.
+
 }
 
 // currently working
@@ -96,78 +126,16 @@ std::vector<BluetoothDevice> MacOSBluetoothConnector::getConnectedDevices()
 
 void MacOSBluetoothConnector::disconnect() noexcept
 {
-	// if (this->_socket != INVALID_SOCKET)
-	// {
-	// 	this->_connected = false;
-	// 	shutdown(this->_socket, SD_BOTH);
-	// 	closesocket(this->_socket);
-	// 	this->_socket = INVALID_SOCKET;
-	// }
-	// [this->channel closeChannel];
+    running = 0;
+	// wait for the thread to finish
+    uthread->join();
+	// get the channel
+    IOBluetoothRFCOMMChannel *chan = (__bridge IOBluetoothRFCOMMChannel*) rfcommchannel;
+	// close the channel
+    [chan closeChannel];
 }
 
 bool MacOSBluetoothConnector::isConnected() noexcept
 {
-	return this->_connected;
-}
-
-// probably don't need this function (right?)
-void MacOSBluetoothConnector::_initSocket()
-{
-	// SOCKET sock = ::socket(AF_BTH, SOCK_STREAM, BTHPROTO_RFCOMM);
-	// if (sock == INVALID_SOCKET)
-	// {
-	// 	throw std::runtime_error("Couldn't create socket: " + std::to_string(WSAGetLastError()));
-	// }
-
-	// ULONG enable = TRUE;
-	// if (::setsockopt(sock, SOL_RFCOMM, SO_BTH_AUTHENTICATE, reinterpret_cast<char*>(&enable), sizeof(enable)))
-	// {
-	// 	throw std::runtime_error("Couldn't set SO_BTH_AUTHENTICATE: " + std::to_string(WSAGetLastError()));
-	// }
-
-	// if (::setsockopt(sock, SOL_RFCOMM, SO_BTH_ENCRYPT, reinterpret_cast<char*>(&enable), sizeof(enable)))
-	// {
-	// 	throw std::runtime_error("Couldn't set SO_BTH_ENCRYPT: " + std::to_string(WSAGetLastError()));
-	// }
-
-	// this->_socket = sock;
-}
-
-// probably don't need this function (right?)
-std::string MacOSBluetoothConnector::_wstringToUtf8(const std::wstring& wstr)
-{
-	// std::string strTo;
-	// const int num_chars = WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), wstr.length(), NULL, 0, NULL, NULL);
-
-	// if (num_chars > 0)
-	// {
-	// 	strTo.resize(num_chars);
-	// 	WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), wstr.length(), &strTo[0], num_chars, NULL, NULL);
-	// }
-	// return strTo;
-}
-
-
-// probably don't need this function (right?)
-std::vector<BluetoothDevice> MacOSBluetoothConnector::_findDevicesInRadio()
-{
-	// std::vector<BluetoothDevice> res;
-
-	// for (IOBluetoothDevice* device in [IOBluetoothDevice pairedDevices]) {
-	// 	BluetoothDevice dev;
-	// 	dev.mac =  [[device addressString]UTF8String]
-	// 	dev.name = [[device name] UTF8String]
-	// 	printf("%s - ",[[device addressString]UTF8String]);
-	// 	printf("%s - ",[[device name] UTF8String]);
-	// 	if ([device isConnected]) {
-	// 		printf("connected device");
-	// 		res.append(dev)
-	// 	}else{
-	// 		printf("disconnected device");
-	// 	}
-	// 	printf("\n");
-	// }
-
-	// return res;
+	return running;
 }
