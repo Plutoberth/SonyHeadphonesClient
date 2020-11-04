@@ -22,7 +22,7 @@ MacOSBluetoothConnector::~MacOSBluetoothConnector()
 
 @implementation AsyncCommDelegate {
 }
-
+// this function fires when the channel is opened
 -(void)rfcommChannelOpenComplete:(IOBluetoothRFCOMMChannel *)rfcommChannel status:(IOReturn)error
 {
     
@@ -35,7 +35,7 @@ MacOSBluetoothConnector::~MacOSBluetoothConnector()
     }
     
 }
-
+// this function fires when the channel receives data
 -(void)rfcommChannelData:(IOBluetoothRFCOMMChannel *)rfcommChannel data:(void *)dataPointer length:(size_t)dataLength
 {
     NSString  *message = [[NSString alloc] initWithBytes:dataPointer length:dataLength encoding:NSUTF8StringEncoding];
@@ -48,11 +48,12 @@ MacOSBluetoothConnector::~MacOSBluetoothConnector()
 int MacOSBluetoothConnector::send(char* buf, size_t length)
 {
     fprintf(stderr,"Sending Message\n");
+	//write buffer to channel
     [(__bridge IOBluetoothRFCOMMChannel*)rfcommchannel writeSync:(void*)buf length:length];
-	return 1;
+	return 1; // what to return here?
 }
 
-// doesn't generate error anymore, but doesn't close connection yet, because the channel is not stored globaly 
+
 void MacOSBluetoothConnector::connectToMac(MacOSBluetoothConnector* MacOSBluetoothConnector)
 {
 	MacOSBluetoothConnector->running = 1;
@@ -83,6 +84,7 @@ void MacOSBluetoothConnector::connectToMac(MacOSBluetoothConnector* MacOSBluetoo
 		[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:1]];
 	}
 }
+
 void MacOSBluetoothConnector::connect(const std::string& addrStr){
 	// convert mac adress to nsstring
 	NSString *addressNSString = [NSString stringWithCString:addrStr.c_str() encoding:[NSString defaultCStringEncoding]];
@@ -99,13 +101,14 @@ void MacOSBluetoothConnector::connect(const std::string& addrStr){
 
 void MacOSBluetoothConnector::dataRec(const char *dataReceived)
 {
-    printf("%s\n",dataReceived); // do something more sensible than just printing it! For example establishing a callback here.
+	// print received data
+    printf("%s\n",dataReceived);
 }
 
 int MacOSBluetoothConnector::recv(char* buf, size_t length)
 {
-	return 1;
-    // printf("%s\n",dataReceived); // do something more sensible than just printing it! For example establishing a callback here.
+	// this becomes the receive function, currently just returning 1
+	return 1; 
 
 }
 
@@ -148,7 +151,7 @@ void MacOSBluetoothConnector::closeConnection() {
 	IOBluetoothDevice *device =(__bridge IOBluetoothDevice*) rfcommDevice;
 	// disconnect from the device
 	[device closeConnection];
-	
+
     fprintf(stderr,"closing");
 }
 
