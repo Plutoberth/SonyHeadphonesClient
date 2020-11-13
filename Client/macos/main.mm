@@ -15,7 +15,7 @@
 #include "TimedMessageQueue.h"
 #include "BluetoothWrapper.h"
 #include "MacOSBluetoothConnector.h"
-#include "MacOSGUI.h"
+#include "CrossPlatformGUI.h"
 
 static void glfw_error_callback(int error, const char* description)
 {
@@ -28,10 +28,10 @@ int main(int, char**)
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
 
-    // init MacOSGUI
+    // init GUI
     std::unique_ptr<IBluetoothConnector> connector = std::make_unique<MacOSBluetoothConnector>();
     BluetoothWrapper wrap(std::move(connector));
-    MacOSGUI macOSGUI = MacOSGUI(std::move(wrap));
+    CrossPlatformGUI GUI = CrossPlatformGUI(std::move(wrap));
 
     // Setup window
     glfwSetErrorCallback(glfw_error_callback);
@@ -83,7 +83,7 @@ int main(int, char**)
             // Start the Dear ImGui frame
             ImGui_ImplMetal_NewFrame(renderPassDescriptor);
             ImGui_ImplGlfw_NewFrame();
-            macOSGUI.performGUIPass();
+            GUI.performGUIPass();
 
             // Rendering
             ImGui::Render();

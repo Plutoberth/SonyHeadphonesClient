@@ -8,7 +8,7 @@
 
 EXE = sonyheadphonesclient
 SOURCES = main.mm
-SOURCES += MacOSGUI.cpp MacOSBluetoothConnector.cpp BluetoothWrapper.cpp
+SOURCES += ../GUI_Impls/CrossPlatformGUI.cpp MacOSBluetoothConnector.cpp BluetoothWrapper.cpp
 SOURCES += TimedMessageQueue.cpp CascadiaCodeFont.cpp CommandSerializer.cpp
 SOURCES += ByteMagic.cpp
 SOURCES += ../imgui/examples/imgui_impl_glfw.cpp ../imgui/examples/imgui_impl_metal.mm
@@ -18,7 +18,7 @@ OBJS = $(addsuffix .o, $(basename $(notdir $(SOURCES))))
 LIBS = -framework IOBluetooth -framework Metal -framework MetalKit -framework Cocoa -framework IOKit -framework CoreVideo -framework QuartzCore
 LIBS += -L/usr/local/lib -lglfw
 
-CXXFLAGS = -I../imgui/ -I../imgui/examples/ -I../ -I/usr/local/include
+CXXFLAGS = -I../imgui/ -I../GUI_Impls/ -I../imgui/examples/ -I../ -I/usr/local/include
 CXXFLAGS += -Wall -Wformat -std=c++17 -stdlib=libc++
 CFLAGS = $(CXXFLAGS)
 
@@ -30,6 +30,9 @@ CFLAGS = $(CXXFLAGS)
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 %.o:../imgui/%.cpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+%.o:../GUI_Impls/%.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 %.o:../imgui/examples/%.mm
