@@ -50,7 +50,7 @@ int MacOSBluetoothConnector::send(char* buf, size_t length)
     fprintf(stderr,"Sending Message\n");
 	//write buffer to channel
     [(__bridge IOBluetoothRFCOMMChannel*)rfcommchannel writeSync:(void*)buf length:length];
-	return 1; // what to return here?
+	return length;
 }
 
 
