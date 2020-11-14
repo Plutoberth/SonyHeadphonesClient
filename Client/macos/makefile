@@ -8,7 +8,8 @@
 
 EXE = sonyheadphonesclient
 SOURCES = main.mm
-SOURCES += ../GUI_Impls/CrossPlatformGUI.cpp MacOSBluetoothConnector.cpp BluetoothWrapper.cpp
+SOURCES += ../GUI_Impls/MacOSGUI.cpp ../GUI_Impls/CrossPlatformGUI.cpp
+SOURCES += MacOSBluetoothConnector.cpp BluetoothWrapper.cpp
 SOURCES += TimedMessageQueue.cpp CascadiaCodeFont.cpp CommandSerializer.cpp
 SOURCES += ByteMagic.cpp
 SOURCES += ../imgui/examples/imgui_impl_glfw.cpp ../imgui/examples/imgui_impl_metal.mm
@@ -34,6 +35,9 @@ CFLAGS = $(CXXFLAGS)
 
 %.o:../GUI_Impls/%.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+%.o:../GUI_Impls/%.mm
+	$(CXX) $(CXXFLAGS) -ObjC++ -fobjc-weak -fobjc-arc -c -o $@ $<
 
 %.o:../imgui/examples/%.mm
 	$(CXX) $(CXXFLAGS) -ObjC++ -fobjc-weak -fobjc-arc -c -o $@ $<
