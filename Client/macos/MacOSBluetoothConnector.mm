@@ -55,11 +55,11 @@ MacOSBluetoothConnector::~MacOSBluetoothConnector()
 
 int MacOSBluetoothConnector::send(char* buf, size_t length)
 {
-	printf(stderr,"Sending Message\n");
+	printf("Sending Message\n");
 	for (int n=0; n<length; n++)
 		printf("%d ",buf[n]);
 	printf("\n");
-	
+
 	// write buffer to channel
 	if ( [(__bridge IOBluetoothRFCOMMChannel*)rfcommchannel writeSync:(void*)buf length:length] != kIOReturnSuccess ){
 		fprintf(stderr,"Error - couldn't send command\n");
