@@ -36,21 +36,18 @@ MacOSBluetoothConnector::~MacOSBluetoothConnector()
 // this function fires when the channel receives data
 -(void)rfcommChannelData:(IOBluetoothRFCOMMChannel *)rfcommChannel data:(void *)dataPointer length:(size_t)dataLength
 {
-	// int array[(int)dataLength] = (int *)dataPointer;
 	char* convertedData = (char *)dataPointer;
 	// print the data
 	printf("length: %d\n", dataLength);
 	printf("array length: %d\n", sizeof(convertedData));
-	for (int n=0; n<sizeof(dataPointer); ++n)
+	for (int n=0; n<dataLength; n++)
 		printf("%d ",convertedData[n]);
 	printf("\n");
 
 	delegateCPP->receivedBytes = convertedData;
-	delegateCPP->receivedLength = (int *)dataLength;
+	delegateCPP->receivedLength = dataLength;
 	printf("newdata? %d\n",delegateCPP->wantNewData);
-	if(delegateCPP->wantNewData){
-		delegateCPP->wantNewData = false;
-	}
+	delegateCPP->wantNewData = false;
 }
 
 
@@ -58,7 +55,11 @@ MacOSBluetoothConnector::~MacOSBluetoothConnector()
 
 int MacOSBluetoothConnector::send(char* buf, size_t length)
 {
-	fprintf(stderr,"Sending Message\n");
+	printf(stderr,"Sending Message\n");
+	for (int n=0; n<length; n++)
+		printf("%d ",buf[n]);
+	printf("\n");
+	
 	// write buffer to channel
 	if ( [(__bridge IOBluetoothRFCOMMChannel*)rfcommchannel writeSync:(void*)buf length:length] != kIOReturnSuccess ){
 		fprintf(stderr,"Error - couldn't send command\n");
@@ -123,36 +124,19 @@ int MacOSBluetoothConnector::recv(char* buf, size_t length)
 	// wait for newly received data
 	wantNewData = true;
 
-	int i = 0;
-
-	// run until it has received enough data
-	while (length >= i) {
+	// run until it has received data
+	while (wantNewData) {
 		// run the runLoop so it can actually receive data
-		[runLoop runUntilDate:[NSDate dateWithTimeIntervalSinceNow:1]];
-		if(!wantNewData) {
-			// received some data
-			printf("New data recveived. %d\n",sizeof(receivedBytes) / sizeof(receivedBytes[0]));
-			// fill the buf with the new data
-			for (int j=0;j<sizeof(receivedBytes) / sizeof(receivedBytes[0]);j++){
-				if (i+j<length){ 
-					// buffer isn't full so 
-					buf[i+j] = receivedBytes[j];
-				}
-			}
+		[runLoop runUntilDate:[NSDate dateWithTimeIntervalSinceNow:10]];
+	}
+	printf("New data received. \n");
 
-			i += receivedLength;
-
-			if (length <= i){ // <- this line causes EXC_BAD_ACCESS / segmentation fault
-				// enough data -> stop waiting
-				break;
-			}
-
-			wantNewData = true;
-		}
+	// fill the buf with the new data
+	for (int n=0;n<receivedLength;n++){
+		buf[n] = receivedBytes[n];
 	}
 
-	// buf = receivedBytes;
-	return *receivedLength;
+	return receivedLength;
 }
 
 std::vector<BluetoothDevice> MacOSBluetoothConnector::getConnectedDevices()

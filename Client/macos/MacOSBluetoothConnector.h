@@ -27,7 +27,7 @@ public:
 
 	virtual std::vector<BluetoothDevice> getConnectedDevices() noexcept(false);
 	char* receivedBytes;
-	int* receivedLength;
+	int receivedLength;
 	bool wantNewData = false;
 private:
     void *rfcommDevice;
