@@ -20,10 +20,9 @@ MacOSBluetoothConnector::~MacOSBluetoothConnector()
 
 @implementation AsyncCommDelegate {
 }
-// this function fires when the channel is opened
+
 -(void)rfcommChannelOpenComplete:(IOBluetoothRFCOMMChannel *)rfcommChannel status:(IOReturn)error
 {
-
 	if ( error != kIOReturnSuccess ) {
 		fprintf(stderr,"Error - could not open the RFCOMM channel. Error code = %08x.\n",error);
 		return;
@@ -31,22 +30,12 @@ MacOSBluetoothConnector::~MacOSBluetoothConnector()
 	else{
 		fprintf(stderr,"Connected. Yeah!\n");
 	}
-
 }
-// this function fires when the channel receives data
+
 -(void)rfcommChannelData:(IOBluetoothRFCOMMChannel *)rfcommChannel data:(void *)dataPointer length:(size_t)dataLength
 {
-	char* convertedData = (char *)dataPointer;
-	// print the data
-	printf("length: %d\n", dataLength);
-	printf("array length: %d\n", sizeof(convertedData));
-	for (int n=0; n<dataLength; n++)
-		printf("%d ",convertedData[n]);
-	printf("\n");
-
-	delegateCPP->receivedBytes = convertedData;
+	delegateCPP->receivedBytes = (char*)dataPointer;
 	delegateCPP->receivedLength = dataLength;
-	printf("newdata? %d\n",delegateCPP->wantNewData);
 	delegateCPP->wantNewData = false;
 }
 
@@ -55,17 +44,9 @@ MacOSBluetoothConnector::~MacOSBluetoothConnector()
 
 int MacOSBluetoothConnector::send(char* buf, size_t length)
 {
-	printf("Sending Message\n");
-	for (int n=0; n<length; n++)
-		printf("%d ",buf[n]);
-	printf("\n");
-
-	// write buffer to channel
-	if ( [(__bridge IOBluetoothRFCOMMChannel*)rfcommchannel writeSync:(void*)buf length:length] != kIOReturnSuccess ){
-		fprintf(stderr,"Error - couldn't send command\n");
-	}
-	else {
-		fprintf(stderr,"Send command succesful\n");
+	int error = [(__bridge IOBluetoothRFCOMMChannel*)rfcommchannel writeSync:(void*)buf length:length];
+	if ( error != kIOReturnSuccess ) {
+		fprintf(stderr,"Error - could send bluetooth command. Error code = %08x.\n",error);
 	}
 	return length;
 }
@@ -79,7 +60,7 @@ void MacOSBluetoothConnector::connectToMac(MacOSBluetoothConnector* macOSBluetoo
 	// create new channel
 	IOBluetoothRFCOMMChannel *channel = [[IOBluetoothRFCOMMChannel alloc] init];
 	// create sppServiceid
-	IOBluetoothSDPUUID *sppServiceUUID = [IOBluetoothSDPUUID uuid16: kBluetoothSDPUUID16RFCOMM];
+	IOBluetoothSDPUUID *sppServiceUUID = [IOBluetoothSDPUUID uuidWithBytes:(void*)SERVICE_UUID_IN_BYTES length: 16];
 	// get sppServiceRecord
 	IOBluetoothSDPServiceRecord *sppServiceRecord = [device getServiceRecordForUUID:sppServiceUUID];
 	// get rfcommChannelID from sppServiceRecord
@@ -102,7 +83,6 @@ void MacOSBluetoothConnector::connectToMac(MacOSBluetoothConnector* macOSBluetoo
 		[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:1]];
 	}
 }
-
 void MacOSBluetoothConnector::connect(const std::string& addrStr){
 	// convert mac adress to nsstring
 	NSString *addressNSString = [NSString stringWithCString:addrStr.c_str() encoding:[NSString defaultCStringEncoding]];
@@ -119,17 +99,14 @@ void MacOSBluetoothConnector::connect(const std::string& addrStr){
 
 int MacOSBluetoothConnector::recv(char* buf, size_t length)
 {
-	printf("waiting for newly received data...\n");
-
 	// wait for newly received data
 	wantNewData = true;
 
-	// run until it has received data
+	// wait until it has received data
 	while (wantNewData) {
 		// run the runLoop so it can actually receive data
 		[runLoop runUntilDate:[NSDate dateWithTimeIntervalSinceNow:10]];
 	}
-	printf("New data received. \n");
 
 	// fill the buf with the new data
 	for (int n=0;n<receivedLength;n++){
@@ -173,12 +150,7 @@ void MacOSBluetoothConnector::closeConnection() {
 	// close the channel
 	[chan closeChannel];
 
-	// get the device
-	IOBluetoothDevice *device =(__bridge IOBluetoothDevice*) rfcommDevice;
-	// disconnect from the device
-	// [device closeConnection];
-
-	fprintf(stderr,"closing");
+	printf("closing");
 }
 
 

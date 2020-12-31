@@ -1,16 +1,9 @@
 #pragma once
 #include <stdio.h>
-#include <iostream>
-#include <rpc/rpc.h>
 #include "../IBluetoothConnector.h"
 #include "IOBluetooth/IOBluetooth.h"
-#include <string>
-#include "ByteMagic.h"
-#include <atomic>
-#include <condition_variable>
+#include "Constants.h"
 #include <thread>
-#include <future>
-#include <chrono>
 
 class MacOSBluetoothConnector final : public IBluetoothConnector
 {
@@ -29,10 +22,12 @@ public:
 	char* receivedBytes;
 	int receivedLength;
 	bool wantNewData = false;
+	NSRunLoop * runLoop;
+
 private:
     void *rfcommDevice;
     void *rfcommchannel;
     std::thread* uthread = NULL;
     int running = 0;
-	NSRunLoop * runLoop;
+	
 };
