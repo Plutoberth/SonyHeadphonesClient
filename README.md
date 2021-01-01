@@ -61,7 +61,8 @@ It shouldn't be too much work to add support for a new platform. Open a PR if yo
 
 - [x] Windows
 - [ ] [Linux](https://github.com/Plutoberth/SonyHeadphonesClient/issues/7)
-- [ ] [macOS](https://github.com/Plutoberth/SonyHeadphonesClient/issues/6) - In Progress by semvis123
+- [x] macOS
+
 
 
 ## For Developers
