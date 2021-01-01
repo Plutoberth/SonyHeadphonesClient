@@ -49,9 +49,7 @@ So I reverse-engineered the application (for intercompatibility purposes, of cou
 
 - [x] Ambient Sound Control
 - [ ] Display battery life and fetch existing settings from device
-- [ ] Equalizer
-
-#### If you'd like to implement the equalizer (I can implement the protocol, you'll need to create the GUI), please contact me privately via Twitter at `@Plutoberth`. 
+- [ ] Equalizer 
 
 ### TODO: ADD SCREENSHOTS
 
@@ -64,6 +62,7 @@ It shouldn't be too much work to add support for a new platform. Open a PR if yo
 - [x] Windows
 - [ ] [Linux](https://github.com/Plutoberth/SonyHeadphonesClient/issues/7)
 - [x] macOS
+
 
 
 ## For Developers
@@ -83,10 +82,6 @@ There are two platform dependent parts in the code - the GUI and Bluetooth commu
 For the GUI, you need to copy the relevant parts from ImGui. 
 
 For Bluetooth, you need to implement `IBluetoothConnector` for your desired platform.
-
-## Contact
-
-I prefer to get contacted via issues on this repository. If you have a private question, you may contact me via Twitter at `@Plutoberth`.
 
 <!-- LICENSE -->
 ## License
