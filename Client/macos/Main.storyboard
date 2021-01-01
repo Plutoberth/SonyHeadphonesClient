@@ -131,7 +131,7 @@
                     <window key="window" title="SonyHeadphonesClient" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="IQv-IB-iLA">
                         <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-                        <rect key="contentRect" x="196" y="240" width="480" height="270"/>
+                        <rect key="contentRect" x="197" y="240" width="479" height="270"/>
                         <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1027"/>
                     </window>
                     <connections>
@@ -140,7 +140,7 @@
                 </windowController>
                 <customObject id="Oky-zY-oP4" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="75" y="250"/>
+            <point key="canvasLocation" x="75.5" y="250"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="hIz-AP-VOD">
@@ -150,10 +150,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="423" height="205"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <switch horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" enabled="NO" baseWritingDirection="leftToRight" alignment="left" translatesAutoresizingMaskIntoConstraints="NO" id="cki-vD-gYr">
-                                <rect key="frame" x="18" y="18" width="42" height="25"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                            </switch>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="HVf-Ir-otU">
                                 <rect key="frame" x="252" y="52" width="144" height="16"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
@@ -173,9 +169,9 @@
                                 </textFieldCell>
                             </textField>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="htj-6a-5qY">
-                                <rect key="frame" x="64" y="23" width="140" height="16"/>
+                                <rect key="frame" x="64" y="23" width="341" height="16"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <textFieldCell key="cell" lineBreakMode="clipping" title="Focus on voice" id="3kq-J7-fou">
+                                <textFieldCell key="cell" lineBreakMode="clipping" title="Focus on Voice isn't enabled on this level." id="3kq-J7-fou">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -220,6 +216,13 @@ Source: https://github.com/Plutoberth/SonyHeadphonesClient</string>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
+                            <switch horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" baseWritingDirection="leftToRight" alignment="left" translatesAutoresizingMaskIntoConstraints="NO" id="cki-vD-gYr">
+                                <rect key="frame" x="18" y="18" width="42" height="25"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <connections>
+                                    <action selector="voiceChanged:" target="XfG-lQ-9wD" id="xIC-JR-EL3"/>
+                                </connections>
+                            </switch>
                         </subviews>
                     </view>
                     <connections>
@@ -227,6 +230,8 @@ Source: https://github.com/Plutoberth/SonyHeadphonesClient</string>
                         <outlet property="ANCValueLabel" destination="aux-7E-1O2" id="WV8-JF-9vz"/>
                         <outlet property="connectButton" destination="aqv-Ws-wbl" id="Nb4-ol-PCV"/>
                         <outlet property="connectedLabel" destination="V6f-ZQ-bKY" id="72M-GZ-WnM"/>
+                        <outlet property="focusOnVoice" destination="cki-vD-gYr" id="Pok-RS-3pg"/>
+                        <outlet property="focusOnVoiceLabel" destination="htj-6a-5qY" id="F3I-CK-1Wm"/>
                     </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
