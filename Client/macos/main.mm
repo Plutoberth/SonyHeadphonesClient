@@ -1,5 +1,4 @@
 #include <stdio.h>
-//#import <Cocoa/Cocoa.h>
 #include "MacOSGUI.h"
 #include "MacOSBluetoothConnector.h"
 #include "BluetoothWrapper.h"
@@ -13,10 +12,8 @@ int main(int argc, const char * argv[])
         BluetoothWrapper wrap(std::move(connector));
         // Start the gui
         EnterGUIMainLoop(std::move(wrap));
-        return 1;
-    } catch (const std::exception& e)
-	{
+    } catch (const std::exception& e){
 		printf("%s",e.what());
 	}
-//     return NSApplicationMain(argc, argv);
+    return 1;
 }
