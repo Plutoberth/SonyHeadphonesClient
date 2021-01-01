@@ -1,8 +1,8 @@
 //
 //  AppDelegate.m
-//  test
+//  SonyHeadphonesClient
 //
-//  Created by Sem Vissscher on 01/12/2020.
+//  Created by Sem Visscher on 01/12/2020.
 //
 
 #import "AppDelegate.h"
@@ -13,15 +13,13 @@
 @end
 
 @implementation AppDelegate
-
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
-    // Insert code here to initialize your application
+
 }
 
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
     // Insert code here to tear down your application
 }
-
 
 @end
