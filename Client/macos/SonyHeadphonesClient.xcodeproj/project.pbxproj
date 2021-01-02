@@ -1,0 +1,367 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A87B328B259FAA8B00EA6551 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A87B328A259FAA8B00EA6551 /* Cocoa.framework */; };
+		A87B328E259FAB0E00EA6551 /* IOBluetoothUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A87B328D259FAB0E00EA6551 /* IOBluetoothUI.framework */; };
+		A8DC78EB2576923D00447738 /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = A8DC78EA2576923D00447738 /* main.mm */; };
+		A8DC78EC2576923D00447738 /* MacOSBluetoothConnector.mm in Sources */ = {isa = PBXBuildFile; fileRef = A8DC78E82576923D00447738 /* MacOSBluetoothConnector.mm */; };
+		A8DC78F12576952E00447738 /* BluetoothWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A8DC78EF2576952E00447738 /* BluetoothWrapper.cpp */; };
+		A8DC78F52576953600447738 /* CommandSerializer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A8DC78F32576953600447738 /* CommandSerializer.cpp */; };
+		A8DC78FA2576954100447738 /* TimedMessageQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A8DC78F92576954100447738 /* TimedMessageQueue.cpp */; };
+		A8DC78FF2576967D00447738 /* ByteMagic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A8DC78FD2576967D00447738 /* ByteMagic.cpp */; };
+		A8DC790525769A6600447738 /* IOBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8DC790425769A6600447738 /* IOBluetooth.framework */; };
+		A8DC792C25769C9900447738 /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = A8DC792825769C9900447738 /* AppDelegate.mm */; };
+		A8DC792D25769C9900447738 /* ViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = A8DC792A25769C9900447738 /* ViewController.mm */; };
+		A8DC793225769EA500447738 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A8DC78E92576923D00447738 /* Main.storyboard */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		A87B327A259F69BA00EA6551 /* Constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Constants.h; path = ../Constants.h; sourceTree = "<group>"; };
+		A87B328A259FAA8B00EA6551 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		A87B328D259FAB0E00EA6551 /* IOBluetoothUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOBluetoothUI.framework; path = System/Library/Frameworks/IOBluetoothUI.framework; sourceTree = SDKROOT; };
+		A8DC78E32576922700447738 /* info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = info.plist; sourceTree = "<group>"; };
+		A8DC78E62576922D00447738 /* SonyHeadphonesClient.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SonyHeadphonesClient.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A8DC78E72576923D00447738 /* MacOSBluetoothConnector.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MacOSBluetoothConnector.h; sourceTree = "<group>"; };
+		A8DC78E82576923D00447738 /* MacOSBluetoothConnector.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MacOSBluetoothConnector.mm; sourceTree = "<group>"; };
+		A8DC78E92576923D00447738 /* Main.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
+		A8DC78EA2576923D00447738 /* main.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = main.mm; sourceTree = "<group>"; };
+		A8DC78EE2576950500447738 /* IBluetoothConnector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IBluetoothConnector.h; path = ../IBluetoothConnector.h; sourceTree = "<group>"; };
+		A8DC78EF2576952E00447738 /* BluetoothWrapper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = BluetoothWrapper.cpp; path = ../BluetoothWrapper.cpp; sourceTree = "<group>"; };
+		A8DC78F02576952E00447738 /* BluetoothWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BluetoothWrapper.h; path = ../BluetoothWrapper.h; sourceTree = "<group>"; };
+		A8DC78F32576953600447738 /* CommandSerializer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CommandSerializer.cpp; path = ../CommandSerializer.cpp; sourceTree = "<group>"; };
+		A8DC78F42576953600447738 /* CommandSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CommandSerializer.h; path = ../CommandSerializer.h; sourceTree = "<group>"; };
+		A8DC78F72576954100447738 /* TimedMessageQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TimedMessageQueue.h; path = ../TimedMessageQueue.h; sourceTree = "<group>"; };
+		A8DC78F82576954100447738 /* SingleInstanceFuture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SingleInstanceFuture.h; path = ../SingleInstanceFuture.h; sourceTree = "<group>"; };
+		A8DC78F92576954100447738 /* TimedMessageQueue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TimedMessageQueue.cpp; path = ../TimedMessageQueue.cpp; sourceTree = "<group>"; };
+		A8DC78FD2576967D00447738 /* ByteMagic.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ByteMagic.cpp; path = ../ByteMagic.cpp; sourceTree = "<group>"; };
+		A8DC78FE2576967D00447738 /* ByteMagic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ByteMagic.h; path = ../ByteMagic.h; sourceTree = "<group>"; };
+		A8DC790425769A6600447738 /* IOBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOBluetooth.framework; path = System/Library/Frameworks/IOBluetooth.framework; sourceTree = SDKROOT; };
+		A8DC792825769C9900447738 /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AppDelegate.mm; sourceTree = "<group>"; };
+		A8DC792925769C9900447738 /* ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		A8DC792A25769C9900447738 /* ViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ViewController.mm; sourceTree = "<group>"; };
+		A8DC792B25769C9900447738 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A8DC78C125757BF300447738 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A87B328E259FAB0E00EA6551 /* IOBluetoothUI.framework in Frameworks */,
+				A87B328B259FAA8B00EA6551 /* Cocoa.framework in Frameworks */,
+				A8DC790525769A6600447738 /* IOBluetooth.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A8DC78BB25757BF300447738 = {
+			isa = PBXGroup;
+			children = (
+				A87B327A259F69BA00EA6551 /* Constants.h */,
+				A8DC78E72576923D00447738 /* MacOSBluetoothConnector.h */,
+				A8DC78E82576923D00447738 /* MacOSBluetoothConnector.mm */,
+				A8DC78EA2576923D00447738 /* main.mm */,
+				A8DC78E92576923D00447738 /* Main.storyboard */,
+				A8DC78E32576922700447738 /* info.plist */,
+				A8DC78E62576922D00447738 /* SonyHeadphonesClient.app */,
+				A8DC78EE2576950500447738 /* IBluetoothConnector.h */,
+				A8DC78EF2576952E00447738 /* BluetoothWrapper.cpp */,
+				A8DC78F02576952E00447738 /* BluetoothWrapper.h */,
+				A8DC78F32576953600447738 /* CommandSerializer.cpp */,
+				A8DC78F42576953600447738 /* CommandSerializer.h */,
+				A8DC78F82576954100447738 /* SingleInstanceFuture.h */,
+				A8DC78F92576954100447738 /* TimedMessageQueue.cpp */,
+				A8DC78F72576954100447738 /* TimedMessageQueue.h */,
+				A8DC78FD2576967D00447738 /* ByteMagic.cpp */,
+				A8DC78FE2576967D00447738 /* ByteMagic.h */,
+				A8DC792B25769C9900447738 /* AppDelegate.h */,
+				A8DC792825769C9900447738 /* AppDelegate.mm */,
+				A8DC792925769C9900447738 /* ViewController.h */,
+				A8DC792A25769C9900447738 /* ViewController.mm */,
+				A8DC790325769A6600447738 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		A8DC790325769A6600447738 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A87B328D259FAB0E00EA6551 /* IOBluetoothUI.framework */,
+				A87B328A259FAA8B00EA6551 /* Cocoa.framework */,
+				A8DC790425769A6600447738 /* IOBluetooth.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A8DC78C325757BF300447738 /* SonyHeadphonesClient */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A8DC78D825757BF500447738 /* Build configuration list for PBXNativeTarget "SonyHeadphonesClient" */;
+			buildPhases = (
+				A8DC78C025757BF300447738 /* Sources */,
+				A8DC78C125757BF300447738 /* Frameworks */,
+				A8DC78C225757BF300447738 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SonyHeadphonesClient;
+			productName = SonyHeadphonesClient;
+			productReference = A8DC78E62576922D00447738 /* SonyHeadphonesClient.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A8DC78BC25757BF300447738 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1230;
+				TargetAttributes = {
+					A8DC78C325757BF300447738 = {
+						CreatedOnToolsVersion = 12.2;
+					};
+				};
+			};
+			buildConfigurationList = A8DC78BF25757BF300447738 /* Build configuration list for PBXProject "SonyHeadphonesClient" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = A8DC78BB25757BF300447738;
+			productRefGroup = A8DC78BB25757BF300447738;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A8DC78C325757BF300447738 /* SonyHeadphonesClient */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A8DC78C225757BF300447738 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A8DC793225769EA500447738 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A8DC78C025757BF300447738 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A8DC78EB2576923D00447738 /* main.mm in Sources */,
+				A8DC78EC2576923D00447738 /* MacOSBluetoothConnector.mm in Sources */,
+				A8DC792D25769C9900447738 /* ViewController.mm in Sources */,
+				A8DC78F12576952E00447738 /* BluetoothWrapper.cpp in Sources */,
+				A8DC78FA2576954100447738 /* TimedMessageQueue.cpp in Sources */,
+				A8DC78F52576953600447738 /* CommandSerializer.cpp in Sources */,
+				A8DC78FF2576967D00447738 /* ByteMagic.cpp in Sources */,
+				A8DC792C25769C9900447738 /* AppDelegate.mm in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		A8DC78D625757BF500447738 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		A8DC78D725757BF500447738 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		A8DC78D925757BF500447738 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CODE_SIGN_ENTITLEMENTS = SonyHeadphonesClient.entitlements;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = "$(SRCROOT)/info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				OTHER_CPLUSPLUSFLAGS = (
+					"-std=c++17",
+					"-stdlib=libc++",
+					"$(OTHER_CFLAGS)",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.semvis123.SonyHeadphonesClient;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		A8DC78DA25757BF500447738 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CODE_SIGN_ENTITLEMENTS = SonyHeadphonesClient.entitlements;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = "$(SRCROOT)/info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				OTHER_CPLUSPLUSFLAGS = (
+					"-std=c++17",
+					"-stdlib=libc++",
+					"$(OTHER_CFLAGS)",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.semvis123.SonyHeadphonesClient;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A8DC78BF25757BF300447738 /* Build configuration list for PBXProject "SonyHeadphonesClient" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A8DC78D625757BF500447738 /* Debug */,
+				A8DC78D725757BF500447738 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A8DC78D825757BF500447738 /* Build configuration list for PBXNativeTarget "SonyHeadphonesClient" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A8DC78D925757BF500447738 /* Debug */,
+				A8DC78DA25757BF500447738 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = A8DC78BC25757BF300447738 /* Project object */;
+}

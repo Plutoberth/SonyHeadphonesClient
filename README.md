@@ -77,7 +77,7 @@ Use the provided solution file.
 
 #### macOS
 
-Navigate to the `macos` folder inside `Client`, run this command: `make`.
+Use the provided xcodeproj file.
 
 ### Adding a new platform
 
