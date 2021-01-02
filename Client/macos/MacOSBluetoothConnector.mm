@@ -147,6 +147,7 @@ void MacOSBluetoothConnector::disconnect() noexcept
 void MacOSBluetoothConnector::closeConnection() {
 	// get the channel
 	IOBluetoothRFCOMMChannel *chan = (__bridge IOBluetoothRFCOMMChannel*) rfcommchannel;
+	[chan setDelegate: nil];
 	// close the channel
 	[chan closeChannel];
 
