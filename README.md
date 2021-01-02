@@ -75,6 +75,10 @@ It shouldn't be too much work to add support for a new platform. Open a PR if yo
 
 Use the provided solution file.
 
+#### macOS
+
+Use the provided xcodeproj file.
+
 ### Adding a new platform
 
 There are two platform dependent parts in the code - the GUI and Bluetooth communication. 
