@@ -22,6 +22,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		A863B14925A11DF500101F3B /* SonyHeadphonesClient.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SonyHeadphonesClient.entitlements; sourceTree = "<group>"; };
 		A87B327A259F69BA00EA6551 /* Constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Constants.h; path = ../Constants.h; sourceTree = "<group>"; };
 		A87B328A259FAA8B00EA6551 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		A87B328D259FAB0E00EA6551 /* IOBluetoothUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOBluetoothUI.framework; path = System/Library/Frameworks/IOBluetoothUI.framework; sourceTree = SDKROOT; };
@@ -65,6 +66,7 @@
 		A8DC78BB25757BF300447738 = {
 			isa = PBXGroup;
 			children = (
+				A863B14925A11DF500101F3B /* SonyHeadphonesClient.entitlements */,
 				A87B327A259F69BA00EA6551 /* Constants.h */,
 				A8DC78E72576923D00447738 /* MacOSBluetoothConnector.h */,
 				A8DC78E82576923D00447738 /* MacOSBluetoothConnector.mm */,
@@ -301,6 +303,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = "$(SRCROOT)/info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -325,6 +328,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = "$(SRCROOT)/info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
