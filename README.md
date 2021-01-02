@@ -75,6 +75,10 @@ It shouldn't be too much work to add support for a new platform. Open a PR if yo
 
 Use the provided solution file.
 
+#### macOS
+
+Navigate to the `macos` folder inside `Client`, run this command: `make`.
+
 ### Adding a new platform
 
 There are two platform dependent parts in the code - the GUI and Bluetooth communication. 
