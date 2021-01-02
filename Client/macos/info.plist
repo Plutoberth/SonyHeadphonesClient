@@ -16,6 +16,8 @@
 	<string>public.app-category.utilities</string>
 	<key>NSHighResolutionCapable</key>
 	<string>True</string>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>This app uses Bluetooth in order to connect to your headphones.</string>
 	<key>NSMainStoryboardFile</key>
 	<string>Main</string>
 </dict>
