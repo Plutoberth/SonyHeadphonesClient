@@ -4,6 +4,9 @@
 #include "IOBluetooth/IOBluetooth.h"
 #include "Constants.h"
 #include <thread>
+#include <atomic>
+#include <mutex>
+#include <condition_variable>
 
 class MacOSBluetoothConnector final : public IBluetoothConnector
 {
