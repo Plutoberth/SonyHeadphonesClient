@@ -21,13 +21,12 @@ public:
 	virtual std::vector<BluetoothDevice> getConnectedDevices() noexcept(false);
 	char* receivedBytes;
 	int receivedLength;
-	bool wantNewData = false;
-	NSRunLoop * runLoop;
+    std::mutex receiveDataMutex;
+    std::condition_variable receiveDataConditionVariable;
+    std::atomic<bool> running = false;
 
 private:
     void *rfcommDevice;
     void *rfcommchannel;
     std::thread* uthread = NULL;
-    int running = 0;
-	
 };

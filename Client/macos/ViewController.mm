@@ -62,7 +62,16 @@
     }
 }
 
-- (IBAction)sliderChanged:(id)sender {
+- (IBAction)sendData:(id)sender {
+    if (!bt.isConnected()){
+        [ANCSlider setEnabled:FALSE];
+        [ANCSlider setIntValue:0];
+        [focusOnVoice setEnabled:FALSE];
+        [connectButton setTitle:@"Connect to Bluetooth device"];
+        [connectedLabel setStringValue:@"Not connected, please reconnect."];
+        return;
+    }
+
     [ANCValueLabel setStringValue:ANCSlider.stringValue];
     if (ANCSlider.intValue >= MINIMUM_VOICE_FOCUS_STEP)
     {
@@ -85,19 +94,4 @@
                                                                ANCSlider.intValue
                                                                ));
 }
-
-- (IBAction)voiceChanged:(id)sender {
-    // send current settings
-    [ANCValueLabel setStringValue:ANCSlider.stringValue];
-    auto ncAsmEffect = NC_ASM_EFFECT::ADJUSTMENT_COMPLETION;
-    auto asmId = focusOnVoice.state == NSControlStateValueOn ? ASM_ID::VOICE : ASM_ID::NORMAL;
-    bt.sendCommand(CommandSerializer::serializeNcAndAsmSetting(
-                                                               ncAsmEffect,
-                                                               NC_ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
-                                                               ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
-                                                               asmId,
-                                                               ANCSlider.intValue
-                                                               ));
-}
-
 @end

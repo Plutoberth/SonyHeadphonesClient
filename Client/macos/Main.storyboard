@@ -184,7 +184,7 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <sliderCell key="cell" enabled="NO" state="on" alignment="left" maxValue="19" tickMarkPosition="below" numberOfTickMarks="20" allowsTickMarkValuesOnly="YES" sliderType="linear" id="q5G-me-sXi"/>
                                 <connections>
-                                    <action selector="sliderChanged:" target="XfG-lQ-9wD" id="6GU-gS-j49"/>
+                                    <action selector="sendData:" target="XfG-lQ-9wD" id="5p1-OX-wuC"/>
                                 </connections>
                             </slider>
                             <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="aqv-Ws-wbl">
@@ -210,7 +210,7 @@ Source: https://github.com/Plutoberth/SonyHeadphonesClient</string>
                                 </textFieldCell>
                             </textField>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="V6f-ZQ-bKY">
-                                <rect key="frame" x="18" y="96" width="243" height="16"/>
+                                <rect key="frame" x="18" y="96" width="387" height="16"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <textFieldCell key="cell" lineBreakMode="clipping" title="Not connected" id="YBf-lp-MdN">
                                     <font key="font" metaFont="system"/>
@@ -222,7 +222,7 @@ Source: https://github.com/Plutoberth/SonyHeadphonesClient</string>
                                 <rect key="frame" x="18" y="18" width="42" height="25"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <connections>
-                                    <action selector="voiceChanged:" target="XfG-lQ-9wD" id="xIC-JR-EL3"/>
+                                    <action selector="sendData:" target="XfG-lQ-9wD" id="KQd-WA-OuN"/>
                                 </connections>
                             </switch>
                         </subviews>
@@ -238,7 +238,7 @@ Source: https://github.com/Plutoberth/SonyHeadphonesClient</string>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="76" y="716"/>
+            <point key="canvasLocation" x="75.5" y="715.5"/>
         </scene>
     </scenes>
 </document>
