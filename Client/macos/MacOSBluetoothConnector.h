@@ -22,7 +22,7 @@ public:
 	virtual void closeConnection();
 
 	virtual std::vector<BluetoothDevice> getConnectedDevices() noexcept(false);
-	char* receivedBytes;
+    std::vector<unsigned char> receivedBytes;
 	int receivedLength;
     std::mutex receiveDataMutex;
     std::condition_variable receiveDataConditionVariable;
