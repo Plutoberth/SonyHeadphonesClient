@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
     <dependencies>
+        <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="17701"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -153,7 +154,7 @@
                         <subviews>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="HVf-Ir-otU">
                                 <rect key="frame" x="252" y="52" width="144" height="16"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                 <textFieldCell key="cell" lineBreakMode="clipping" title="Ambient Sound Level:" id="e00-m9-yK3">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -162,17 +163,8 @@
                             </textField>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="aux-7E-1O2">
                                 <rect key="frame" x="392" y="52" width="33" height="16"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                 <textFieldCell key="cell" lineBreakMode="clipping" title="0" id="cRP-Qr-45A">
-                                    <font key="font" metaFont="system"/>
-                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                </textFieldCell>
-                            </textField>
-                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="htj-6a-5qY">
-                                <rect key="frame" x="64" y="23" width="341" height="16"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <textFieldCell key="cell" lineBreakMode="clipping" title="Focus on Voice isn't enabled on this level." id="3kq-J7-fou">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -180,7 +172,7 @@
                             </textField>
                             <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="O6v-na-xL2">
                                 <rect key="frame" x="18" y="44" width="230" height="28"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                 <sliderCell key="cell" enabled="NO" state="on" alignment="left" maxValue="19" tickMarkPosition="below" numberOfTickMarks="20" allowsTickMarkValuesOnly="YES" sliderType="linear" id="q5G-me-sXi"/>
                                 <connections>
                                     <action selector="sendData:" target="XfG-lQ-9wD" id="5p1-OX-wuC"/>
@@ -188,7 +180,7 @@
                             </slider>
                             <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="aqv-Ws-wbl">
                                 <rect key="frame" x="13" y="112" width="397" height="32"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <buttonCell key="cell" type="push" title="Connect to Bluetooth device" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="FJH-jh-019">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -197,9 +189,9 @@
                                     <action selector="connectToDevice:" target="XfG-lQ-9wD" id="BGg-DM-5ot"/>
                                 </connections>
                             </button>
-                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="T72-Gf-fe7">
+                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="T72-Gf-fe7">
                                 <rect key="frame" x="18" y="147" width="387" height="38"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <textFieldCell key="cell" selectable="YES" id="402-em-glw">
                                     <font key="font" metaFont="system"/>
                                     <string key="title">! This product is not affiliated with Sony. Use at your own risk. !
@@ -210,20 +202,24 @@ Source: https://github.com/Plutoberth/SonyHeadphonesClient</string>
                             </textField>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="V6f-ZQ-bKY">
                                 <rect key="frame" x="18" y="96" width="387" height="16"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                 <textFieldCell key="cell" lineBreakMode="clipping" title="Not connected" id="YBf-lp-MdN">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <switch horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" baseWritingDirection="leftToRight" alignment="left" translatesAutoresizingMaskIntoConstraints="NO" id="cki-vD-gYr">
-                                <rect key="frame" x="18" y="18" width="42" height="25"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ALy-EG-jxf">
+                                <rect key="frame" x="18" y="19" width="279" height="18"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <buttonCell key="cell" type="check" title="Focus on Voice isn't enabled on this level." bezelStyle="regularSquare" imagePosition="left" enabled="NO" inset="2" id="MPt-8r-xfv">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
                                 <connections>
-                                    <action selector="sendData:" target="XfG-lQ-9wD" id="KQd-WA-OuN"/>
+                                    <action selector="sendData:" target="XfG-lQ-9wD" id="VS7-xg-wZb"/>
                                 </connections>
-                            </switch>
+                            </button>
                         </subviews>
                     </view>
                     <connections>
@@ -231,8 +227,7 @@ Source: https://github.com/Plutoberth/SonyHeadphonesClient</string>
                         <outlet property="ANCValueLabel" destination="aux-7E-1O2" id="WV8-JF-9vz"/>
                         <outlet property="connectButton" destination="aqv-Ws-wbl" id="Nb4-ol-PCV"/>
                         <outlet property="connectedLabel" destination="V6f-ZQ-bKY" id="72M-GZ-WnM"/>
-                        <outlet property="focusOnVoice" destination="cki-vD-gYr" id="Pok-RS-3pg"/>
-                        <outlet property="focusOnVoiceLabel" destination="htj-6a-5qY" id="F3I-CK-1Wm"/>
+                        <outlet property="focusOnVoice" destination="ALy-EG-jxf" id="blO-Rb-V33"/>
                     </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>

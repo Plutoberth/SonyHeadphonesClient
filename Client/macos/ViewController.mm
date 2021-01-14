@@ -8,7 +8,7 @@
 #import "ViewController.h"
 
 @implementation ViewController
-@synthesize connectedLabel, connectButton, ANCSlider, ANCValueLabel, focusOnVoice, focusOnVoiceLabel;
+@synthesize connectedLabel, connectButton, ANCSlider, ANCValueLabel, focusOnVoice;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -75,12 +75,12 @@
     [ANCValueLabel setStringValue:ANCSlider.stringValue];
     if (ANCSlider.intValue >= MINIMUM_VOICE_FOCUS_STEP)
     {
-        [focusOnVoiceLabel setStringValue:@"Focus on Voice"];
+        [focusOnVoice setTitle:@"Focus on Voice"];
         [focusOnVoice setEnabled:TRUE];
     }
     else
     {
-        [focusOnVoiceLabel setStringValue:@"Focus on Voice isn't enabled on this level."];
+        [focusOnVoice setTitle:@"Focus on Voice isn't enabled on this level."];
         [focusOnVoice setEnabled:FALSE];
     }
     // send current settings
