@@ -7,6 +7,7 @@
 #include <atomic>
 #include <mutex>
 #include <condition_variable>
+#include <deque>
 
 class MacOSBluetoothConnector final : public IBluetoothConnector
 {
@@ -22,8 +23,7 @@ public:
     virtual void closeConnection();
     
     virtual std::vector<BluetoothDevice> getConnectedDevices() noexcept(false);
-    std::vector<unsigned char> receivedBytes;
-    int receivedLength;
+    std::deque<std::vector<unsigned char>> receivedBytes;
     std::mutex receiveDataMutex;
     std::condition_variable receiveDataConditionVariable;
     std::atomic<bool> running = false;

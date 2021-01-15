@@ -29,9 +29,9 @@ MacOSBluetoothConnector::~MacOSBluetoothConnector()
     std::lock_guard<std::mutex> g(delegateCPP->receiveDataMutex);
     
     unsigned char* buffer = (unsigned char*)dataPointer;
-    delegateCPP->receivedBytes.assign(buffer, buffer+dataLength);
+    std::vector<unsigned char> vectorBuffer(buffer, buffer+dataLength);
     
-    delegateCPP->receivedLength = (int)dataLength;
+    delegateCPP->receivedBytes.push_back(vectorBuffer);
     delegateCPP->receiveDataConditionVariable.notify_one();
 }
 
@@ -91,16 +91,15 @@ void MacOSBluetoothConnector::connect(const std::string& addrStr){
 int MacOSBluetoothConnector::recv(char* buf, size_t length)
 {
     // wait for newly received data
-    receivedLength = 0;
     std::unique_lock<std::mutex> g(receiveDataMutex);
-    receiveDataConditionVariable.wait(g, [this]{ return receivedLength!=0; });
+    receiveDataConditionVariable.wait(g, [this]{ return !receivedBytes.empty(); });
     
     // fill the buf with the new data
-    unsigned char *tempBuffer = receivedBytes.data();
-    receivedBytes.clear();
+    std::vector<unsigned char> receivedVector = receivedBytes.front();
+    receivedBytes.pop_front();
     
-    std::memcpy(buf,tempBuffer, fmin(length, receivedLength));
-    return fmin(length, receivedLength);
+    std::memcpy(buf, receivedVector.data(), receivedVector.size());
+    return (int)receivedVector.size();
 }
 
 std::vector<BluetoothDevice> MacOSBluetoothConnector::getConnectedDevices()
