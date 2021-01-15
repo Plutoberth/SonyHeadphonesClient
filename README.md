@@ -17,6 +17,8 @@
 
 ![Program Showcase](https://github.com/Plutoberth/SonyHeadphonesClient/blob/master/static/showcase.gif)
 
+![Donations Badge](https://yourdonation.rocks/images/badge.svg)](https://paypal.me/plutoberth)
+
 <!-- TABLE OF CONTENTS -->
 ## Table of Contents
 
@@ -42,14 +44,14 @@ You can download compiled versions of the client from the [releases page](https:
 
 ## Motivation
 
-I recently bought the WH-1000-XM3s, and I was annoyed by the fact that I couldn't change their settings while using my PC. 
+I recently bought the WH-1000-XM3s, and I was annoyed by the fact that I couldn't change their settings while using my PC.
 So I reverse-engineered the application (for intercompatibility purposes, of course), defined the protocol, and created with an alternative application with [Mr-M33533K5](https://github.com/Mr-M33533K5).
 
 ## Features
 
 - [x] Ambient Sound Control
 - [ ] Display battery life and fetch existing settings from device
-- [ ] Equalizer 
+- [ ] Equalizer
 
 ### TODO: ADD SCREENSHOTS
 
@@ -76,9 +78,9 @@ Use the provided solution file.
 
 ### Adding a new platform
 
-There are two platform dependent parts in the code - the GUI and Bluetooth communication. 
+There are two platform dependent parts in the code - the GUI and Bluetooth communication.
 
-For the GUI, you need to copy the relevant parts from ImGui. 
+For the GUI, you need to copy the relevant parts from ImGui.
 
 For Bluetooth, you need to implement `IBluetoothConnector` for your desired platform.
 
