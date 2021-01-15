@@ -1,23 +1,16 @@
-<!-- PROJECT SHIELDS -->
-<!-- [![Contributors][contributors-shield]]() -->
-
-<!-- PROJECT LOGO -->
-<p align="center">
+<p class="aligncenter">
   <a href="https://github.com/Plutoberth/SonyHeadphonesClient">
     <!-- img src="" alt="Logo" width="80" height="80"-->
   </a>
 
   <h1 align="center">Sony Headphones Client</h1>
 
-  <p align="center">
-    This project features a PC alternative for the mobile-only Sony Headphones app.
-    <br />
-  </p>
+  This project features a PC alternative for the mobile-only Sony Headphones app.
+  <br/><br/>
+  <img width="650" src="static/showcase.gif" alt="Program Showcase"><p> <br/>
+  <a href="https://paypal.me/plutoberth"><img width="110" src="static/badge.svg" alt="Donate" class="center"/></a>
+  <br/>
 </p>
-
-![Program Showcase](https://github.com/Plutoberth/SonyHeadphonesClient/blob/master/static/showcase.gif)
-
-![Donations Badge](https://yourdonation.rocks/images/badge.svg)](https://paypal.me/plutoberth)
 
 <!-- TABLE OF CONTENTS -->
 ## Table of Contents
