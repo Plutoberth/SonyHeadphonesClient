@@ -98,8 +98,16 @@ int MacOSBluetoothConnector::recv(char* buf, size_t length)
     std::vector<unsigned char> receivedVector = receivedBytes.front();
     receivedBytes.pop_front();
     
-    std::memcpy(buf, receivedVector.data(), receivedVector.size());
-    return (int)receivedVector.size();
+    // copy the first amount of bytes
+    std::memcpy(buf, receivedVector.data(), std::min(length, (size_t)receivedVector.size()));
+    
+    // too much data, save it for next time
+    if (receivedVector.size() > length){
+        receivedVector.erase(receivedVector.begin(), receivedVector.begin() + receivedVector.size() - length);
+        receivedBytes.push_front(receivedVector);
+    }
+    
+    return (int)std::min(length, (size_t)receivedVector.size());
 }
 
 std::vector<BluetoothDevice> MacOSBluetoothConnector::getConnectedDevices()
