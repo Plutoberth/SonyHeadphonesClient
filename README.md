@@ -17,7 +17,7 @@
 
 ![Program Showcase](https://github.com/Plutoberth/SonyHeadphonesClient/blob/master/static/showcase.gif)
 
-![Donations Badge](https://yourdonation.rocks/images/badge.svg)](https://paypal.me/plutoberth)
+![Donations Badge](https://yourdonation.rocks/images/badge.svg)(https://paypal.me/plutoberth)
 
 <!-- TABLE OF CONTENTS -->
 ## Table of Contents
