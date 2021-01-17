@@ -18,115 +18,63 @@
 
 #define DEV_ADDR "38:18:4C:DA:A0:C4" // Hardcoded MAC address of service device
 
-
-// https://stackoverflow.com/questions/41130180/how-to-connect-from-linux-to-android-bluetooth-socket
-uint8_t
-getServiceChannel(
-    uint8_t *uuid) // uuid of service as 16 bytes
+uint8_t getServiceChannel(const char *dev_addr, uint8_t *uuid128)
 {
-  sdp_session_t *s;
+  int status;
+  bdaddr_t target;
   uuid_t svc_uuid;
-  sdp_list_t *response_list, *search_list, *attrid_list, *r;
-  int range;
-  int n;
-  uint8_t addr[6]; // define my own addr type
-  uint8_t chan = 0;
+  sdp_list_t *response_list, *search_list, *attrid_list;
+  sdp_session_t *session = 0;
+  uint32_t range = 0x0000ffff;
+  uint8_t port = 0;
 
-  // CONNECT TO SDP SERVER
-  // (Note: device must be ON but server need not be running)
-  str2ba(DEV_ADDR, (bdaddr_t *)&addr);
+  str2ba(dev_addr, &target);
+
+  /* connect to the SDP server running on the remote machine */
   const bdaddr_t bdaddr_any = {{0, 0, 0, 0, 0, 0}};
-  s = sdp_connect(&bdaddr_any, (bdaddr_t *)&addr, SDP_RETRY_IF_BUSY);
-  if (!s)
+  session = sdp_connect(&bdaddr_any, &target, SDP_RETRY_IF_BUSY);
+
+  sdp_uuid128_create(&svc_uuid, uuid128);
+  search_list = sdp_list_append(0, &svc_uuid);
+  attrid_list = sdp_list_append(0, &range);
+
+  // get a list of service records that have UUID 0xabcd
+  response_list = NULL;
+  status = sdp_service_search_attr_req(session, search_list,
+                                       SDP_ATTR_REQ_RANGE, attrid_list, &response_list);
+
+  if (status == 0)
   {
-    fprintf(stderr, "can't connect to sdp server\n");
-    return (0);
-  }
+    sdp_list_t *proto_list = NULL;
+    sdp_list_t *r = response_list;
 
-  // CREATE QUERY LISTS
-  sdp_uuid128_create(&svc_uuid, uuid);
-  search_list = sdp_list_append(NULL, &svc_uuid);
-
-  range = 0x0000ffff; // start at 0000, end at ffff
-  attrid_list = sdp_list_append(NULL, &range);
-
-  // SEARCH FOR RECORDS
-  // (Note: Server must be running)
-  n = sdp_service_search_attr_req(
-      s, search_list, SDP_ATTR_REQ_RANGE, attrid_list, &response_list);
-  if (n)
-  {
-    fprintf(stderr, "search failed.\n");
-    return (0);
-    ;
-  }
-
-  // CHECK IF ANY RESPONSES
-  n = sdp_list_len(response_list);
-  if (n <= 0)
-  {
-    fprintf(stderr, "no responses.\n");
-    return (0);
-    ;
-  }
-
-  // PROCESS RESPONSES
-  r = response_list;
-  while (r)
-  { // loop thru all responses
-    sdp_record_t *rec;
-    sdp_list_t *proto_list, *p;
-    rec = (sdp_record_t *)r->data;
-    n = sdp_get_access_protos(rec, &proto_list);
-    if (n)
+    // go through each of the service records
+    for (; r; r = r->next)
     {
-      fprintf(stderr, "can't get access protocols.\n");
-      return (0);
-    }
-    p = proto_list;
-    while (p)
-    { // loop thru all protocols
-      sdp_list_t *pds;
-      int proto = 0;
-      pds = (sdp_list_t *)p->data;
-      while (pds)
-      { // loop thru all pds
-        sdp_data_t *d;
-        int dtd;
-        d = (sdp_data_t *)pds->data; // get data ptr of pds
-        while (d)
-        {               // loop over all data
-          dtd = d->dtd; // get dtd of data
-          switch (dtd)
-          { // which dtd?
-          case SDP_UUID16:
-          case SDP_UUID32:
-          case SDP_UUID128:
-            proto = sdp_uuid_to_proto(&d->val.uuid); // get proto #
-            break;
-          case SDP_UINT8:
-            if (proto == RFCOMM_UUID)
-            {                      // proto is rfcomm?
-              chan = d->val.uint8; // save chan num
-            }
-            break;
-          }
-          d = d->next; // advance to next data unit
-        }
+      sdp_record_t *rec = (sdp_record_t *)r->data;
 
-        pds = pds->next; // advance to next pds
+      // get a list of the protocol sequences
+      if (sdp_get_access_protos(rec, &proto_list) == 0)
+      {
+        // get the RFCOMM port number
+        port = sdp_get_proto_port(proto_list, RFCOMM_UUID);
+
+        sdp_list_free(proto_list, 0);
       }
-      sdp_list_free((sdp_list_t *)p->data, 0);
-
-      p = p->next; // advance to next protocol
+      sdp_record_free(rec);
     }
-    sdp_list_free(proto_list, 0);
+  }
+  sdp_list_free(response_list, 0);
+  sdp_list_free(search_list, 0);
+  sdp_list_free(attrid_list, 0);
+  sdp_close(session);
 
-    r = r->next; // advance to next response
+  if (port != 0)
+  {
+    printf("found service running on RFCOMM port %d\n", port);
   }
 
-  return chan;
-  // Return chan number [1-30] or 0 if not found
+  return port;
 }
 
 LinuxBluetoothConnector::LinuxBluetoothConnector()
@@ -183,7 +131,7 @@ void LinuxBluetoothConnector::connect(const std::string &addrStr)
 
   // set the connection parameters (who to connect to)
   addr.rc_family = AF_BLUETOOTH;
-  uint8_t channel = getServiceChannel(SERVICE_UUID_IN_BYTES);
+  uint8_t channel = getServiceChannel(DEV_ADDR, SERVICE_UUID_IN_BYTES);
   printf("channel: %d\n", channel);
   addr.rc_channel = channel;
   str2ba(dest, &addr.rc_bdaddr);
@@ -191,8 +139,8 @@ void LinuxBluetoothConnector::connect(const std::string &addrStr)
   // connect to server
   status = ::connect(this->_socket, (struct sockaddr *)&addr, sizeof(addr));
 
-
-  if (status < 0){
+  if (status < 0)
+  {
     // TODO: add error/exception
     return;
   }
