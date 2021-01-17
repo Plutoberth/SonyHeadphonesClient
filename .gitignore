@@ -525,5 +525,8 @@ MigrationBackup/
 # End of https://www.toptal.com/developers/gitignore/api/c++,visualstudio,python
 Client/imgui.ini
 
+# vscode
+.vscode/
+
 # linux build
 Client/linux/sonyheadphonesclient.build/
