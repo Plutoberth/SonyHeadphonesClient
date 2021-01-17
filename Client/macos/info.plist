@@ -20,5 +20,7 @@
 	<string>This app uses Bluetooth in order to connect to your headphones.</string>
 	<key>NSMainStoryboardFile</key>
 	<string>Main</string>
+	<key>NSPrincipalClass</key>
+	<string>NSApplication</string>
 </dict>
 </plist>
