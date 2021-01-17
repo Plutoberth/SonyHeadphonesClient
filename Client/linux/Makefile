@@ -9,7 +9,7 @@
 EXE = sonyheadphonesclient
 SOURCES = main.cpp
 SOURCES += ../GUI_Impls/LinuxGUI.cpp ../GUI_Impls/CrossPlatformGUI.cpp
-SOURCES += LinuxBluetoothConnector.cpp BluetoothWrapper.cpp
+SOURCES += LinuxBluetoothConnector.cpp BluetoothWrapper.cpp DBusHelper.cpp
 SOURCES += TimedMessageQueue.cpp CascadiaCodeFont.cpp CommandSerializer.cpp
 SOURCES += ByteMagic.cpp
 SOURCES += ../imgui/examples/imgui_impl_glfw.cpp ../imgui/examples/imgui_impl_opengl3.cpp
@@ -20,12 +20,13 @@ LIBS += -L/usr/local/lib -lglfw -lpthread
 
 CXXFLAGS = -I../imgui/ -I../GUI_Impls/ -I../imgui/examples/ -I../ -I/usr/local/include
 CXXFLAGS += -Wall -Wformat -std=c++17
-CFLAGS = $(CXXFLAGS)
-
 CXXFLAGS += -DIMGUI_IMPL_OPENGL_LOADER_GLEW
-LIBS += -lGLEW -lbluetooth 
-LIBS += -lGL `pkg-config --static --libs glfw3`
 CXXFLAGS += `pkg-config --cflags glfw3`
+CXXFLAGS += `pkg-config --cflags dbus-1`
+
+CFLAGS = $(CXXFLAGS)
+LIBS += -lGLEW -lbluetooth -ldbus-1
+LIBS += -lGL `pkg-config --static --libs glfw3`
 
 %.o:%.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
