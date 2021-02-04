@@ -9,6 +9,7 @@
 #import "AppDelegate.h"
 
 BluetoothWrapper bt = (BluetoothWrapper)nil;
+NSStatusItem* statusItem;
 
 @interface ViewController : NSViewController
 @property (weak, nonatomic) IBOutlet NSTextField *connectedLabel;

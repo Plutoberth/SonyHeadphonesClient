@@ -151,5 +151,6 @@ void MacOSBluetoothConnector::closeConnection() {
 
 bool MacOSBluetoothConnector::isConnected() noexcept
 {
-    return running;
+    IOBluetoothRFCOMMChannel *chan = (__bridge IOBluetoothRFCOMMChannel*) rfcommchannel;
+    return running and chan.isOpen;
 }

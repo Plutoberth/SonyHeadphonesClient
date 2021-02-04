@@ -14,11 +14,18 @@
 
 @implementation AppDelegate
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
-
+    _window = [[[NSApplication sharedApplication] windows] firstObject];
 }
 
-- (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)theApplication {
-    return YES;
+- (BOOL)applicationShouldHandleReopen:(NSApplication *)theApplication hasVisibleWindows:(BOOL)flag
+{
+    if (flag) {
+        return NO;
+    }
+    else {
+        [_window makeKeyAndOrderFront:self];
+        return YES;
+    }
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
