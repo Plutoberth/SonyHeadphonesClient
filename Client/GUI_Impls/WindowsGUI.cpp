@@ -42,28 +42,15 @@ void EnterGUIMainLoop(BluetoothWrapper bt)
 	ImGui::CreateContext();
 
 	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 
 	// Setup Platform/Renderer bindings
 	ImGui_ImplWin32_Init(hwnd);
 	ImGui_ImplDX11_Init(g_pd3dDevice, g_pd3dDeviceContext);
 
-	// Load Fonts
-	// - AddFontFromFileTTF() will return the ImFont* so you can store it if you need to select the font among multiple.
-	// - If the file cannot be loaded, the function will return NULL. Please handle those errors in your application (e.g. use an assertion, or display an error and quit).
-	// - The fonts will be rasterized at a given size (w/ oversampling) and stored into a texture when calling ImFontAtlas::Build()/GetTexDataAsXXXX(), which ImGui_ImplXXXX_NewFrame below will call.
-	// - Read 'docs/FONTS.md' for more instructions and details.
-	//io.Fonts->AddFontDefault();
-	//ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 15.0f);
-	//IM_ASSERT(font != NULL);
-
-	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-
 	CrossPlatformGUI gui(std::move(bt));
 
 	// Main loop
-	MSG msg;
-	ZeroMemory(&msg, sizeof(msg));
+	MSG msg = { 0 };
 	while (msg.message != WM_QUIT)
 	{
 		// Poll and handle messages (inputs, window resize, etc.)
@@ -90,11 +77,10 @@ void EnterGUIMainLoop(BluetoothWrapper bt)
 
 
 		g_pd3dDeviceContext->OMSetRenderTargets(1, &g_mainRenderTargetView, NULL);
-		g_pd3dDeviceContext->ClearRenderTargetView(g_mainRenderTargetView, (float*)&clear_color);
+		g_pd3dDeviceContext->ClearRenderTargetView(g_mainRenderTargetView, (float*)&WINDOW_COLOR);
 		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
 		g_pSwapChain->Present(1, 0); // Present with vsync
-		//g_pSwapChain->Present(0, 0); // Present without vsync
 	}
 
 	// Cleanup
@@ -109,11 +95,12 @@ void EnterGUIMainLoop(BluetoothWrapper bt)
 
 void DisplayErrorMessagebox(const std::string& message)
 {
-	MessageBoxA(0, message.c_str(), "The Sony Headphones App Encountered an Error", MB_OK | MB_ICONSTOP);
+	MessageBoxA(0, message.c_str(), "Sony Headphones Client | Unrecoverable Error", MB_OK | MB_ICONSTOP);
 }
 
 namespace WindowsGUIInternal
 {
+
 	bool CreateDeviceD3D(HWND hWnd)
 	{
 		// Setup swap chain
@@ -154,7 +141,7 @@ namespace WindowsGUIInternal
 
 	void CreateRenderTarget()
 	{
-		ID3D11Texture2D* pBackBuffer = NULL;
+		ID3D11Texture2D* pBackBuffer = nullptr;
 		g_pSwapChain->GetBuffer(0, IID_PPV_ARGS(&pBackBuffer));
 		if (pBackBuffer == nullptr)
 		{

@@ -13,9 +13,11 @@
 #include <future>
 
 constexpr auto GUI_MAX_MESSAGES = 10;
-constexpr auto FPS = 60;
 constexpr auto GUI_HEIGHT = 350;
 constexpr auto GUI_WIDTH = 540;
+constexpr auto FPS = 60;
+constexpr auto FONT_SIZE = 15.0f;
+const auto WINDOW_COLOR = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
 //This class should be constructed after AFTER the Dear ImGUI context is initialized.
 class CrossPlatformGUI
