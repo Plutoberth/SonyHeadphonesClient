@@ -48,7 +48,7 @@ int MacOSBluetoothConnector::send(char* buf, size_t length)
 void MacOSBluetoothConnector::connectToMac(MacOSBluetoothConnector* macOSBluetoothConnector)
 {
     macOSBluetoothConnector->running = true;
-    //get device
+    // get device
     IOBluetoothDevice *device = (__bridge IOBluetoothDevice *)macOSBluetoothConnector->rfcommDevice;
     // create new channel
     IOBluetoothRFCOMMChannel *channel = [[IOBluetoothRFCOMMChannel alloc] init];
