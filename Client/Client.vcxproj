@@ -186,11 +186,12 @@
     <ClCompile Include="CommandSerializer.cpp" />
     <ClCompile Include="GUI_Impls\CrossPlatformGUI.cpp" />
     <ClCompile Include="GUI_Impls\WindowsGUI.cpp" />
-    <ClCompile Include="imgui\examples\imgui_impl_dx11.cpp" />
-    <ClCompile Include="imgui\examples\imgui_impl_win32.cpp" />
+    <ClCompile Include="imgui\backends\imgui_impl_dx11.cpp" />
+    <ClCompile Include="imgui\backends\imgui_impl_win32.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />
+    <ClCompile Include="imgui\imgui_tables.cpp" />
     <ClCompile Include="imgui\imgui_widgets.cpp" />
     <ClCompile Include="CascadiaCodeFont.cpp" />
     <ClCompile Include="TimedMessageQueue.cpp" />
@@ -205,8 +206,8 @@
     <ClInclude Include="GUI_Impls\CrossPlatformGUI.h" />
     <ClInclude Include="GUI_Impls\WindowsGUI.h" />
     <ClInclude Include="IBluetoothConnector.h" />
-    <ClInclude Include="imgui\examples\imgui_impl_dx11.h" />
-    <ClInclude Include="imgui\examples\imgui_impl_win32.h" />
+    <ClInclude Include="imgui\backends\imgui_impl_dx11.h" />
+    <ClInclude Include="imgui\backends\imgui_impl_win32.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />
     <ClInclude Include="imgui\imgui_internal.h" />

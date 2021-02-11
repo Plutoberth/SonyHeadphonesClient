@@ -197,7 +197,7 @@ void CrossPlatformGUI::_drawASMControls()
 			}
 		}
 		//This means that we're waiting
-		else if (this->_sendCommandFuture.valid()) 
+		else if (this->_sendCommandFuture.valid())
 		{
 			if (commandLinger++ > FPS / 10)
 			{
@@ -205,7 +205,7 @@ void CrossPlatformGUI::_drawASMControls()
 			}
 		}
 		//We're not waiting, and there's no command in the air, so we can evaluate sending a new command
-		else if (sentAsmLevel != asmLevel || sentFocusOnVoice != focusOnVoice) 
+		else if (sentAsmLevel != asmLevel || sentFocusOnVoice != focusOnVoice)
 		{
 			auto ncAsmEffect = sliderActive ? NC_ASM_EFFECT::ADJUSTMENT_IN_PROGRESS : NC_ASM_EFFECT::ADJUSTMENT_COMPLETION;
 			auto asmId = focusOnVoice ? ASM_ID::VOICE : ASM_ID::NORMAL;
@@ -239,6 +239,6 @@ CrossPlatformGUI::CrossPlatformGUI(BluetoothWrapper bt) : _bt(std::move(bt))
 	//AddFontFromMemory will own the pointer, so there's no leak
 	char* fileData = new char[sizeof(CascadiaCodeTTF)];
 	memcpy(fileData, CascadiaCodeTTF, sizeof(CascadiaCodeTTF));
-	ImFont* font = io.Fonts->AddFontFromMemoryTTF(reinterpret_cast<void*>(fileData), sizeof(CascadiaCodeTTF), 15.0f);
+	ImFont* font = io.Fonts->AddFontFromMemoryTTF(reinterpret_cast<void*>(fileData), sizeof(CascadiaCodeTTF), FONT_SIZE);
 	IM_ASSERT(font != NULL);
 }

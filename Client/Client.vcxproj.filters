@@ -51,12 +51,6 @@
     <ClCompile Include="imgui\imgui_draw.cpp">
       <Filter>Source Files\IMGUI</Filter>
     </ClCompile>
-    <ClCompile Include="imgui\examples\imgui_impl_dx11.cpp">
-      <Filter>Source Files\IMGUI</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui\examples\imgui_impl_win32.cpp">
-      <Filter>Source Files\IMGUI</Filter>
-    </ClCompile>
     <ClCompile Include="imgui\imgui_widgets.cpp">
       <Filter>Source Files\IMGUI</Filter>
     </ClCompile>
@@ -64,6 +58,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CascadiaCodeFont.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_tables.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\backends\imgui_impl_dx11.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\backends\imgui_impl_win32.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -95,12 +98,6 @@
     <ClInclude Include="imgui\imgui.h">
       <Filter>Header Files\IMGUI</Filter>
     </ClInclude>
-    <ClInclude Include="imgui\examples\imgui_impl_dx11.h">
-      <Filter>Header Files\IMGUI</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui\examples\imgui_impl_win32.h">
-      <Filter>Header Files\IMGUI</Filter>
-    </ClInclude>
     <ClInclude Include="imgui\imgui_internal.h">
       <Filter>Header Files\IMGUI</Filter>
     </ClInclude>
@@ -126,6 +123,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Exceptions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\backends\imgui_impl_dx11.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\backends\imgui_impl_win32.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
