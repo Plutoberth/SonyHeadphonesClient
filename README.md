@@ -43,6 +43,7 @@ So I reverse-engineered the application (for intercompatibility purposes, of cou
 ## Features
 
 - [x] Ambient Sound Control
+- [ ] Disabling noise cancelling
 - [ ] Display battery life and fetch existing settings from device
 - [ ] Equalizer
 
@@ -54,12 +55,9 @@ For now, only the WH-1000-XM3 is supported. Other headsets may work, but I haven
 
 #### **Please report about your experiences using other Sony headset in the [Headset Reports](https://github.com/Plutoberth/SonyHeadphonesClient/issues/29) issue.**
 
-It shouldn't be too much work to add support for a new platform. Open a PR if you'd like to do so. See [For Developers - Adding a new platform](#adding-a-new-platform).
-
 - [x] Windows
-- [ ] [Linux](https://github.com/Plutoberth/SonyHeadphonesClient/issues/7) - In Progress by jimzrt
+- [ ] [Linux](https://github.com/Plutoberth/SonyHeadphonesClient/issues/7) - In progress by jimzrt
 - [x] macOS
-
 
 ## For Developers
 
@@ -79,7 +77,7 @@ Use the provided xcodeproj file.
 
 There are two platform dependent parts in the code - the GUI and Bluetooth communication.
 
-For the GUI, you need to copy the relevant parts from ImGui.
+For the GUI, you need to copy the relevant parts from Dear ImGui.
 
 For Bluetooth, you need to implement `IBluetoothConnector` for your desired platform.
 
