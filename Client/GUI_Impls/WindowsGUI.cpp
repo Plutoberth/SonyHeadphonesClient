@@ -49,6 +49,8 @@ void EnterGUIMainLoop(BluetoothWrapper bt)
 
 	CrossPlatformGUI gui(std::move(bt));
 
+	UINT presentFlags = 0;
+
 	// Main loop
 	MSG msg = { 0 };
 	while (msg.message != WM_QUIT)
@@ -58,6 +60,7 @@ void EnterGUIMainLoop(BluetoothWrapper bt)
 		// - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application.
 		// - When io.WantCaptureKeyboard is true, do not dispatch keyboard input data to your main application.
 		// Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
+
 		if (::PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE))
 		{
 			::TranslateMessage(&msg);
@@ -79,8 +82,16 @@ void EnterGUIMainLoop(BluetoothWrapper bt)
 		g_pd3dDeviceContext->OMSetRenderTargets(1, &g_mainRenderTargetView, NULL);
 		g_pd3dDeviceContext->ClearRenderTargetView(g_mainRenderTargetView, (float*)&WINDOW_COLOR);
 		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-
-		g_pSwapChain->Present(1, 0); // Present with vsync
+		
+		//We need this because Present doesn't delay when the app is minimized.
+		if (g_pSwapChain->Present(1, presentFlags) == DXGI_STATUS_OCCLUDED) {
+			presentFlags = DXGI_PRESENT_TEST;
+			//Artificial VSYNC when the app is minimized
+			Sleep(MS_PER_FRAME);
+		}
+		else {
+			presentFlags = 0;
+		}
 	}
 
 	// Cleanup
@@ -96,6 +107,7 @@ void EnterGUIMainLoop(BluetoothWrapper bt)
 void DisplayErrorMessagebox(const std::string& message)
 {
 	MessageBoxA(0, message.c_str(), "Sony Headphones Client | Unrecoverable Error", MB_OK | MB_ICONSTOP);
+	exit(GetLastError());
 }
 
 namespace WindowsGUIInternal
