@@ -201,7 +201,7 @@ Source: https://github.com/Plutoberth/SonyHeadphonesClient</string>
                                 </textFieldCell>
                             </textField>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="V6f-ZQ-bKY">
-                                <rect key="frame" x="18" y="96" width="387" height="16"/>
+                                <rect key="frame" x="18" y="76" width="387" height="36"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                 <textFieldCell key="cell" lineBreakMode="clipping" title="Not connected" id="YBf-lp-MdN">
                                     <font key="font" metaFont="system"/>

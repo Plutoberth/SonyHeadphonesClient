@@ -6,7 +6,7 @@ MacOSBluetoothConnector::MacOSBluetoothConnector()
 }
 MacOSBluetoothConnector::~MacOSBluetoothConnector()
 {
-    //onclose event
+    // onclose event
     if (isConnected()){
         disconnect();
     }
@@ -47,7 +47,6 @@ int MacOSBluetoothConnector::send(char* buf, size_t length)
 
 void MacOSBluetoothConnector::connectToMac(MacOSBluetoothConnector* macOSBluetoothConnector)
 {
-    macOSBluetoothConnector->running = true;
     // get device
     IOBluetoothDevice *device = (__bridge IOBluetoothDevice *)macOSBluetoothConnector->rfcommDevice;
     // create new channel
@@ -64,11 +63,12 @@ void MacOSBluetoothConnector::connectToMac(MacOSBluetoothConnector* macOSBluetoo
     asyncCommDelegate->delegateCPP = macOSBluetoothConnector;
     // try to open channel
     if ( [device openRFCOMMChannelAsync:&channel withChannelID:rfcommChannelID delegate:asyncCommDelegate] != kIOReturnSuccess ) {
-        throw "Error - could not open the rfcomm.\n";
+        throw RecoverableException("Error - could not open the rfcomm.\n", true);
     }
     // store the channel
     macOSBluetoothConnector->rfcommchannel = (__bridge void*) channel;
     
+    macOSBluetoothConnector->running = true;
     // keep thread running
     while (macOSBluetoothConnector->running) {
         [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:.1]];
@@ -151,6 +151,8 @@ void MacOSBluetoothConnector::closeConnection() {
 
 bool MacOSBluetoothConnector::isConnected() noexcept
 {
+    if (!running)
+        return false;
     IOBluetoothRFCOMMChannel *chan = (__bridge IOBluetoothRFCOMMChannel*) rfcommchannel;
-    return running and chan.isOpen;
+    return chan.isOpen;
 }

@@ -21,6 +21,18 @@
     [statusItem setAction:@selector(statusItemClick:)];
 }
 
+- (void)displayError:(RecoverableException)exc {
+    if (exc.shouldDisconnect){
+        bt.disconnect();
+        [ANCSlider setEnabled:FALSE];
+        [focusOnVoice setEnabled:FALSE];
+        [connectButton setTitle:@"Connect to Bluetooth device"];
+        [connectedLabel setStringValue:[@"Unexpected error occurred and disconnected: \n" stringByAppendingString:@(exc.what())]];
+    } else {
+        [connectedLabel setStringValue:[@"Unexpected error occurred: \n" stringByAppendingString:@(exc.what())]];
+    }
+}
+
 - (void)statusItemClick:(id)sender {
     if (!bt.isConnected())
         return [self connectToDevice:self];
@@ -57,8 +69,12 @@
         if (result == kIOBluetoothUISuccess) {
             // get device
             IOBluetoothDevice *device = [[dSelector getResults] lastObject];
-            // connect to device
-            bt.connect([[device addressString] UTF8String]);
+            try {
+                // connect to device
+                bt.connect([[device addressString] UTF8String]);
+            } catch (RecoverableException& exc) {
+                [self displayError:exc];
+            }
             // give it some time to connect
             int timeout = 5;
             while(!bt.isConnected() and timeout >= 0) {
@@ -108,12 +124,16 @@
     // send current settings
     auto ncAsmEffect = NC_ASM_EFFECT::ADJUSTMENT_COMPLETION;
     auto asmId = focusOnVoice.state == NSControlStateValueOn ? ASM_ID::VOICE : ASM_ID::NORMAL;
-    bt.sendCommand(CommandSerializer::serializeNcAndAsmSetting(
-                                                               ncAsmEffect,
-                                                               NC_ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
-                                                               ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
-                                                               asmId,
-                                                               ANCSlider.intValue
-                                                               ));
+    try {
+        bt.sendCommand(CommandSerializer::serializeNcAndAsmSetting(
+                                                                   ncAsmEffect,
+                                                                   NC_ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
+                                                                   ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
+                                                                   asmId,
+                                                                   ANCSlider.intValue
+                                                                   ));
+    } catch (RecoverableException& exc) {
+        [self displayError:exc];
+    }
 }
 @end
