@@ -1,11 +1,3 @@
-#
-# You will need GLFW (http://www.glfw.org):
-#   brew install glfw
-#
-
-#CXX = g++
-#CXX = clang++
-
 EXE = sonyheadphonesclient
 SOURCES = main.cpp
 SOURCES += ../GUI_Impls/LinuxGUI.cpp ../GUI_Impls/CrossPlatformGUI.cpp
@@ -65,4 +57,3 @@ clean_app:
 package_app:
 	mkdir -p "./$(EXE).build"
 	cp ./$(EXE) "./$(EXE).build/$(EXE)"
-
