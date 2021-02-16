@@ -1,4 +1,5 @@
 #include "DBusHelper.h"
+#include "../Exceptions.h"
 #include <cstring>
 #include <bluetooth/sdp.h>
 #include <bluetooth/sdp_lib.h>
@@ -284,22 +285,21 @@ uint8_t sdp_getServiceChannel(const char *dev_addr, uint8_t *uuid128)
   sdp_session_t *session = 0;
   uint32_t range = 0x0000ffff;
   uint8_t port = 0;
-
   str2ba(dev_addr, &target);
-
   /* connect to the SDP server running on the remote machine */
   const bdaddr_t bdaddr_any = {{0, 0, 0, 0, 0, 0}};
   session = sdp_connect(&bdaddr_any, &target, SDP_RETRY_IF_BUSY);
+  if (!session) {
+    throw RecoverableException("Error: could not connect to bluetooth spd server", true);
+}
 
   sdp_uuid128_create(&svc_uuid, uuid128);
   search_list = sdp_list_append(0, &svc_uuid);
   attrid_list = sdp_list_append(0, &range);
-
   // get a list of service records that have UUID 0xabcd
   response_list = NULL;
   status = sdp_service_search_attr_req(session, search_list,
                                        SDP_ATTR_REQ_RANGE, attrid_list, &response_list);
-
   if (status == 0)
   {
     sdp_list_t *proto_list = NULL;
