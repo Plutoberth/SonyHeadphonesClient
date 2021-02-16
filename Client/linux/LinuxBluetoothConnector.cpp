@@ -80,8 +80,7 @@ void LinuxBluetoothConnector::connect(const std::string &addrStr)
 
   if (status < 0)
   {
-    // TODO: add error/exception
-    return;
+    throw RecoverableException("Error: could not connect to bluetooth socket", true);
   }
   this->_connected = true;
 }
