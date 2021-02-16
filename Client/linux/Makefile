@@ -4,13 +4,13 @@ SOURCES += ../GUI_Impls/LinuxGUI.cpp ../GUI_Impls/CrossPlatformGUI.cpp
 SOURCES += LinuxBluetoothConnector.cpp BluetoothWrapper.cpp DBusHelper.cpp
 SOURCES += TimedMessageQueue.cpp CascadiaCodeFont.cpp CommandSerializer.cpp
 SOURCES += ByteMagic.cpp
-SOURCES += ../imgui/examples/imgui_impl_glfw.cpp ../imgui/examples/imgui_impl_opengl3.cpp
-SOURCES += ../imgui/imgui.cpp ../imgui/imgui_widgets.cpp ../imgui/imgui_demo.cpp ../imgui/imgui_draw.cpp
+SOURCES += ../imgui/backends/imgui_impl_glfw.cpp ../imgui/backends/imgui_impl_opengl3.cpp
+SOURCES += ../imgui/imgui.cpp ../imgui/imgui_widgets.cpp ../imgui/imgui_draw.cpp ../imgui/imgui_tables.cpp
 OBJS = $(addsuffix .o, $(basename $(notdir $(SOURCES))))
 
 LIBS += -L/usr/local/lib -lglfw -lpthread 
 
-CXXFLAGS = -I../imgui/ -I../GUI_Impls/ -I../imgui/examples/ -I../ -I/usr/local/include
+CXXFLAGS = -I../imgui/ -I../GUI_Impls/ -I../imgui/backends/ -I../ -I/usr/local/include
 CXXFLAGS += -Wall -Wformat -std=c++17
 CXXFLAGS += -DIMGUI_IMPL_OPENGL_LOADER_GLEW
 CXXFLAGS += `pkg-config --cflags glfw3`
@@ -24,7 +24,7 @@ LIBS += -lGL `pkg-config --static --libs glfw3`
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 %.o:../%.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
-%.o:../imgui/examples/%.cpp
+%.o:../imgui/backends/%.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 %.o:../imgui/%.cpp
