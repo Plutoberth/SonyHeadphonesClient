@@ -41,12 +41,6 @@ LIBS += -lGL `pkg-config --static --libs glfw3`
 %.o:../GUI_Impls/%.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
-# %.o:../GUI_Impls/%.mm
-# 	$(CXX) $(CXXFLAGS) -ObjC++ -fobjc-weak -fobjc-arc -c -o $@ $<
-
-# %.o:../imgui/examples/%.mm
-# 	$(CXX) $(CXXFLAGS) -ObjC++ -fobjc-weak -fobjc-arc -c -o $@ $<
-
 %.o:%.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
@@ -71,5 +65,4 @@ clean_app:
 package_app:
 	mkdir -p "./$(EXE).build"
 	cp ./$(EXE) "./$(EXE).build/$(EXE)"
-
 
