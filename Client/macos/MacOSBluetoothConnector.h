@@ -8,13 +8,14 @@
 #include <mutex>
 #include <condition_variable>
 #include <deque>
+#include <future>
 
 class MacOSBluetoothConnector final : public IBluetoothConnector
 {
 public:
     MacOSBluetoothConnector();
     ~MacOSBluetoothConnector();
-    static void connectToMac(MacOSBluetoothConnector* MacOSBluetoothConnector) noexcept(false);
+    static void connectToMac(MacOSBluetoothConnector* MacOSBluetoothConnector, std::promise<void> connectPromise) noexcept(false);
     virtual void connect(const std::string& addrStr) noexcept(false);
     virtual int send(char* buf, size_t length) noexcept(false);
     virtual int recv(char* buf, size_t length) noexcept(false);

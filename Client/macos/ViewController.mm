@@ -22,16 +22,24 @@
 }
 
 - (void)displayError:(RecoverableException)exc {
+    NSString *errorText;
     if (exc.shouldDisconnect){
         bt.disconnect();
         [ANCSlider setEnabled:FALSE];
         [focusOnVoice setEnabled:FALSE];
         [connectButton setTitle:@"Connect to Bluetooth device"];
         statusItem.button.image = [NSImage imageNamed:@"NSRefreshTemplate"];
-        [connectedLabel setStringValue:[@"Unexpected error occurred and disconnected: \n" stringByAppendingString:@(exc.what())]];
+        errorText = @"Unexpected error occurred and disconnected.";
     } else {
-        [connectedLabel setStringValue:[@"Unexpected error occurred: \n" stringByAppendingString:@(exc.what())]];
+        errorText = @"Unexpected error occurred.";
     }
+    [connectedLabel setStringValue: errorText];
+    NSAlert *alert = [[NSAlert alloc] init];
+    [alert setMessageText:errorText];
+    [alert setInformativeText:@(exc.what())];
+    [alert addButtonWithTitle:@"Ok"];
+    [alert runModal];
+
 }
 
 - (void)statusItemClick:(id)sender {
@@ -78,6 +86,7 @@
             bt.connect([[device addressString] UTF8String]);
         } catch (RecoverableException& exc) {
             [self displayError:exc];
+            return;
         }
         // give it some time to connect
         int timeout = 5;
