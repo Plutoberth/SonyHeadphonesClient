@@ -32,5 +32,5 @@ public:
 private:
     void *rfcommDevice;
     void *rfcommchannel;
-    std::thread* uthread = NULL;
+    std::thread uthread;
 };

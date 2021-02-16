@@ -95,7 +95,7 @@ void MacOSBluetoothConnector::connect(const std::string& addrStr){
 
     // store the device in a variable
     rfcommDevice = (__bridge void*) device;
-    uthread = new std::thread(MacOSBluetoothConnector::connectToMac, this, std::move(connectPromise));
+    uthread = std::thread(MacOSBluetoothConnector::connectToMac, this, std::move(connectPromise));
     
     // wait till the device is connected
     connectFuture.get();
@@ -149,7 +149,7 @@ void MacOSBluetoothConnector::disconnect() noexcept
 {
     running = false;
     // wait for the thread to finish
-    uthread->join();
+    uthread.join();
     // close connection
     closeConnection();
 }
