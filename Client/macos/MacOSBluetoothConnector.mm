@@ -45,7 +45,7 @@ int MacOSBluetoothConnector::send(char* buf, size_t length)
 }
 
 
-void MacOSBluetoothConnector::connectToMac(MacOSBluetoothConnector* macOSBluetoothConnector)
+void MacOSBluetoothConnector::connectToMac(MacOSBluetoothConnector* macOSBluetoothConnector, std::promise<void> connectPromise)
 {
     // get device
     IOBluetoothDevice *device = (__bridge IOBluetoothDevice *)macOSBluetoothConnector->rfcommDevice;
@@ -63,29 +63,42 @@ void MacOSBluetoothConnector::connectToMac(MacOSBluetoothConnector* macOSBluetoo
     asyncCommDelegate->delegateCPP = macOSBluetoothConnector;
     // try to open channel
     if ( [device openRFCOMMChannelAsync:&channel withChannelID:rfcommChannelID delegate:asyncCommDelegate] != kIOReturnSuccess ) {
-        throw RecoverableException("Error - could not open the rfcomm.\n", true);
+        RecoverableException exc = RecoverableException("Could not open the rfcomm.", false);
+        std::exception_ptr excPtr = std::make_exception_ptr(exc);
+        connectPromise.set_exception(excPtr);
+        return;
     }
     // store the channel
     macOSBluetoothConnector->rfcommchannel = (__bridge void*) channel;
     
     macOSBluetoothConnector->running = true;
+    
+    // tell the other tread that we are done connecting
+    connectPromise.set_value();
+    
     // keep thread running
     while (macOSBluetoothConnector->running) {
         [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:.1]];
     }
 }
 void MacOSBluetoothConnector::connect(const std::string& addrStr){
-    // convert mac adress to nsstring
+    // convert mac address to nsstring
     NSString *addressNSString = [NSString stringWithCString:addrStr.c_str() encoding:[NSString defaultCStringEncoding]];
-    // get device based on mac adress
+    // get device based on mac address
     IOBluetoothDevice *device = [IOBluetoothDevice deviceWithAddressString:addressNSString];
     // if device is not connected
     if (![device isConnected]) {
         [device openConnection];
     }
-    // store the device in an variable
+    std::promise<void> connectPromise;
+    std::future<void> connectFuture = connectPromise.get_future();
+
+    // store the device in a variable
     rfcommDevice = (__bridge void*) device;
-    uthread = new std::thread(MacOSBluetoothConnector::connectToMac, this);
+    uthread = std::thread(MacOSBluetoothConnector::connectToMac, this, std::move(connectPromise));
+    
+    // wait till the device is connected
+    connectFuture.get();
 }
 
 int MacOSBluetoothConnector::recv(char* buf, size_t length)
@@ -136,7 +149,7 @@ void MacOSBluetoothConnector::disconnect() noexcept
 {
     running = false;
     // wait for the thread to finish
-    uthread->join();
+    uthread.join();
     // close connection
     closeConnection();
 }
