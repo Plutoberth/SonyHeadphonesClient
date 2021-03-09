@@ -215,7 +215,7 @@ void CrossPlatformGUI::_drawASMControls()
 		//We're not waiting, and there's no command in the air, so we can evaluate sending a new command
 		else if (sentAsmLevel != asmLevel || sentFocusOnVoice != focusOnVoice || sentAmbientSoundControl != ambientSoundControl)
 		{
-			auto ncAsmEffect = sliderActive ? NC_ASM_EFFECT::ADJUSTMENT_IN_PROGRESS : NC_ASM_EFFECT::ADJUSTMENT_COMPLETION;
+			auto ncAsmEffect = sliderActive ? NC_ASM_EFFECT::ADJUSTMENT_IN_PROGRESS : ambientSoundControl ? NC_ASM_EFFECT::ADJUSTMENT_COMPLETION : NC_ASM_EFFECT::OFF;
 			auto asmId = focusOnVoice ? ASM_ID::VOICE : ASM_ID::NORMAL;
 			lastAsmLevel = asmLevel == -1 ? lastAsmLevel : asmLevel;
 			asmLevel = ambientSoundControl ? lastAsmLevel : -1;
