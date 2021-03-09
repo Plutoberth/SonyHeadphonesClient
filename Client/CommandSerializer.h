@@ -6,7 +6,7 @@
 #include <stdexcept>
 #include "Exceptions.h"
 
-constexpr unsigned int MINIMUM_VOICE_FOCUS_STEP = 2;
+constexpr int MINIMUM_VOICE_FOCUS_STEP = 2;
 
 namespace CommandSerializer
 {
@@ -37,7 +37,7 @@ namespace CommandSerializer
 
 	Message unpackBtMessage(const Buffer& src);
 
-	NC_DUAL_SINGLE_VALUE getDualSingleForAsmLevel(unsigned char asmLevel);
-	Buffer serializeNcAndAsmSetting(NC_ASM_EFFECT ncAsmEffect, NC_ASM_SETTING_TYPE ncAsmSettingType, ASM_SETTING_TYPE asmSettingType, ASM_ID asmId, unsigned char asmLevel);
+	NC_DUAL_SINGLE_VALUE getDualSingleForAsmLevel(char asmLevel);
+	Buffer serializeNcAndAsmSetting(NC_ASM_EFFECT ncAsmEffect, NC_ASM_SETTING_TYPE ncAsmSettingType, ASM_SETTING_TYPE asmSettingType, ASM_ID asmId, char asmLevel);
 }
 
