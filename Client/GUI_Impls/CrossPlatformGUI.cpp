@@ -164,16 +164,13 @@ void CrossPlatformGUI::_drawASMControls()
 
 	if (ImGui::CollapsingHeader("Ambient Sound Mode   ", ImGuiTreeNodeFlags_DefaultOpen))
 	{
-
 		ImGui::Checkbox("Ambient Sound Control", &ambientSoundControl);
 
 		if (ambientSoundControl)
 		{
-
 			ImGui::Text("Control ambient sound for your %ss", this->_connectedDevice.name.c_str());
 
 			ImGui::SliderInt("Ambient Sound Level", &asmLevel, 0, 19);
-
 		}
 
 		bool sliderActive = ImGui::IsItemActive();
@@ -231,7 +228,7 @@ void CrossPlatformGUI::_drawASMControls()
 					asmId,
 					asmLevel
 				));
-				});
+			});
 			sentAsmLevel = asmLevel;
 			sentFocusOnVoice = focusOnVoice;
 			sentAmbientSoundControl = ambientSoundControl;
