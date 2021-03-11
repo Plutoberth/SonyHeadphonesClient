@@ -7,6 +7,8 @@ find_package(Threads REQUIRED)
 
 add_executable(SonyHeadphonesClient)
 
+option(WITH_QT "Build Qt version" OFF)
+
 target_sources(SonyHeadphonesClient
     PRIVATE BluetoothWrapper.cpp
     ByteMagic.cpp
@@ -54,7 +56,7 @@ if (LINUX)
     set (CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/linux)
 
     set (OpenGL_GL_PREFERENCE GLVND)
-	
+
     find_package(DBus REQUIRED)
 
     find_package(GLEW REQUIRED)
@@ -64,7 +66,7 @@ if (LINUX)
     find_package(OpenGL REQUIRED)
 
     if ((NOT DBUS_FOUND) OR (NOT GLEW_FOUND) OR (NOT glfw3_FOUND) OR (NOT OPENGL_FOUND))
-        message ( FATAL_ERROR 
+        message ( FATAL_ERROR
         "Didn't find one of the packages. For Debian based systems, use:"
         "sudo apt install libbluetooth-dev libglew-dev libglfw3-dev libdbus-1-dev" )
     endif ()
@@ -76,7 +78,7 @@ if (LINUX)
 
     target_link_libraries(SonyHeadphonesClient
         PRIVATE ${DBUS_LIBRARIES}
-        GLEW::GLEW 
+        GLEW::GLEW
         glfw
         bluetooth
         OpenGL::GL
@@ -103,3 +105,7 @@ endif ()
 target_link_libraries(SonyHeadphonesClient
     PRIVATE Threads::Threads
 )
+
+if (WITH_QT)
+    add_subdirectory(qt)
+endif()
