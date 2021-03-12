@@ -56,8 +56,9 @@ For now, only the WH-1000-XM3 is supported. Other headsets may work, but I haven
 #### **Please report about your experiences using other Sony headset in the [Headset Reports](https://github.com/Plutoberth/SonyHeadphonesClient/issues/29) issue.**
 
 - [x] Windows
-- [ ] [Linux](https://github.com/Plutoberth/SonyHeadphonesClient/issues/7) - In progress by jimzrt
+- [x] Linux
 - [x] macOS
+- [ ] ~~TempleOS~~
 
 ## For Developers
 
@@ -69,11 +70,24 @@ For now, only the WH-1000-XM3 is supported. Other headsets may work, but I haven
 
 Use the provided solution file.
 
+#### Linux
+
+First install the dependencies:
+
+```bash
+# For Debian based systems
+sudo apt install libbluetooth-dev libglew-dev libglfw3-dev libdbus-1-dev
+```
+
+Then navigate to `Client/linux` and `make`.
+
 #### macOS
 
 Use the provided xcodeproj file.
 
 ### Adding a new platform
+
+**This is no longer relevant, we support all major platforms :)**
 
 There are two platform dependent parts in the code - the GUI and Bluetooth communication.
 
