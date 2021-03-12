@@ -1,4 +1,5 @@
 #include "ByteMagic.h"
+#include <climits>
 
 unsigned int byteOrderSwap(unsigned int num)
 {

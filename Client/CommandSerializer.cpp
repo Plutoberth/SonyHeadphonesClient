@@ -146,7 +146,7 @@ namespace CommandSerializer
 		Message ret;
 		ret.dataType = static_cast<DATA_TYPE>(src[0]);
 		ret.seqNumber = src[1];
-		if (src[src.size() - 1] != _sumChecksum(src.data(), src.size() - 1))
+		if ((unsigned char)src[src.size() - 1] != _sumChecksum(src.data(), src.size() - 1))
 		{
 			throw RecoverableException("Invalid checksum!", true);
 		}
