@@ -53,7 +53,7 @@ So I reverse-engineered the application (for intercompatibility purposes, of cou
 
 For now, only the WH-1000-XM3 is supported. Other headsets may work, but I haven't tested them. 
 
-#### **Please report about your experiences using other Sony headset in the [Headset Reports](https://github.com/Plutoberth/SonyHeadphonesClient/issues/29) issue.**
+#### **Please report about your experiences using other Sony headsets in the [Headset Reports](https://github.com/Plutoberth/SonyHeadphonesClient/issues/29) issue.**
 
 - [x] Windows
 - [x] Linux
@@ -63,6 +63,13 @@ For now, only the WH-1000-XM3 is supported. Other headsets may work, but I haven
 ## For Developers
 
 `git clone --recurse-submodules https://github.com/Plutoberth/SonyHeadphonesClient.git`
+
+The incantation to fix submodule woes is:
+
+```sh
+git submodule sync
+git submodule update
+```
 
 ### Compiling
 
