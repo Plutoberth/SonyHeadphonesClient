@@ -71,6 +71,12 @@ git submodule sync
 git submodule update
 ```
 
+### Protocol Information
+
+Some enums and data are present in the code. The rest has to be obtained either statically or dynamically.
+
+Sniffing messages - See [this helpful comment](https://github.com/Plutoberth/SonyHeadphonesClient/pull/36#issuecomment-795633877) by @guilhermealbm.
+
 ### Compiling
 
 #### Windows
