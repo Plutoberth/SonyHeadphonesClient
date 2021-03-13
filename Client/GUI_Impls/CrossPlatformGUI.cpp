@@ -171,18 +171,18 @@ void CrossPlatformGUI::_drawASMControls()
 			ImGui::Text("Control ambient sound for your %ss", this->_connectedDevice.name.c_str());
 
 			ImGui::SliderInt("Ambient Sound Level", &asmLevel, 0, 19);
+
+			if (asmLevel >= MINIMUM_VOICE_FOCUS_STEP)
+			{
+				ImGui::Checkbox("Focus on Voice", &focusOnVoice);
+			}
+			else
+			{
+				ImGui::Text("Focus on Voice isn't enabled on this level.");
+			}
 		}
 
 		bool sliderActive = ImGui::IsItemActive();
-
-		if (asmLevel >= MINIMUM_VOICE_FOCUS_STEP)
-		{
-			ImGui::Checkbox("Focus on Voice", &focusOnVoice);
-		}
-		else
-		{
-			ImGui::Text("Focus on Voice isn't enabled on this level.");
-		}
 
 		if (this->_sendCommandFuture.ready())
 		{
