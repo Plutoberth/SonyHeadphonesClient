@@ -17,6 +17,9 @@ jobs:
     strategy:
       matrix:
         os: ["ubuntu-latest", "windows-latest"]
+        include:
+          - os: ubuntu-latest
+            run: "sudo apt update && sudo apt install libbluetooth-dev libglew-dev libglfw3-dev libdbus-1-dev"
     runs-on: ${{ matrix.os }}
 
     steps:
