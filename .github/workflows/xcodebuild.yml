@@ -24,16 +24,20 @@ jobs:
       with:
         submodules: true
 
+    - name: Create build directory
+      working-directory: ${{github.workspace}}/Client
+      run: mkdir build
+
     - name: Build
       working-directory: ${{github.workspace}}/Client/build
       # Execute the build.
       run: xcodebuild -project '../macos/SonyHeadphonesClient.xcodeproj' -config Release -scheme 'SonyHeadphonesClient' -archivePath ./archive archive
-      
+
     - name: Export archive to .app
       working-directory: ${{github.workspace}}/Client/build
       # Exports the archive to a .app file
       run: xcodebuild -exportArchive -archivePath ./archive.xcarchive -exportPath ./ -exportOptionsPlist ../macos/exportOptions.plist
-      
+
 #    - name: Upload a Build Artifact
 #      uses: actions/upload-artifact@v2.2.2
 #      with:
