@@ -60,9 +60,9 @@ jobs:
       uses: actions/upload-artifact@v2.2.2
       with:
         # Artifact name
-        name: ${{ matrix.artifact_name }}
+        name: g
         # A file, directory or wildcard pattern that describes what to upload
-        path: ${{ matrix.binary_path }}
+        path: ${{github.workspace}}/Client/ByteMagic.h
         # The desired behavior if no files are found using the provided path.
 
     
