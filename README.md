@@ -62,10 +62,9 @@ For now, only the WH-1000-XM3 is supported. Other headsets may work, but I haven
 
 ## For Developers
 
-`git clone --recurse-submodules https://github.com/Plutoberth/SonyHeadphonesClient.git`
+```git clone --recurse-submodules https://github.com/Plutoberth/SonyHeadphonesClient.git```
 
-The incantation to fix submodule woes is:
-
+Issue this incantation to fix submodule issues:
 ```sh
 git submodule sync
 git submodule update
@@ -79,20 +78,21 @@ Sniffing messages - See [this helpful comment](https://github.com/Plutoberth/Son
 
 ### Compiling
 
-#### Windows
+#### Windows & Linux
 
-Use the provided solution file.
-
-#### Linux
-
-First install the dependencies:
-
-```bash
-# For Debian based systems
-sudo apt install libbluetooth-dev libglew-dev libglfw3-dev libdbus-1-dev
+```
+cd Client
+mkdir build
+cd build
+cmake ..
+cmake --build .
 ```
 
-Then navigate to `Client/linux` and `make`.
+Linux Dependencies (Debian/Ubuntu):
+
+```bash
+sudo apt install libbluetooth-dev libglew-dev libglfw3-dev libdbus-1-dev
+```
 
 #### macOS
 
