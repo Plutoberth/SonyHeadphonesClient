@@ -100,10 +100,10 @@ Use the provided xcodeproj file.
 
 ## Contributors
 
-* [Plutoberth](https://github.com/Plutoberth) - Initial work and Windows version
-* [Mr-M33533K5](https://github.com/Mr-M33533K5) - BT Interface Help
-* [semvis123](https://github.com/semvis123) - macOS version
-* [jimzrt](https://github.com/jimzrt) - Linux version
+* [Plutoberth](https://github.com/Plutoberth) - Initial Work and Windows Version
+* [Mr-M33533K5](https://github.com/Mr-M33533K5) - BT Interface and Other Help
+* [semvis123](https://github.com/semvis123) - macOS Version
+* [jimzrt](https://github.com/jimzrt) - Linux Version
 * [guilhermealbm](https://github.com/guilhermealbm) - ASM Switch
 
 <!-- LICENSE -->
