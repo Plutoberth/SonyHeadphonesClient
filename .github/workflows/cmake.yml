@@ -19,11 +19,11 @@ jobs:
         os: ["ubuntu-latest", "windows-latest"]
         include:
           - os: ubuntu-latest
-            binary_path: ${{github.workspace}}/Client/build/client
+            binary_path: Client/build/client
             artifact_name: "SonyHeadphonesClient-linux-x64"
             script: "sudo apt update && sudo apt install libbluetooth-dev libglew-dev libglfw3-dev libdbus-1-dev"
           - os: windows-latest
-            binary_path: ${{github.workspace}}/Client/build/Release/client.exe
+            binary_path: Client/build/Release/client.exe
             artifact_name: "SonyHeadphonesClient-win-x64.exe"
             script: ""
     runs-on: ${{ matrix.os }}
@@ -60,9 +60,9 @@ jobs:
       uses: actions/upload-artifact@v2.2.2
       with:
         # Artifact name
-        name: g
+        name: ${{ matrix.artifact_name }}
         # A file, directory or wildcard pattern that describes what to upload
-        path: ${{github.workspace}}/Client/ByteMagic.h
+        path: ${{github.workspace}}/${{matrix.binary_path}}
         # The desired behavior if no files are found using the provided path.
 
     
