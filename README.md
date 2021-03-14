@@ -15,17 +15,17 @@
 <!-- TABLE OF CONTENTS -->
 ## Table of Contents
 
-* [Legal Disclaimer](#legal-disclaimer)
+* [Disclaimer](#disclaimer)
 * [Download](#download)
 * [Motivation](#motivation)
 * [Features](#features)
 * [Supported Platforms](#supported-platforms-and-headsets)
 * [For Developers](#for-developers)
-* [Contact](#contact)
+* [Contributors](#contributors)
 * [License](#license)
 
-<!-- Legal disclaimer -->
-## Legal Disclaimer
+<!-- disclaimer -->
+## Disclaimer
 
 ### THIS PROGRAM IS NOT AFFILIATED WITH SONY. YOU ARE RESPONSIBLE FOR ANY DAMAGE THAT MAY OCCUR WHILE USING THIS PROGRAM.
 
@@ -98,15 +98,13 @@ Then navigate to `Client/linux` and `make`.
 
 Use the provided xcodeproj file.
 
-### Adding a new platform
+## Contributors
 
-**This is no longer relevant, we support all major platforms :)**
-
-There are two platform dependent parts in the code - the GUI and Bluetooth communication.
-
-For the GUI, you need to copy the relevant parts from Dear ImGui.
-
-For Bluetooth, you need to implement `IBluetoothConnector` for your desired platform.
+* [Plutoberth](https://github.com/Plutoberth) - Initial work and Windows version
+* [Mr-M33533K5](https://github.com/Mr-M33533K5) - BT Interface Help
+* [semvis123](https://github.com/semvis123) - macOS version
+* [jimzrt](https://github.com/jimzrt) - Linux version
+* [guilhermealbm](https://github.com/guilhermealbm) - ASM Switch
 
 <!-- LICENSE -->
 ## License
