@@ -7,16 +7,15 @@ find_package(Threads REQUIRED)
 
 add_executable(client)
 
-target_sources(
-    client
+target_sources(client
     PRIVATE BluetoothWrapper.cpp
     ByteMagic.cpp
     CommandSerializer.cpp
     TimedMessageQueue.cpp
     CrossPlatformGUI.cpp)
 
-target_include_directories (
-    client PRIVATE ${CMAKE_SOURCE_DIR}
+target_include_directories (client
+    PRIVATE ${CMAKE_SOURCE_DIR}
 )
 
 if(UNIX AND NOT APPLE)
@@ -38,16 +37,53 @@ if (DEAR_IMGUI)
         CascadiaCodeFont.cpp
     )
 
-    target_include_directories (
-        client PRIVATE ${CMAKE_SOURCE_DIR}/imgui
+    target_include_directories (client
+        PRIVATE ${CMAKE_SOURCE_DIR}/imgui
     )
-endif()
+endif ()
+
+if (LINUX)
+	target_sources(
+		client
+		PRIVATE linux/DBusHelper.cpp
+		linux/LinuxBluetoothConnector.cpp
+		linux/LinuxGUI.cpp
+        linux/main.cpp
+        imgui/backends/imgui_impl_glfw.cpp
+        imgui/backends/imgui_impl_opengl3.cpp
+    )
+
+    set (CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/linux)
+	
+    find_package(DBus REQUIRED)
+
+    find_package(GLEW REQUIRED)
+
+    find_package(glfw3 REQUIRED)
+
+    find_package(OpenGL REQUIRED)
+
+    # Add if for glew, dbus, glfw not found
+
+    target_include_directories(client
+        PRIVATE ${DBUS_INCLUDE_DIRS}
+        ${OPENGL_INCLUDE_DIRS}
+    )
+
+    target_link_libraries(client
+        PRIVATE ${DBUS_LIBRARIES}
+        GLEW::GLEW 
+        glfw
+        bluetooth
+        ${OPENGL_LIBRARIES}
+    )
+
+endif ()
 
 if (WIN32)
     ADD_DEFINITIONS(-DUNICODE)
 
-    target_sources(
-        client
+    target_sources(client
         PRIVATE windows/WindowsGUI.cpp
         windows/main.cpp
         windows/WindowsBluetoothConnector.cpp
@@ -55,7 +91,11 @@ if (WIN32)
         imgui/backends/imgui_impl_win32.cpp
     )
 
-    target_link_libraries(client d3d11)
-endif (WIN32)
+    target_link_libraries(client 
+        PRIVATE d3d11
+    )
+endif ()
 
-target_link_libraries(client Threads::Threads)
+target_link_libraries(client 
+    PRIVATE Threads::Threads
+)
