@@ -8,7 +8,10 @@
   This project features a PC alternative for the mobile-only Sony Headphones app.
   <br/><br/>
   <img width="650" src="static/showcase.gif" alt="Program Showcase"><p> <br/>
-  <a href="https://paypal.me/plutoberth"><img width="110" src="static/badge.svg" alt="Donate" class="center"/></a>
+
+  ![CMake](https://github.com/plutoberth/sonyheadphonesclient/actions/workflows/cmake.yml/badge.svg)
+  [![Github all releases](https://img.shields.io/github/downloads/Plutoberth/SonyHeadphonesClient/total.svg)](https://GitHub.com/Plutoberth/SonyHeadphonesClient/releases/)
+  [![Donate](static/badge.svg)](https://paypal.me/plutoberth)
   <br/>
 </p>
 
