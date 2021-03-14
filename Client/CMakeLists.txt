@@ -14,7 +14,7 @@ target_sources(
     CommandSerializer.cpp
     TimedMessageQueue.cpp
     Client.cpp
-    GUI_Impls/CrossPlatformGUI.cpp)
+    CrossPlatformGUI.cpp)
 
 target_include_directories (
     client PRIVATE ${CMAKE_SOURCE_DIR}
@@ -31,7 +31,7 @@ endif()
 if (DEAR_IMGUI)
     target_sources(
         client
-        PRIVATE GUI_Impls/CrossPlatformGUI.cpp
+        PRIVATE CrossPlatformGUI.cpp
         imgui/imgui.cpp
         imgui/imgui_draw.cpp
         imgui/imgui_tables.cpp
@@ -49,10 +49,10 @@ if (WIN32)
 
     target_sources(
         client
-        PRIVATE GUI_Impls/WindowsGUI.cpp
+        PRIVATE windows/WindowsGUI.cpp
         imgui/backends/imgui_impl_dx11.cpp
         imgui/backends/imgui_impl_win32.cpp
-        WindowsBluetoothConnector.cpp
+        windows/WindowsBluetoothConnector.cpp
     )
 
     target_link_libraries(client d3d11)
