@@ -8,7 +8,7 @@
 #import "ViewController.h"
 
 @implementation ViewController
-@synthesize connectedLabel, connectButton, ANCSlider, ANCValueLabel, focusOnVoice;
+@synthesize connectedLabel, connectButton, ANCSlider, ANCValueLabel, focusOnVoice, ANCEnabled, ANCValuePrefixLabel;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -24,22 +24,32 @@
 - (void)displayError:(RecoverableException)exc {
     NSString *errorText;
     if (exc.shouldDisconnect){
-        bt.disconnect();
-        [ANCSlider setEnabled:FALSE];
-        [focusOnVoice setEnabled:FALSE];
-        [connectButton setTitle:@"Connect to Bluetooth device"];
-        statusItem.button.image = [NSImage imageNamed:@"NSRefreshTemplate"];
         errorText = @"Unexpected error occurred and disconnected.";
+        bt.disconnect();
+        [self displayDisconnectedWithText:errorText];
     } else {
         errorText = @"Unexpected error occurred.";
+        [connectedLabel setStringValue: errorText];
     }
-    [connectedLabel setStringValue: errorText];
     NSAlert *alert = [[NSAlert alloc] init];
     [alert setMessageText:errorText];
     [alert setInformativeText:@(exc.what())];
     [alert addButtonWithTitle:@"Ok"];
     [alert runModal];
 
+}
+
+- (void)displayDisconnectedWithText: (NSString *)text{
+    [ANCSlider setEnabled:FALSE];
+    [ANCSlider setIntValue:0];
+    [focusOnVoice setEnabled:FALSE];
+    [ANCEnabled setEnabled:FALSE];
+    [ANCEnabled setState:FALSE];
+    [connectButton setTitle:@"Connect to Bluetooth device"];
+    [connectedLabel setStringValue:text];
+    [ANCValuePrefixLabel setTextColor:NSColor.tertiaryLabelColor];
+    [ANCValueLabel setTextColor:NSColor.tertiaryLabelColor];
+    statusItem.button.image = [NSImage imageNamed:@"NSRefreshTemplate"];
 }
 
 - (void)statusItemClick:(id)sender {
@@ -66,10 +76,7 @@
     // check if it should disconnect
     if (bt.isConnected()) {
         bt.disconnect();
-        [ANCSlider setEnabled:FALSE];
-        [focusOnVoice setEnabled:FALSE];
-        [connectButton setTitle:@"Connect to Bluetooth device"];
-        [connectedLabel setStringValue:@"Not connected"];
+        [self displayDisconnectedWithText:@"Not connected"];
         return;
     }
     
@@ -99,14 +106,18 @@
             [connectedLabel setStringValue:[@"Connected: " stringByAppendingString:[device nameOrAddress]]];
             [connectButton setTitle:@"Disconnect"];
             [ANCSlider setEnabled:TRUE];
+            [ANCEnabled setEnabled:TRUE];
+            [ANCEnabled setState:TRUE];
+            [ANCValuePrefixLabel setTextColor:NSColor.labelColor];
+            [ANCValueLabel setTextColor:NSColor.labelColor];
             [focusOnVoice setEnabled:FALSE];
             statusItem.button.image = [NSImage imageNamed:@"NSHomeTemplate"];
         } else {
-            [connectedLabel setStringValue:@"Not connected, connection timed out."];
+            [self displayDisconnectedWithText:@"Not connected, connection timed out."];
             bt.disconnect();
         }
     } else {
-        [connectedLabel setStringValue:@"Not connected, device selector canceled."];
+        [self displayDisconnectedWithText:@"Not connected, device selector canceled."];
     }
     
 }
@@ -114,15 +125,10 @@
 - (IBAction)sendData:(id)sender {
     // check if the device is still connected
     if (!bt.isConnected()) {
-        [ANCSlider setEnabled:FALSE];
-        [ANCSlider setIntValue:0];
-        [focusOnVoice setEnabled:FALSE];
-        [connectButton setTitle:@"Connect to Bluetooth device"];
-        [connectedLabel setStringValue:@"Not connected, please reconnect."];
-        statusItem.button.image = [NSImage imageNamed:@"NSRefreshTemplate"];
+        [self displayDisconnectedWithText:@"Not connected, please reconnect."];
         return;
     }
-    
+    // change the visuals based on ANCSlider
     [ANCValueLabel setStringValue:ANCSlider.stringValue];
     if (ANCSlider.intValue >= MINIMUM_VOICE_FOCUS_STEP) {
         [focusOnVoice setTitle:@"Focus on Voice"];
@@ -134,9 +140,21 @@
         statusItem.button.image = [NSImage imageNamed:@"NSHomeTemplate"];
         [focusOnVoice setEnabled:FALSE];
     }
+    // change the visuals based on ANCEnabled
+    if (ANCEnabled.state){
+        [ANCSlider setEnabled:TRUE];
+        [ANCValuePrefixLabel setTextColor:NSColor.labelColor];
+        [ANCValueLabel setTextColor:NSColor.labelColor];
+    }
+    else {
+        [ANCValuePrefixLabel setTextColor:NSColor.tertiaryLabelColor];
+        [ANCValueLabel setTextColor:NSColor.tertiaryLabelColor];
+        [focusOnVoice setEnabled:FALSE];
+        [ANCSlider setEnabled:FALSE];
+    }
     
     // send current settings
-    auto ncAsmEffect = NC_ASM_EFFECT::ADJUSTMENT_COMPLETION;
+    auto ncAsmEffect = ANCEnabled.state ? NC_ASM_EFFECT::ADJUSTMENT_COMPLETION : NC_ASM_EFFECT::OFF;
     auto asmId = focusOnVoice.state == NSControlStateValueOn ? ASM_ID::VOICE : ASM_ID::NORMAL;
     try {
         bt.sendCommand(CommandSerializer::serializeNcAndAsmSetting(
@@ -144,7 +162,7 @@
                                                                    NC_ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
                                                                    ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
                                                                    asmId,
-                                                                   ANCSlider.intValue
+                                                                   ANCEnabled.state ? ANCSlider.intValue : -1
                                                                    ));
     } catch (RecoverableException& exc) {
         [self displayError:exc];

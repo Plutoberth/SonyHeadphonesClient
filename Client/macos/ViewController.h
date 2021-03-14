@@ -13,10 +13,11 @@ NSStatusItem* statusItem;
 
 @interface ViewController : NSViewController
 @property (weak, nonatomic) IBOutlet NSTextField *connectedLabel;
+@property (weak, nonatomic) IBOutlet NSTextField *ANCValuePrefixLabel;
 @property (weak, nonatomic) IBOutlet NSTextField *ANCValueLabel;
 @property (weak, nonatomic) IBOutlet NSButton *focusOnVoice;
 @property (weak, nonatomic) IBOutlet NSButton *connectButton;
 @property (weak, nonatomic) IBOutlet NSSlider *ANCSlider;
-
+@property (weak, nonatomic) IBOutlet NSButton *ANCEnabled;
 @end
 
