@@ -13,7 +13,6 @@ target_sources(
     ByteMagic.cpp
     CommandSerializer.cpp
     TimedMessageQueue.cpp
-    Client.cpp
     CrossPlatformGUI.cpp)
 
 target_include_directories (
@@ -50,9 +49,10 @@ if (WIN32)
     target_sources(
         client
         PRIVATE windows/WindowsGUI.cpp
+        windows/main.cpp
+        windows/WindowsBluetoothConnector.cpp
         imgui/backends/imgui_impl_dx11.cpp
         imgui/backends/imgui_impl_win32.cpp
-        windows/WindowsBluetoothConnector.cpp
     )
 
     target_link_libraries(client d3d11)
