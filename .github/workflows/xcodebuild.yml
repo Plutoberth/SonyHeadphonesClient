@@ -31,12 +31,12 @@ jobs:
     - name: Build
       working-directory: ${{github.workspace}}/Client/build
       # Execute the build.
-      run: xcodebuild -project '../macos/SonyHeadphonesClient.xcodeproj' -config Release -scheme 'SonyHeadphonesClient' -archivePath ./archive archive
+      run: xcodebuild -project '../macos/SonyHeadphonesClient.xcodeproj' -config Release -scheme 'SonyHeadphonesClient' -archivePath ./archive archive | xcpretty
 
     - name: Export archive to .app
       working-directory: ${{github.workspace}}/Client/build
       # Exports the archive to a .app file
-      run: xcodebuild -exportArchive -archivePath ./archive.xcarchive -exportPath ./ -exportOptionsPlist ../macos/exportOptions.plist
+      run: xcodebuild -exportArchive -archivePath ./archive.xcarchive -exportPath ./ -exportOptionsPlist ../macos/exportOptions.plist | xcpretty
       
     - name: Zip the exported file
       working-directory: ${{github.workspace}}/Client/build
