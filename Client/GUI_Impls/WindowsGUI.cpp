@@ -20,8 +20,8 @@ void EnterGUIMainLoop(BluetoothWrapper bt)
 	ShowWindow(GetConsoleWindow(), SW_HIDE); //SW_RESTORE to bring back
 
 	// Create application window
-	WNDCLASSEX wc = { sizeof(WNDCLASSEX), CS_CLASSDC, WindowsGUIInternal::WndProc, 0L, 0L, GetModuleHandle(NULL), NULL, NULL, NULL, NULL, APP_NAME_W, NULL };
-	::RegisterClassEx(&wc);
+	WNDCLASSEXW wc = { sizeof(WNDCLASSEXW), CS_CLASSDC, WindowsGUIInternal::WndProc, 0L, 0L, GetModuleHandle(NULL), NULL, NULL, NULL, NULL, APP_NAME_W, NULL };
+	::RegisterClassExW(&wc);
 	//TODO: pass window data (size, name, etc) as params and autoscale
 	HWND hwnd = ::CreateWindowW(wc.lpszClassName, APP_NAME_W, WS_OVERLAPPEDWINDOW, 100, 100, GUI_WIDTH, GUI_HEIGHT, NULL, NULL, wc.hInstance, NULL);
 
@@ -29,7 +29,7 @@ void EnterGUIMainLoop(BluetoothWrapper bt)
 	if (!WindowsGUIInternal::CreateDeviceD3D(hwnd))
 	{
 		WindowsGUIInternal::CleanupDeviceD3D();
-		::UnregisterClass(wc.lpszClassName, wc.hInstance);
+		::UnregisterClassW(wc.lpszClassName, wc.hInstance);
 		throw std::runtime_error("Failed to create D3D device");
 	}
 
@@ -82,7 +82,7 @@ void EnterGUIMainLoop(BluetoothWrapper bt)
 		g_pd3dDeviceContext->OMSetRenderTargets(1, &g_mainRenderTargetView, NULL);
 		g_pd3dDeviceContext->ClearRenderTargetView(g_mainRenderTargetView, (float*)&WINDOW_COLOR);
 		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-		
+
 		//We need this because Present doesn't delay when the app is minimized.
 		if (g_pSwapChain->Present(1, presentFlags) == DXGI_STATUS_OCCLUDED) {
 			presentFlags = DXGI_PRESENT_TEST;
@@ -101,7 +101,7 @@ void EnterGUIMainLoop(BluetoothWrapper bt)
 
 	WindowsGUIInternal::CleanupDeviceD3D();
 	::DestroyWindow(hwnd);
-	::UnregisterClass(wc.lpszClassName, wc.hInstance);
+	::UnregisterClassW(wc.lpszClassName, wc.hInstance);
 }
 
 void DisplayErrorMessagebox(const std::string& message)
