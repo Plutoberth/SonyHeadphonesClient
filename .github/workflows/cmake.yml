@@ -21,7 +21,7 @@ jobs:
           - os: ubuntu-latest
             script: "sudo apt update && sudo apt install libbluetooth-dev libglew-dev libglfw3-dev libdbus-1-dev"
           - os: windows-latest
-            script: rem
+            script: ""
     runs-on: ${{ matrix.os }}
 
     steps:
