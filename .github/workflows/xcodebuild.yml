@@ -38,13 +38,13 @@ jobs:
       # Exports the archive to a .app file
       run: xcodebuild -exportArchive -archivePath ./archive.xcarchive -exportPath ./ -exportOptionsPlist ../macos/exportOptions.plist
 
-#    - name: Upload a Build Artifact
-#      uses: actions/upload-artifact@v2.2.2
-#      with:
-#        # Artifact name
-#        name: ${{ matrix.artifact_name }}
-#        # A file, directory or wildcard pattern that describes what to upload
-#        path: ${{github.workspace}}/${{matrix.binary_path}}
-#        # The desired behavior if no files are found using the provided path.
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v2.2.2
+      with:
+        # Artifact name
+        name: ${{ matrix.artifact_name }}
+        # A file, directory or wildcard pattern that describes what to upload
+        path: ${{github.workspace}}/${{matrix.binary_path}}
+        # The desired behavior if no files are found using the provided path.
 
     
