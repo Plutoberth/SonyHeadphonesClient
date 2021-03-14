@@ -4,7 +4,7 @@ constexpr unsigned char ESCAPED_BYTE_SENTRY = 61;
 constexpr unsigned char ESCAPED_60 = 44;
 constexpr unsigned char ESCAPED_61 = 45;
 constexpr unsigned char ESCAPED_62 = 46;
-constexpr unsigned int MAX_STEPS_WH_1000_XM3 = 19;
+constexpr int MAX_STEPS_WH_1000_XM3 = 19;
 
 namespace CommandSerializer
 {
@@ -146,14 +146,14 @@ namespace CommandSerializer
 		Message ret;
 		ret.dataType = static_cast<DATA_TYPE>(src[0]);
 		ret.seqNumber = src[1];
-		if (src[src.size() - 1] != _sumChecksum(src.data(), src.size() - 1))
+		if ((unsigned char)src[src.size() - 1] != _sumChecksum(src.data(), src.size() - 1))
 		{
 			throw RecoverableException("Invalid checksum!", true);
 		}
 		return ret;
 	}
 
-	NC_DUAL_SINGLE_VALUE getDualSingleForAsmLevel(unsigned char asmLevel)
+	NC_DUAL_SINGLE_VALUE getDualSingleForAsmLevel(char asmLevel)
 	{
 		NC_DUAL_SINGLE_VALUE val = NC_DUAL_SINGLE_VALUE::OFF;
 		if (asmLevel > MAX_STEPS_WH_1000_XM3)
@@ -171,7 +171,7 @@ namespace CommandSerializer
 		return val;
 	}
 
-	Buffer serializeNcAndAsmSetting(NC_ASM_EFFECT ncAsmEffect, NC_ASM_SETTING_TYPE ncAsmSettingType, ASM_SETTING_TYPE asmSettingType, ASM_ID asmId, unsigned char asmLevel)
+	Buffer serializeNcAndAsmSetting(NC_ASM_EFFECT ncAsmEffect, NC_ASM_SETTING_TYPE ncAsmSettingType, ASM_SETTING_TYPE asmSettingType, ASM_ID asmId, char asmLevel)
 	{
 		Buffer ret;
 		ret.push_back(static_cast<unsigned char>(COMMAND_TYPE::NCASM_SET_PARAM));

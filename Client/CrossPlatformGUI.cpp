@@ -152,29 +152,37 @@ void CrossPlatformGUI::_drawDeviceDiscovery()
 
 void CrossPlatformGUI::_drawASMControls()
 {
+	static bool ambientSoundControl = true;
+	static bool sentAmbientSoundControl = ambientSoundControl;
 	static bool focusOnVoice = false;
 	static bool sentFocusOnVoice = focusOnVoice;
 	static int asmLevel = 0;
+	static int lastAsmLevel = asmLevel;
 	static int sentAsmLevel = asmLevel;
 	//Don't show if the command only takes a few frames to send
 	static int commandLinger = 0;
 
 	if (ImGui::CollapsingHeader("Ambient Sound Mode   ", ImGuiTreeNodeFlags_DefaultOpen))
 	{
-		ImGui::Text("Control ambient sound for your %ss", this->_connectedDevice.name.c_str());
+		ImGui::Checkbox("Ambient Sound Control", &ambientSoundControl);
 
-		ImGui::SliderInt("Ambient Sound Level", &asmLevel, 0, 19);
+		if (ambientSoundControl)
+		{
+			ImGui::Text("Control ambient sound for your %ss", this->_connectedDevice.name.c_str());
+
+			ImGui::SliderInt("Ambient Sound Level", &asmLevel, 0, 19);
+
+			if (asmLevel >= MINIMUM_VOICE_FOCUS_STEP)
+			{
+				ImGui::Checkbox("Focus on Voice", &focusOnVoice);
+			}
+			else
+			{
+				ImGui::Text("Focus on Voice isn't enabled on this level.");
+			}
+		}
 
 		bool sliderActive = ImGui::IsItemActive();
-
-		if (asmLevel >= MINIMUM_VOICE_FOCUS_STEP)
-		{
-			ImGui::Checkbox("Focus on Voice", &focusOnVoice);
-		}
-		else
-		{
-			ImGui::Text("Focus on Voice isn't enabled on this level.");
-		}
 
 		if (this->_sendCommandFuture.ready())
 		{
@@ -205,10 +213,12 @@ void CrossPlatformGUI::_drawASMControls()
 			}
 		}
 		//We're not waiting, and there's no command in the air, so we can evaluate sending a new command
-		else if (sentAsmLevel != asmLevel || sentFocusOnVoice != focusOnVoice)
+		else if (sentAsmLevel != asmLevel || sentFocusOnVoice != focusOnVoice || sentAmbientSoundControl != ambientSoundControl)
 		{
-			auto ncAsmEffect = sliderActive ? NC_ASM_EFFECT::ADJUSTMENT_IN_PROGRESS : NC_ASM_EFFECT::ADJUSTMENT_COMPLETION;
+			auto ncAsmEffect = sliderActive ? NC_ASM_EFFECT::ADJUSTMENT_IN_PROGRESS : ambientSoundControl ? NC_ASM_EFFECT::ADJUSTMENT_COMPLETION : NC_ASM_EFFECT::OFF;
 			auto asmId = focusOnVoice ? ASM_ID::VOICE : ASM_ID::NORMAL;
+			lastAsmLevel = asmLevel == -1 ? lastAsmLevel : asmLevel;
+			asmLevel = ambientSoundControl ? lastAsmLevel : -1;
 
 			this->_sendCommandFuture.setFromAsync([=]() {
 				return this->_bt.sendCommand(CommandSerializer::serializeNcAndAsmSetting(
@@ -221,6 +231,7 @@ void CrossPlatformGUI::_drawASMControls()
 			});
 			sentAsmLevel = asmLevel;
 			sentFocusOnVoice = focusOnVoice;
+			sentAmbientSoundControl = ambientSoundControl;
 		}
 	}
 }

@@ -4,7 +4,7 @@
 #include "CommandSerializer.h"
 #include "BluetoothWrapper.h"
 
-#include "GUI_Impls/WindowsGUI.h"
+#include "WindowsGUI.h"
 
 int main()
 {

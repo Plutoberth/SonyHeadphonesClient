@@ -15,17 +15,17 @@
 <!-- TABLE OF CONTENTS -->
 ## Table of Contents
 
-* [Legal Disclaimer](#legal-disclaimer)
+* [Disclaimer](#disclaimer)
 * [Download](#download)
 * [Motivation](#motivation)
 * [Features](#features)
 * [Supported Platforms](#supported-platforms-and-headsets)
 * [For Developers](#for-developers)
-* [Contact](#contact)
+* [Contributors](#contributors)
 * [License](#license)
 
-<!-- Legal disclaimer -->
-## Legal Disclaimer
+<!-- disclaimer -->
+## Disclaimer
 
 ### THIS PROGRAM IS NOT AFFILIATED WITH SONY. YOU ARE RESPONSIBLE FOR ANY DAMAGE THAT MAY OCCUR WHILE USING THIS PROGRAM.
 
@@ -43,6 +43,7 @@ So I reverse-engineered the application (for intercompatibility purposes, of cou
 ## Features
 
 - [x] Ambient Sound Control
+- [x] Disabling noise cancelling
 - [ ] Display battery life and fetch existing settings from device
 - [ ] Equalizer
 
@@ -52,36 +53,58 @@ So I reverse-engineered the application (for intercompatibility purposes, of cou
 
 For now, only the WH-1000-XM3 is supported. Other headsets may work, but I haven't tested them. 
 
-#### **Please report about your experiences using other Sony headset in the [Headset Reports](https://github.com/Plutoberth/SonyHeadphonesClient/issues/29) issue.**
-
-It shouldn't be too much work to add support for a new platform. Open a PR if you'd like to do so. See [For Developers - Adding a new platform](#adding-a-new-platform).
+#### **Please report about your experiences using other Sony headsets in the [Headset Reports](https://github.com/Plutoberth/SonyHeadphonesClient/issues/29) issue.**
 
 - [x] Windows
-- [ ] [Linux](https://github.com/Plutoberth/SonyHeadphonesClient/issues/7) - In Progress by jimzrt
+- [x] Linux
 - [x] macOS
-
+- [ ] ~~TempleOS~~
 
 ## For Developers
 
-`git clone --recurse-submodules https://github.com/Plutoberth/SonyHeadphonesClient.git`
+```git clone --recurse-submodules https://github.com/Plutoberth/SonyHeadphonesClient.git```
+
+Issue this incantation to fix submodule issues:
+```sh
+git submodule sync
+git submodule update
+```
+
+### Protocol Information
+
+Some enums and data are present in the code. The rest has to be obtained either statically or dynamically.
+
+Sniffing messages - See [this helpful comment](https://github.com/Plutoberth/SonyHeadphonesClient/pull/36#issuecomment-795633877) by @guilhermealbm.
 
 ### Compiling
 
-#### Windows
+#### Windows & Linux
 
-Use the provided solution file.
+```
+cd Client
+mkdir build
+cd build
+cmake ..
+cmake --build .
+```
+
+Linux Dependencies (Debian/Ubuntu):
+
+```bash
+sudo apt install libbluetooth-dev libglew-dev libglfw3-dev libdbus-1-dev
+```
 
 #### macOS
 
 Use the provided xcodeproj file.
 
-### Adding a new platform
+## Contributors
 
-There are two platform dependent parts in the code - the GUI and Bluetooth communication.
-
-For the GUI, you need to copy the relevant parts from ImGui.
-
-For Bluetooth, you need to implement `IBluetoothConnector` for your desired platform.
+* [Plutoberth](https://github.com/Plutoberth) - Initial Work and Windows Version
+* [Mr-M33533K5](https://github.com/Mr-M33533K5) - BT Interface and Other Help
+* [semvis123](https://github.com/semvis123) - macOS Version
+* [jimzrt](https://github.com/jimzrt) - Linux Version
+* [guilhermealbm](https://github.com/guilhermealbm) - Noise Cancelling Switch
 
 <!-- LICENSE -->
 ## License
