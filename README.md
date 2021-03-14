@@ -9,7 +9,8 @@
   <br/><br/>
   <img width="650" src="static/showcase.gif" alt="Program Showcase"><p> <br/>
   
-  [![CMake](https://github.com/plutoberth/sonyheadphonesclient/actions/workflows/cmake.yml/badge.svg)](https://github.com/Plutoberth/SonyHeadphonesClient/actions)
+  [![XCode](https://github.com/plutoberth/sonyheadphonesclient/actions/workflows/xcodebuild.yml/badge.svg)](https://github.com/Plutoberth/SonyHeadphonesClient/actions/workflows/xcodebuild.yml)
+  [![CMake](https://github.com/plutoberth/sonyheadphonesclient/actions/workflows/cmake.yml/badge.svg)](https://github.com/Plutoberth/SonyHeadphonesClient/actions/workflows/cmake.yml)
   [![Github all releases](https://img.shields.io/github/downloads/Plutoberth/SonyHeadphonesClient/total.svg)](https://GitHub.com/Plutoberth/SonyHeadphonesClient/releases/)
   [![Donate](static/badge.svg)](https://paypal.me/plutoberth)
   <br/>
