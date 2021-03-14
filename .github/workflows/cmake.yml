@@ -21,7 +21,7 @@ jobs:
           - os: ubuntu-latest
             binary_path: Client/build/SonyHeadphonesClient
             artifact_name: "SonyHeadphonesClient-linux-x64"
-            script: "sudo apt update && sudo apt install libbluetooth-dev libglew-dev libglfw3-dev libdbus-1-dev"
+            script: "sudo apt-get update && sudo apt-get install libbluetooth-dev libglew-dev libglfw3-dev libdbus-1-dev"
           - os: windows-latest
             binary_path: Client/build/Release/SonyHeadphonesClient.exe
             artifact_name: "SonyHeadphonesClient-win-x64.exe"

@@ -52,6 +52,8 @@ if (LINUX)
     )
 
     set (CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/linux)
+
+    set (OpenGL_GL_PREFERENCE GLVND)
 	
     find_package(DBus REQUIRED)
 
@@ -61,9 +63,10 @@ if (LINUX)
 
     find_package(OpenGL REQUIRED)
 
-    if ((NOT DBUS_FOUND) OR (NOT GLEW_FOUND) OR (NOT GLFW3_FOUND) OR (NOT OPENGL_FOUND))
-        message ( FATAL_ERROR "Didn't find one of the packages. For Debian based systems, use:
-        sudo apt install libbluetooth-dev libglew-dev libglfw3-dev libdbus-1-dev" )
+    if ((NOT DBUS_FOUND) OR (NOT GLEW_FOUND) OR (NOT glfw3_FOUND) OR (NOT OPENGL_FOUND))
+        message ( FATAL_ERROR 
+        "Didn't find one of the packages. For Debian based systems, use:"
+        "sudo apt install libbluetooth-dev libglew-dev libglfw3-dev libdbus-1-dev" )
     endif ()
 
     target_include_directories(SonyHeadphonesClient
@@ -76,7 +79,7 @@ if (LINUX)
         GLEW::GLEW 
         glfw
         bluetooth
-        ${OPENGL_LIBRARIES}
+        OpenGL::GL
     )
 
 endif ()
