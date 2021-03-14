@@ -15,8 +15,8 @@ jobs:
         os: ["macos-latest"]
         include:
           - os: macos-latest
-            binary_path: Client/build/SonyHeadphonesClient.app
-            artifact_name: "SonyHeadphonesClient-macOS.app"
+            binary_path: Client/build/SonyHeadphonesClient.zip
+            artifact_name: "SonyHeadphonesClient-macOS.zip"
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -37,8 +37,13 @@ jobs:
       working-directory: ${{github.workspace}}/Client/build
       # Exports the archive to a .app file
       run: xcodebuild -exportArchive -archivePath ./archive.xcarchive -exportPath ./ -exportOptionsPlist ../macos/exportOptions.plist
-
-    - name: Upload a Build Artifact
+      
+    - name: Zip the exported file
+      working-directory: ${{github.workspace}}/Client/build
+      # Zip the application for easier downloading
+      run: zip -r SonyHeadphonesClient.zip SonyHeadphonesClient.app
+      
+    - name: Upload the zipped application
       uses: actions/upload-artifact@v2.2.2
       with:
         # Artifact name
