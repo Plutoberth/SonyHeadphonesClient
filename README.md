@@ -43,7 +43,7 @@ So I reverse-engineered the application (for intercompatibility purposes, of cou
 ## Features
 
 - [x] Ambient Sound Control
-- [ ] Disabling noise cancelling
+- [x] Disabling noise cancelling
 - [ ] Display battery life and fetch existing settings from device
 - [ ] Equalizer
 
@@ -104,7 +104,7 @@ Use the provided xcodeproj file.
 * [Mr-M33533K5](https://github.com/Mr-M33533K5) - BT Interface and Other Help
 * [semvis123](https://github.com/semvis123) - macOS Version
 * [jimzrt](https://github.com/jimzrt) - Linux Version
-* [guilhermealbm](https://github.com/guilhermealbm) - ASM Switch
+* [guilhermealbm](https://github.com/guilhermealbm) - Noise Cancelling Switch
 
 <!-- LICENSE -->
 ## License
