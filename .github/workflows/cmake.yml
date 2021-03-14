@@ -19,11 +19,16 @@ jobs:
         os: ["ubuntu-latest", "windows-latest"]
         include:
           - os: ubuntu-latest
-            run: "sudo apt update && sudo apt install libbluetooth-dev libglew-dev libglfw3-dev libdbus-1-dev"
+            script: "sudo apt update && sudo apt install libbluetooth-dev libglew-dev libglfw3-dev libdbus-1-dev"
+          - os: windows-latest
+            script: rem
     runs-on: ${{ matrix.os }}
 
     steps:
     - uses: actions/checkout@v2
+    
+    - name: Download Packages
+      run: ${{ matrix.script }}
 
     - name: Create Build Environment
       # Some projects don't allow in-source building, so create a separate build directory
