@@ -1,0 +1,46 @@
+name: Xcode build
+
+on:
+  push:
+    branches:
+    - master
+  pull_request:
+    branches:
+    - master
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: ["macos-latest"]
+        include:
+          - os: macos-latest
+            binary_path: Client/build/SonyHeadphonesClient.app
+            artifact_name: "SonyHeadphonesClient-macOS.app"
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+
+    - name: Build
+      working-directory: ${{github.workspace}}/Client/build
+      # Execute the build.
+      run: xcodebuild -project '../macos/SonyHeadphonesClient.xcodeproj' -config Release -scheme 'SonyHeadphonesClient' -archivePath ./archive archive
+      
+    - name: Export archive to .app
+      working-directory: ${{github.workspace}}/Client/build
+      # Exports the archive to a .app file
+      run: xcodebuild -exportArchive -archivePath ./archive.xcarchive -exportPath ./ -exportOptionsPlist ../macos/exportOptions.plist
+      
+#    - name: Upload a Build Artifact
+#      uses: actions/upload-artifact@v2.2.2
+#      with:
+#        # Artifact name
+#        name: ${{ matrix.artifact_name }}
+#        # A file, directory or wildcard pattern that describes what to upload
+#        path: ${{github.workspace}}/${{matrix.binary_path}}
+#        # The desired behavior if no files are found using the provided path.
+
+    
