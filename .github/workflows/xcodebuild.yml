@@ -1,4 +1,4 @@
-name: XCode
+name: macOS
 
 on:
   push:
