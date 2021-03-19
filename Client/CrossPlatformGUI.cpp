@@ -217,10 +217,10 @@ void CrossPlatformGUI::_drawASMControls()
 		{
 			auto ncAsmEffect = sliderActive ? NC_ASM_EFFECT::ADJUSTMENT_IN_PROGRESS : ambientSoundControl ? NC_ASM_EFFECT::ADJUSTMENT_COMPLETION : NC_ASM_EFFECT::OFF;
 			auto asmId = focusOnVoice ? ASM_ID::VOICE : ASM_ID::NORMAL;
-			lastAsmLevel = asmLevel == -1 ? lastAsmLevel : asmLevel;
-			asmLevel = ambientSoundControl ? lastAsmLevel : -1;
+			lastAsmLevel = asmLevel == ASM_LEVEL_DISABLED ? lastAsmLevel : asmLevel;
+			asmLevel = ambientSoundControl ? lastAsmLevel : ASM_LEVEL_DISABLED;
 
-			this->_sendCommandFuture.setFromAsync([=]() {
+			this->_sendCommandFuture.setFromAsync([=, this]() {
 				return this->_bt.sendCommand(CommandSerializer::serializeNcAndAsmSetting(
 					ncAsmEffect,
 					NC_ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
