@@ -1,4 +1,5 @@
 #include <QtWidgets/QApplication>
+#include <memory>
 
 #include "Dialog.h"
 
