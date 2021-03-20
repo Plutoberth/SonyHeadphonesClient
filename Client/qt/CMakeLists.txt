@@ -11,7 +11,7 @@ add_definitions(
   -DQT_USE_FAST_OPERATOR_PLUS
   -DQT_USE_QSTRINGBUILDER)
 add_executable(
-  SonyHeadphonesClient-qt
+  SonyHeadphonesClient-qt MACOSX_BUNDLE
   ../BluetoothWrapper.cpp ../ByteMagic.cpp ../CommandSerializer.cpp
   ../TimedMessageQueue.cpp Dialog.cpp main.cpp)
 if(LINUX)
