@@ -14,7 +14,7 @@ add_executable(
   SonyHeadphonesClient-qt MACOSX_BUNDLE
   ../BluetoothWrapper.cpp ../ByteMagic.cpp ../CommandSerializer.cpp
   ../TimedMessageQueue.cpp Dialog.cpp main.cpp)
-if(LINUX)
+if(UNIX AND NOT APPLE)
   target_sources(
     SonyHeadphonesClient-qt PRIVATE ../linux/DBusHelper.cpp
                                     ../linux/LinuxBluetoothConnector.cpp)

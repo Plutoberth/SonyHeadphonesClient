@@ -12,6 +12,8 @@
 #elif defined(Q_OS_MACOS)
 #include "macos/MacOSBluetoothConnector.h"
 #define BluetoothConnector MacOSBluetoothConnector
+#else
+#error "Unsupported OS"
 #endif
 
 int main(int argc, char *argv[]) {

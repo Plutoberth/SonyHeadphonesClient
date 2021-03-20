@@ -20,15 +20,6 @@ target_include_directories (SonyHeadphonesClient
     PRIVATE ${CMAKE_SOURCE_DIR}
 )
 
-if(UNIX AND NOT APPLE)
-    set(LINUX TRUE)
-endif()
-
-if (WIN32 OR LINUX)
-    set (DEAR_IMGUI TRUE)
-endif()
-
-if (DEAR_IMGUI)
     target_sources(SonyHeadphonesClient
         PRIVATE CrossPlatformGUI.cpp
         imgui/imgui.cpp
@@ -41,23 +32,29 @@ if (DEAR_IMGUI)
     target_include_directories (SonyHeadphonesClient
         PRIVATE ${CMAKE_SOURCE_DIR}/imgui
     )
-endif ()
 
-if (LINUX)
-	target_sources(SonyHeadphonesClient
-		PRIVATE linux/DBusHelper.cpp
-		linux/LinuxBluetoothConnector.cpp
-		linux/LinuxGUI.cpp
-        linux/main.cpp
-        imgui/backends/imgui_impl_glfw.cpp
-        imgui/backends/imgui_impl_opengl3.cpp
-    )
+if (UNIX)
+  target_sources(SonyHeadphonesClient
+    PRIVATE linux/main.cpp
+    linux/LinuxGUI.cpp
+    imgui/backends/imgui_impl_glfw.cpp
+    imgui/backends/imgui_impl_opengl3.cpp)
+  if (NOT APPLE)
+    target_sources(SonyHeadphonesClient
+      PRIVATE linux/DBusHelper.cpp
+      linux/LinuxBluetoothConnector.cpp)
+  else()
+    target_sources(SonyHeadphonesClient
+      PRIVATE macos/MacOSBluetoothConnector.mm)
+  endif()
 
     set (CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/linux)
 
     set (OpenGL_GL_PREFERENCE GLVND)
 
-    find_package(DBus REQUIRED)
+    if (NOT APPLE)
+      find_package(DBus REQUIRED)
+    endif()
 
     find_package(GLEW REQUIRED)
 
@@ -65,24 +62,40 @@ if (LINUX)
 
     find_package(OpenGL REQUIRED)
 
-    if ((NOT DBUS_FOUND) OR (NOT GLEW_FOUND) OR (NOT glfw3_FOUND) OR (NOT OPENGL_FOUND))
+    if ((NOT GLEW_FOUND) OR (NOT glfw3_FOUND) OR (NOT OPENGL_FOUND) OR (NOT APPLE AND NOT DBUS_FOUND))
         message ( FATAL_ERROR
         "Didn't find one of the packages. For Debian based systems, use:"
         "sudo apt install libbluetooth-dev libglew-dev libglfw3-dev libdbus-1-dev" )
     endif ()
+    if (NOT APPLE)
+      target_include_directories(SonyHeadphonesClient
+        PRIVATE ${DBUS_INCLUDE_DIRS})
+    endif()
 
     target_include_directories(SonyHeadphonesClient
-        PRIVATE ${DBUS_INCLUDE_DIRS}
+        PRIVATE
         ${OPENGL_INCLUDE_DIRS}
     )
 
-    target_link_libraries(SonyHeadphonesClient
-        PRIVATE ${DBUS_LIBRARIES}
+    if (NOT APPLE)
+      target_link_libraries(SonyHeadphonesClient
+        PRIVATE ${DBUS_LIBRARIES} bluetooth)
+    endif()
+
+    target_link_libraries(SonyHeadphonesClient PRIVATE
         GLEW::GLEW
         glfw
-        bluetooth
         OpenGL::GL
     )
+
+    if (APPLE)
+      find_library(BT_FRAMEWORK IOBluetooth REQUIRED)
+      find_library(BT_UI_FRAMEWORK IOBluetoothUI REQUIRED)
+      find_library(COCOA_FRAMEWORK Cocoa REQUIRED)
+      target_link_libraries(SonyHeadphonesClient PRIVATE ${BT_UI_FRAMEWORK}
+        ${BT_FRAMEWORK}
+        ${COCOA_FRAMEWORK})
+    endif()
 
 endif ()
 

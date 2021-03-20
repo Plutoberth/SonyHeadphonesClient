@@ -28,11 +28,18 @@ void EnterGUIMainLoop(BluetoothWrapper bt)
     if (!glfwInit())
         return;
 
+	  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+#ifndef __APPLE__
     const char *glsl_version = "#version 130";
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+#else
+    const char *glsl_version = "#version 150";
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
+#endif
 
-    // Create window with graphics context
+	// Create window with graphics context
     GLFWwindow *window = glfwCreateWindow(GUI_WIDTH, GUI_HEIGHT, "Sony Headphones App", NULL, NULL);
     if (window == NULL)
         return;
