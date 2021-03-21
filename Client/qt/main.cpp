@@ -18,7 +18,6 @@
 
 int main(int argc, char *argv[]) {
 	QApplication app(argc, argv);
-	Dialog *dia = new Dialog(std::make_unique<BluetoothConnector>());
-	dia->show();
+	Dialog(std::make_unique<BluetoothConnector>()).show();
 	return app.exec();
 }
