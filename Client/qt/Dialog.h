@@ -8,7 +8,6 @@
 #include "ui_dialog.h"
 
 class IBluetoothConnector;
-class QString;
 
 class Dialog : public QDialog, private Ui::Dialog {
 	Q_OBJECT
