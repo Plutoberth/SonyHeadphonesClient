@@ -1,5 +1,7 @@
 #pragma once
 
+#include <QtCore/QTimer>
+
 #include "BluetoothWrapper.h"
 #include "SingleInstanceFuture.h"
 
@@ -7,7 +9,6 @@
 
 class IBluetoothConnector;
 class QString;
-class QTimer;
 
 class Dialog : public QDialog, private Ui::Dialog {
 	Q_OBJECT
@@ -24,7 +25,7 @@ private:
 	BluetoothWrapper btWrap;
 	QMap<std::string, std::string> deviceMap;
 	QString selectedDevice;
-	QTimer *timer;
+	QTimer timer;
 	SingleInstanceFuture<int> sendCommandFuture;
 	SingleInstanceFuture<void> connectFuture;
 	SingleInstanceFuture<void> disconnectFuture;

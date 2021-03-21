@@ -1,20 +1,17 @@
-#include <QtCore/QDebug>
-#include <QtCore/QTimer>
-
 #include "BluetoothWrapper.h"
 #include "CommandSerializer.h"
 #include "Dialog.h"
 
 Dialog::Dialog(std::unique_ptr<IBluetoothConnector> connector, QDialog *parent)
-	: btWrap(BluetoothWrapper(std::move(connector))), timer(new QTimer(this)) {
+	: btWrap(BluetoothWrapper(std::move(connector))) {
 	setupUi(this);
 	setupConnectedDevices();
 	connect(
-		timer, &QTimer::timeout, this, QOverload<>::of(&Dialog::on_timeout));
+		&timer, &QTimer::timeout, this, QOverload<>::of(&Dialog::on_timeout));
 }
 
 Dialog::~Dialog() {
-	timer->stop();
+	timer.stop();
 }
 
 void Dialog::setupConnectedDevices() {
@@ -34,7 +31,7 @@ void Dialog::on_refreshButton_clicked() {
 void Dialog::on_connectButton_clicked() {
 	if (isConnected) {
 		statusLabel->setText(tr("Disconnecting"));
-		timer->stop();
+		timer.stop();
 		disconnectFuture.setFromAsync([this]() {
 			btWrap.disconnect();
 			statusLabel->setText(QStringLiteral(""));
@@ -68,7 +65,7 @@ void Dialog::on_connectButton_clicked() {
 				ASM_ID::NORMAL,
 				0));
 		});
-		timer->start(100);
+		timer.start(200);
 	}
 }
 
@@ -83,13 +80,6 @@ void Dialog::on_timeout() {
 	int asmLevel = ambientSoundSlider->value();
 	static int lastAsmLevel = asmLevel;
 	static int sentAsmLevel = asmLevel;
-#ifndef NDEBUG
-	qDebug() << "ambientSoundControl:" << sentAmbientSoundControl << "<>"
-			 << ambientSoundControl;
-	qDebug() << "focusOnVoice:" << sentFocusOnVoice << "<>" << focusOnVoice;
-	qDebug() << "asmLevel:" << sentAsmLevel << "<>" << asmLevel;
-	qDebug() << "lastAsmLevel =" << lastAsmLevel;
-#endif
 	if (sendCommandFuture.ready()) {
 		try {
 			sendCommandFuture.get();
