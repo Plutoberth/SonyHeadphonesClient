@@ -1,3 +1,5 @@
+#import <Foundation/Foundation.h>
+
 #include "MacOSBluetoothConnector.h"
 
 MacOSBluetoothConnector::MacOSBluetoothConnector()
@@ -127,16 +129,22 @@ int MacOSBluetoothConnector::recv(char* buf, size_t length)
 
 std::vector<BluetoothDevice> MacOSBluetoothConnector::getConnectedDevices()
 {
+    IOBluetoothSDPUUID *uuid = [IOBluetoothSDPUUID uuidWithBytes:SERVICE_UUID_IN_BYTES length:sizeof(SERVICE_UUID_IN_BYTES)];
+    bool filtering = uuid != nil;
+    NSLog(@"Filterin for service UUID: %@", filtering ? @"yes" : @"no");
     // create the output vector
     std::vector<BluetoothDevice> res;
     // loop through the paired devices (also includes non paired devices for some reason)
     for (IOBluetoothDevice* device in [IOBluetoothDevice pairedDevices]) {
+        if (filtering && ![device getServiceRecordForUUID:uuid]) {
+          continue;
+        }
         // check if device is connected
-        if ([device isConnected]) {
+        if (device.isConnected) {
             BluetoothDevice dev;
             // save the mac address and name
-            dev.mac =  [[device addressString]UTF8String];
-            dev.name = [[device name] UTF8String];
+            dev.mac =  device.addressString.UTF8String;
+            dev.name = device.name.UTF8String;
             // add device to the connected devices vector
             res.push_back(dev);
         }
