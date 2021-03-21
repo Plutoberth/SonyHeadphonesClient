@@ -130,13 +130,11 @@ int MacOSBluetoothConnector::recv(char* buf, size_t length)
 std::vector<BluetoothDevice> MacOSBluetoothConnector::getConnectedDevices()
 {
     IOBluetoothSDPUUID *uuid = [IOBluetoothSDPUUID uuidWithBytes:SERVICE_UUID_IN_BYTES length:sizeof(SERVICE_UUID_IN_BYTES)];
-    bool filtering = uuid != nil;
-    NSLog(@"Filterin for service UUID: %@", filtering ? @"yes" : @"no");
     // create the output vector
     std::vector<BluetoothDevice> res;
     // loop through the paired devices (also includes non paired devices for some reason)
-    for (IOBluetoothDevice* device in [IOBluetoothDevice pairedDevices]) {
-        if (filtering && ![device getServiceRecordForUUID:uuid]) {
+    for (IOBluetoothDevice* device in IOBluetoothDevice.pairedDevices) {
+        if (![device getServiceRecordForUUID:uuid]) {
           continue;
         }
         // check if device is connected
