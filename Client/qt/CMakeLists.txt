@@ -30,9 +30,6 @@ elseif(WIN32)
 elseif(APPLE)
   target_sources(SonyHeadphonesClient-qt
                  PRIVATE ../macos/MacOSBluetoothConnector.mm)
-  find_library(BT_FRAMEWORK IOBluetooth REQUIRED)
-  find_library(BT_UI_FRAMEWORK IOBluetoothUI REQUIRED)
-  find_library(COCOA_FRAMEWORK Cocoa REQUIRED)
   target_link_libraries(
     SonyHeadphonesClient-qt PRIVATE ${BT_UI_FRAMEWORK} ${BT_FRAMEWORK}
                                     ${COCOA_FRAMEWORK})
