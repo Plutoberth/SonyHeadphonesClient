@@ -25,6 +25,9 @@ void Dialog::on_refreshButton_clicked() {
 void Dialog::on_connectButton_clicked() {
 	if (isConnected) {
 		statusLabel->setText(tr("Disconnecting"));
+		if (disconnectFuture.valid()) {
+			disconnectFuture.get();
+		}
 		disconnectFuture.setFromAsync([this]() {
 			btWrap.disconnect();
 			statusLabel->setText(QStringLiteral(""));
@@ -43,6 +46,9 @@ void Dialog::on_connectButton_clicked() {
 		deviceListWidget->setEnabled(false);
 		label->setText(
 			tr("Control ambient sound for your %1s").arg(selectedDevice));
+		if (connectFuture.valid()) {
+			connectFuture.get();
+		}
 		connectFuture.setFromAsync([this]() {
 			btWrap.connect(deviceMap[selectedDevice.toStdString()]);
 			statusLabel->setText(QStringLiteral(""));
