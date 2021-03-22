@@ -1,17 +1,11 @@
+#include "Dialog.h"
 #include "BluetoothWrapper.h"
 #include "CommandSerializer.h"
-#include "Dialog.h"
 
 Dialog::Dialog(std::unique_ptr<IBluetoothConnector> connector, QDialog *parent)
 	: btWrap(BluetoothWrapper(std::move(connector))) {
 	setupUi(this);
 	setupConnectedDevices();
-	connect(
-		&timer, &QTimer::timeout, this, QOverload<>::of(&Dialog::on_timeout));
-}
-
-Dialog::~Dialog() {
-	timer.stop();
 }
 
 void Dialog::setupConnectedDevices() {
@@ -31,7 +25,6 @@ void Dialog::on_refreshButton_clicked() {
 void Dialog::on_connectButton_clicked() {
 	if (isConnected) {
 		statusLabel->setText(tr("Disconnecting"));
-		timer.stop();
 		disconnectFuture.setFromAsync([this]() {
 			btWrap.disconnect();
 			statusLabel->setText(QStringLiteral(""));
@@ -39,6 +32,8 @@ void Dialog::on_connectButton_clicked() {
 			refreshButton->setEnabled(true);
 			ambientSoundModeGroupBox->setEnabled(false);
 			connectButton->setText(tr("&Connect"));
+			connectButton->setEnabled(false);
+			deviceListWidget->clearSelection();
 		});
 	} else {
 		statusLabel->setText(tr("Connecting"));
@@ -65,11 +60,11 @@ void Dialog::on_connectButton_clicked() {
 				ASM_ID::NORMAL,
 				0));
 		});
-		timer.start(200);
 	}
 }
 
-void Dialog::on_timeout() {
+void Dialog::on_ambientSoundSlider_valueChanged(int value) {
+	focusOnVoiceCheckBox->setEnabled(value >= MINIMUM_VOICE_FOCUS_STEP);
 	if (!isConnected) {
 		return;
 	}
@@ -120,10 +115,6 @@ void Dialog::on_timeout() {
 	}
 }
 
-void Dialog::on_ambientSoundSlider_valueChanged(int value) {
-	focusOnVoiceCheckBox->setEnabled(value >= MINIMUM_VOICE_FOCUS_STEP);
-}
-
 void Dialog::on_deviceListWidget_itemSelectionChanged() {
 	if (!deviceListWidget->selectedItems().isEmpty()) {
 		selectedDevice = deviceListWidget->selectedItems().first()->text();
@@ -136,4 +127,8 @@ void Dialog::on_ambientSoundControlCheckBox_stateChanged(int state) {
 	focusOnVoiceCheckBox->setEnabled(state == Qt::CheckState::Checked &&
 									 ambientSoundSlider->value() >=
 										 MINIMUM_VOICE_FOCUS_STEP);
+}
+
+void Dialog::on_focusOnVoiceCheckBox_stateChanged(int state) {
+	on_ambientSoundSlider_valueChanged(ambientSoundSlider->value());
 }
