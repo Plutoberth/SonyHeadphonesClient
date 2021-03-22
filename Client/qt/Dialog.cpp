@@ -34,6 +34,7 @@ void Dialog::on_connectButton_clicked() {
 			connectButton->setText(tr("&Connect"));
 			connectButton->setEnabled(false);
 			deviceListWidget->clearSelection();
+			isConnected = false;
 		});
 	} else {
 		statusLabel->setText(tr("Connecting"));
@@ -65,9 +66,6 @@ void Dialog::on_connectButton_clicked() {
 
 void Dialog::on_ambientSoundSlider_valueChanged(int value) {
 	focusOnVoiceCheckBox->setEnabled(value >= MINIMUM_VOICE_FOCUS_STEP);
-	if (!isConnected) {
-		return;
-	}
 	bool ambientSoundControl = ambientSoundControlCheckBox->isChecked();
 	static bool sentAmbientSoundControl = ambientSoundControl;
 	bool focusOnVoice = focusOnVoiceCheckBox->isChecked();
