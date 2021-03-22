@@ -20,6 +20,7 @@ void Dialog::setupConnectedDevices() {
 void Dialog::on_refreshButton_clicked() {
 	setupConnectedDevices();
 	connectButton->setEnabled(false);
+	deviceListWidget->clearSelection();
 }
 
 void Dialog::on_connectButton_clicked() {
@@ -36,7 +37,6 @@ void Dialog::on_connectButton_clicked() {
 			ambientSoundModeGroupBox->setEnabled(false);
 			connectButton->setText(tr("&Connect"));
 			connectButton->setEnabled(false);
-			deviceListWidget->clearSelection();
 			isConnected = false;
 		});
 	} else {
@@ -44,6 +44,7 @@ void Dialog::on_connectButton_clicked() {
 		connectButton->setEnabled(false);
 		refreshButton->setEnabled(false);
 		deviceListWidget->setEnabled(false);
+		deviceListWidget->clearSelection();
 		label->setText(
 			tr("Control ambient sound for your %1s").arg(selectedDevice));
 		if (connectFuture.ready()) {
