@@ -102,7 +102,7 @@ sudo apt install libbluetooth-dev libglew-dev libglfw3-dev libdbus-1-dev
 Set executale to run on Linux
 
 ```
-sudo set chmod -x ./SonyHeadphonesClient
+sudo set chmod +x ./SonyHeadphonesClient
 ```
 
 #### macOS
