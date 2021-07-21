@@ -88,6 +88,16 @@ enum class COMMAND_TYPE : char
 	NCASM_SET_PARAM = 104
 };
 
+enum class VPT_PRESET_ID : char
+{
+	OFF = 0,
+	OUTDOOR_FESTIVAL = 1,
+	ARENA = 2,
+	CONCERT_HALL = 3,
+	CLUB = 4
+	//Note: Sony reserved 5~15 "for future"
+};
+
 enum class SOUND_POSITION_PRESET : char
 {
 	OFF = 0,
@@ -110,7 +120,8 @@ inline const SOUND_POSITION_PRESET SOUND_POSITION_PRESET_ARRAY[] = {
 	SOUND_POSITION_PRESET::OUT_OF_RANGE
 };
 
-enum class VPT_INQUIRED_TYPE : char {
+enum class VPT_INQUIRED_TYPE : char
+{
 	NO_USE = 0,
 	VPT = 1,
 	SOUND_POSITION = 2,

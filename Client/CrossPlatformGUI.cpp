@@ -164,6 +164,9 @@ void CrossPlatformGUI::_drawASMControls()
 	static SOUND_POSITION_PRESET lastSoundPosition = SOUND_POSITION_PRESET::OFF;
 	static SOUND_POSITION_PRESET sentSoundPosition = lastSoundPosition;
 
+	static int surround = 0;
+	static int lastSurround = static_cast<int>(VPT_PRESET_ID::OFF);
+
 	//Don't show if the command only takes a few frames to send
 	static int commandLinger = 0;
 
@@ -190,15 +193,18 @@ void CrossPlatformGUI::_drawASMControls()
 		}
 
 		sliderActive = ImGui::IsItemActive();
-
-		//Add a little space to separate the Sound Position setting
-		ImGui::NewLine();
 	}
 
-	if (ImGui::Combo("Sound Position", &soundPosition, "Off\0Front Left\0Front Right\0"
-		"Front\0Rear Left\0Rear Right\0\0"))
+	if (ImGui::CollapsingHeader("Virtual Sound   ", ImGuiTreeNodeFlags_DefaultOpen))
 	{
-		sentSoundPosition = SOUND_POSITION_PRESET_ARRAY[soundPosition];
+		if (ImGui::Combo("Sound Position", &soundPosition, "Off\0Front Left\0Front Right\0"
+			"Front\0Rear Left\0Rear Right\0\0"))
+		{
+			sentSoundPosition = SOUND_POSITION_PRESET_ARRAY[soundPosition];
+		}
+		
+		ImGui::Combo("Surround", &surround, "Off\0Outdoor Festival\0Arena\0"
+			"Concert Hall\0Club\0\0");
 	}
 
 	if (this->_sendCommandFuture.ready())
@@ -251,15 +257,25 @@ void CrossPlatformGUI::_drawASMControls()
 		sentAmbientSoundControl = ambientSoundControl;
 	}
 	//Sending the VPT command
-	else if (sentSoundPosition != lastSoundPosition) {
+	else if (surround != lastSurround || sentSoundPosition != lastSoundPosition)
+	{
+		auto command = surround != lastSurround ? VPT_INQUIRED_TYPE::VPT
+			: VPT_INQUIRED_TYPE::SOUND_POSITION;
+
+		auto preset = surround != lastSurround ? static_cast<unsigned char>(surround)
+			: static_cast<unsigned char>(sentSoundPosition);
+
 		this->_sendCommandFuture.setFromAsync([=, this]() {
 			return this->_bt.sendCommand(CommandSerializer::serializeVPTSetting(
-				VPT_INQUIRED_TYPE::SOUND_POSITION,
-				sentSoundPosition
+				command,
+				preset
 			));
 		});
 
-		lastSoundPosition = sentSoundPosition;
+		if (surround != lastSurround)
+			lastSurround = surround;
+		else
+			lastSoundPosition = sentSoundPosition;
 	}
 }
 
