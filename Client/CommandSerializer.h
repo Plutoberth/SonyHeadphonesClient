@@ -40,5 +40,6 @@ namespace CommandSerializer
 
 	NC_DUAL_SINGLE_VALUE getDualSingleForAsmLevel(char asmLevel);
 	Buffer serializeNcAndAsmSetting(NC_ASM_EFFECT ncAsmEffect, NC_ASM_SETTING_TYPE ncAsmSettingType, ASM_SETTING_TYPE asmSettingType, ASM_ID asmId, char asmLevel);
+	Buffer serializeVPTSetting(VPT_INQUIRED_TYPE type, SOUND_POSITION_PRESET preset);
 }
 

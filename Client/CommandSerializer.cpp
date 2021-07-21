@@ -185,5 +185,15 @@ namespace CommandSerializer
 		return ret;
 	}
 
+	Buffer serializeVPTSetting(VPT_INQUIRED_TYPE type, SOUND_POSITION_PRESET preset)
+	{
+		Buffer ret;
+		ret.push_back(static_cast<unsigned char>(COMMAND_TYPE::VPT_SET_PARAM));
+		ret.push_back(static_cast<unsigned char>(type));
+		ret.push_back(static_cast<unsigned char>(preset));
+
+		return ret;
+	}
+
 }
 

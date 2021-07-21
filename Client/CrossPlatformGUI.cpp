@@ -159,8 +159,15 @@ void CrossPlatformGUI::_drawASMControls()
 	static int asmLevel = 0;
 	static int lastAsmLevel = asmLevel;
 	static int sentAsmLevel = asmLevel;
+
+	static int soundPosition = 0;
+	static SOUND_POSITION_PRESET lastSoundPosition = SOUND_POSITION_PRESET::OFF;
+	static SOUND_POSITION_PRESET sentSoundPosition = lastSoundPosition;
+
 	//Don't show if the command only takes a few frames to send
 	static int commandLinger = 0;
+
+	bool sliderActive;
 
 	if (ImGui::CollapsingHeader("Ambient Sound Mode   ", ImGuiTreeNodeFlags_DefaultOpen))
 	{
@@ -182,57 +189,77 @@ void CrossPlatformGUI::_drawASMControls()
 			}
 		}
 
-		bool sliderActive = ImGui::IsItemActive();
+		sliderActive = ImGui::IsItemActive();
 
-		if (this->_sendCommandFuture.ready())
-		{
-			commandLinger = 0;
-			try
-			{
-				this->_sendCommandFuture.get();
-			}
-			catch (const RecoverableException& exc)
-			{
-				std::string excString;
-				//We kinda have to do it here and not in the wrapper, due to async causing timing issues. To fix it, the messagequeue can be made
-				//static, but I'm not sure if I wanna do that.
-				if (exc.shouldDisconnect)
-				{
-					this->_bt.disconnect();
-					excString = "Disconnected due to: ";
-				}
-				this->_mq.addMessage(excString + exc.what());
-			}
-		}
-		//This means that we're waiting
-		else if (this->_sendCommandFuture.valid())
-		{
-			if (commandLinger++ > FPS / 10)
-			{
-				ImGui::Text("Sending command %c", "|/-\\"[(int)(ImGui::GetTime() / 0.05f) & 3]);
-			}
-		}
-		//We're not waiting, and there's no command in the air, so we can evaluate sending a new command
-		else if (sentAsmLevel != asmLevel || sentFocusOnVoice != focusOnVoice || sentAmbientSoundControl != ambientSoundControl)
-		{
-			auto ncAsmEffect = sliderActive ? NC_ASM_EFFECT::ADJUSTMENT_IN_PROGRESS : ambientSoundControl ? NC_ASM_EFFECT::ADJUSTMENT_COMPLETION : NC_ASM_EFFECT::OFF;
-			auto asmId = focusOnVoice ? ASM_ID::VOICE : ASM_ID::NORMAL;
-			lastAsmLevel = asmLevel == ASM_LEVEL_DISABLED ? lastAsmLevel : asmLevel;
-			asmLevel = ambientSoundControl ? lastAsmLevel : ASM_LEVEL_DISABLED;
+		//Add a little space to separate the Sound Position setting
+		ImGui::NewLine();
+	}
 
-			this->_sendCommandFuture.setFromAsync([=, this]() {
-				return this->_bt.sendCommand(CommandSerializer::serializeNcAndAsmSetting(
-					ncAsmEffect,
-					NC_ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
-					ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
-					asmId,
-					asmLevel
-				));
-			});
-			sentAsmLevel = asmLevel;
-			sentFocusOnVoice = focusOnVoice;
-			sentAmbientSoundControl = ambientSoundControl;
+	if (ImGui::Combo("Sound Position", &soundPosition, "Off\0Front Left\0Front Right\0"
+		"Front\0Rear Left\0Rear Right\0\0"))
+	{
+		sentSoundPosition = SOUND_POSITION_PRESET_ARRAY[soundPosition];
+	}
+
+	if (this->_sendCommandFuture.ready())
+	{
+		commandLinger = 0;
+		try
+		{
+			this->_sendCommandFuture.get();
 		}
+		catch (const RecoverableException& exc)
+		{
+			std::string excString;
+			//We kinda have to do it here and not in the wrapper, due to async causing timing issues. To fix it, the messagequeue can be made
+			//static, but I'm not sure if I wanna do that.
+			if (exc.shouldDisconnect)
+			{
+				this->_bt.disconnect();
+				excString = "Disconnected due to: ";
+			}
+			this->_mq.addMessage(excString + exc.what());
+		}
+	}
+	//This means that we're waiting
+	else if (this->_sendCommandFuture.valid())
+	{
+		if (commandLinger++ > FPS / 10)
+		{
+			ImGui::Text("Sending command %c", "|/-\\"[(int)(ImGui::GetTime() / 0.05f) & 3]);
+		}
+	}
+	//We're not waiting, and there's no command in the air, so we can evaluate sending a new command
+	else if (sentAsmLevel != asmLevel || sentFocusOnVoice != focusOnVoice || sentAmbientSoundControl != ambientSoundControl)
+	{
+		auto ncAsmEffect = sliderActive ? NC_ASM_EFFECT::ADJUSTMENT_IN_PROGRESS : ambientSoundControl ? NC_ASM_EFFECT::ADJUSTMENT_COMPLETION : NC_ASM_EFFECT::OFF;
+		auto asmId = focusOnVoice ? ASM_ID::VOICE : ASM_ID::NORMAL;
+		lastAsmLevel = asmLevel == ASM_LEVEL_DISABLED ? lastAsmLevel : asmLevel;
+		asmLevel = ambientSoundControl ? lastAsmLevel : ASM_LEVEL_DISABLED;
+
+		this->_sendCommandFuture.setFromAsync([=, this]() {
+			return this->_bt.sendCommand(CommandSerializer::serializeNcAndAsmSetting(
+				ncAsmEffect,
+				NC_ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
+				ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
+				asmId,
+				asmLevel
+			));
+		});
+		sentAsmLevel = asmLevel;
+		sentFocusOnVoice = focusOnVoice;
+		sentAmbientSoundControl = ambientSoundControl;
+	}
+	//Sending the VPT command
+	else if (sentSoundPosition != lastSoundPosition) {
+		this->_sendCommandFuture.setFromAsync([=, this]() {
+			return this->_bt.sendCommand(CommandSerializer::serializeVPTSetting(
+				VPT_INQUIRED_TYPE::SOUND_POSITION,
+				sentSoundPosition
+			));
+		});
+
+		lastSoundPosition = sentSoundPosition;
 	}
 }
 
