@@ -263,13 +263,89 @@ std::string dbus_get_property(DBusConnection *const connection, const char *devi
     ret = std::string(interface);
 
 clean_up:
-    if (NULL != rsp)
-    {
+	if (NULL != rsp) {
+		dbus_message_unref(rsp);
+	}
+
+	if (NULL != msg) {
+		dbus_message_unref(msg);
+	}
+
+	return ret;
+}
+
+std::vector<std::string>
+dbus_get_property_uuids(DBusConnection *const connection,
+						const char *device_path) {
+	std::vector<std::string> ret;
+
+	DBusError error;
+	DBusMessage *msg = NULL;
+	DBusMessage *rsp = NULL;
+	DBusMessageIter args;
+	DBusMessageIter subargs;
+	DBusMessageIter list_iter;
+	char *interface = NULL;
+	char const *const device_interface = "org.bluez.Device1";
+	const char *value = NULL;
+	int n_elements = 0;
+	char const *const uuids_prop = "UUIDs";
+
+	dbus_error_init(&error);
+
+	msg = dbus_message_new_method_call(
+		"org.bluez", device_path, "org.freedesktop.DBus.Properties", "Get");
+	if (NULL == msg) {
+		printf("Error: Could not obtain method call\n");
+		goto clean_up;
+	}
+
+	/* arguments */
+	dbus_message_append_args(
+		msg, DBUS_TYPE_STRING, &device_interface, DBUS_TYPE_INVALID);
+
+	dbus_message_append_args(
+		msg, DBUS_TYPE_STRING, &uuids_prop, DBUS_TYPE_INVALID);
+
+	/* Invoke the method */
+	rsp = dbus_connection_send_with_reply_and_block(
+		connection, msg, DBUS_TIMEOUT_USE_DEFAULT, &error);
+	if (dbus_error_is_set(&error)) {
+		printf("Could not send dbus message\nError: %s\n", error.message);
+		dbus_error_free(&error);
+		goto clean_up;
+	}
+
+	if (NULL == rsp) {
+		printf("Error: Response was NULL\n");
+		goto clean_up;
+	}
+
+	if (!dbus_message_iter_init(rsp, &args)) {
+		printf("Error: Could not start message iterator on response\n");
+		goto clean_up;
+	}
+
+	dbus_message_iter_recurse(&args, &subargs);
+
+	do {
+		const char *value = NULL;
+		dbus_message_iter_recurse(&subargs, &list_iter);
+		do {
+			dbus_message_iter_get_basic(&list_iter, &value);
+			if (!value) {
+				break;
+			}
+			ret.push_back(std::string(value));
+		} while (dbus_message_iter_next(&list_iter));
+	} while (dbus_message_iter_next(&subargs));
+
+clean_up:
+	if (NULL != rsp) {
         dbus_message_unref(rsp);
     }
 
-    if (NULL != msg)
-    {
+	if (NULL != msg) {
         dbus_message_unref(msg);
     }
 

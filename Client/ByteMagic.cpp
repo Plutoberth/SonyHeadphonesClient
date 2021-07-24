@@ -45,7 +45,7 @@ long long MACStringToLong(const std::string& str)
 constexpr size_t MAC_ADDR_BYTES_LEN = 6;
 std::string MACBytesToString(unsigned char addr[])
 {
-	// Create hex string from the bytes. 
+	// Create hex string from the bytes.
 	std::stringstream mac_addr_str;
 	for (int i = 0; i < MAC_ADDR_BYTES_LEN; i++)
 	{

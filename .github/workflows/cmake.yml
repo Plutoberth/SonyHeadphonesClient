@@ -16,7 +16,7 @@ jobs:
   build:
     strategy:
       matrix:
-        os: ["ubuntu-latest", "windows-latest"]
+        os: ["ubuntu-latest", "macos-latest", "windows-latest"]
         include:
           - os: ubuntu-latest
             binary_path: Client/build/SonyHeadphonesClient
@@ -26,13 +26,17 @@ jobs:
             binary_path: Client/build/Release/SonyHeadphonesClient.exe
             artifact_name: "SonyHeadphonesClient-win-x64.exe"
             script: ""
+          - os: "macos-latest"
+            binary_path: Client/build/SonyHeadphonesClient
+            artifact_name: "SonyHeadphonesClient-macos-x64"
+            script: "brew install glew glfw"
     runs-on: ${{ matrix.os }}
 
     steps:
     - uses: actions/checkout@v2
       with:
         submodules: true
-    
+
     - name: Download Packages
       run: ${{ matrix.script }}
 
@@ -41,15 +45,18 @@ jobs:
       # We'll use this as our working directory for all subsequent commands
       run: cmake -E make_directory ${{github.workspace}}/Client/build
 
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v2
+
     - name: Configure CMake
       # Use a bash shell so we can use the same syntax for environment variable
       # access regardless of the host operating system
       shell: bash
       working-directory: ${{github.workspace}}/Client/build
-      # Note the current convention is to use the -S and -B options here to specify source 
-      # and build directories, but this is only available with CMake 3.13 and higher.  
+      # Note the current convention is to use the -S and -B options here to specify source
+      # and build directories, but this is only available with CMake 3.13 and higher.
       # The CMake binaries on the Github Actions machines are (as of this writing) 3.12
-      run: cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+      run: cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DWITH_QT=ON
 
     - name: Build
       working-directory: ${{github.workspace}}/Client/build
@@ -64,5 +71,3 @@ jobs:
         # A file, directory or wildcard pattern that describes what to upload
         path: ${{github.workspace}}/${{matrix.binary_path}}
         # The desired behavior if no files are found using the provided path.
-
-    

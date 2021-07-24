@@ -1,7 +1,9 @@
 #include "LinuxBluetoothConnector.h"
 
+#include <cctype>
 #include <cstddef>
 #include <cstdio>
+#include <algorithm>
 #include <iostream>
 #include <stdio.h>
 #include <unistd.h>
@@ -100,9 +102,14 @@ std::vector<BluetoothDevice> LinuxBluetoothConnector::getConnectedDevices()
   for (auto &adapter : adapter_paths)
   {
     printf("%s\n", adapter.c_str());
-    std::string name = dbus_get_property(connection, adapter.c_str(), "Name");
-    std::string address = dbus_get_property(connection, adapter.c_str(), "Address");
-    res.push_back({.name = name, .mac = address});
+	  // Filter out if the device does not have the expected UUID
+	  auto uuids = dbus_get_property_uuids(connection, adapter.c_str());
+	  auto it = find(uuids.begin(), uuids.end(), SERVICE_UUID_LOWER);
+	  if (it != uuids.end()) {
+		  auto name = dbus_get_property(connection, adapter.c_str(), "Name");
+		  auto address = dbus_get_property(connection, adapter.c_str(), "Address");
+		  res.push_back({.name = name, .mac = address});
+	  }
   }
 
   return res;
