@@ -10,7 +10,7 @@ add_executable(SonyHeadphonesClient)
 target_sources(
   SonyHeadphonesClient
   PRIVATE BluetoothWrapper.cpp ByteMagic.cpp CommandSerializer.cpp
-          TimedMessageQueue.cpp CrossPlatformGUI.cpp)
+          TimedMessageQueue.cpp)
 
 target_include_directories(SonyHeadphonesClient PRIVATE ${CMAKE_SOURCE_DIR})
 
