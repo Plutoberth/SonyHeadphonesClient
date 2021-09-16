@@ -26,9 +26,18 @@ add_executable(
   ../TimedMessageQueue.cpp qt/Dialog.cpp qt/main.cpp)
 
 if(UNIX AND NOT APPLE)
+  find_package(DBus REQUIRED)
+
+  if (NOT DBUS_FOUND)
+      message ( FATAL_ERROR
+      "Didn't find dbus. For Debian based systems, use:"
+      "sudo apt install libdbus-1-dev" )
+  endif ()
+
   target_sources(
     SonyHeadphonesClient PRIVATE ../linux/DBusHelper.cpp
                                  ../linux/LinuxBluetoothConnector.cpp)
+
   target_link_libraries(SonyHeadphonesClient PRIVATE bluetooth
                                                      ${DBUS_LIBRARIES})
   target_include_directories(SonyHeadphonesClient PRIVATE ${DBUS_INCLUDE_DIRS})
@@ -45,6 +54,7 @@ elseif(APPLE)
     SonyHeadphonesClient PRIVATE ${BT_UI_FRAMEWORK} ${BT_FRAMEWORK}
                                  ${COCOA_FRAMEWORK})
 endif()
+
 target_include_directories(SonyHeadphonesClient
                            PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(SonyHeadphonesClient PRIVATE Qt5::Widgets
