@@ -80,6 +80,8 @@ void Dialog::on_ambientSoundSlider_valueChanged(int value) {
 	int asmLevel = ambientSoundSlider->value();
 	static int lastAsmLevel = asmLevel;
 	static int sentAsmLevel = asmLevel;
+
+	// If we finished sending a command
 	if (sendCommandFuture.ready()) {
 		try {
 			sendCommandFuture.get();
@@ -90,8 +92,10 @@ void Dialog::on_ambientSoundSlider_valueChanged(int value) {
 										 .arg(QString::fromUtf8(exc.what())));
 			}
 		}
+	// If a command is in-flight
 	} else if (sendCommandFuture.valid()) {
 		statusLabel->setText(tr("Waiting for prior command to send"));
+	// If the configuration was changed, compared to the last sent configuration
 	} else if (sentAsmLevel != asmLevel || sentFocusOnVoice != focusOnVoice ||
 			   sentAmbientSoundControl != ambientSoundControl) {
 		statusLabel->setText(tr("Sending command"));
