@@ -20,7 +20,8 @@ int main(int argc, char *argv[]) {
 	try
 	{
 		QApplication app(argc, argv);
-		Dialog dialog(std::make_unique<BluetoothConnector>());
+		BluetoothWrapper bt(std::make_unique<BluetoothConnector>());
+		Dialog dialog(std::move(bt));
 		dialog.show();
 		return app.exec();
 	}

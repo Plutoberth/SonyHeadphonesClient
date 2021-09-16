@@ -5,13 +5,11 @@
 
 #include "ui_dialog.h"
 
-class IBluetoothConnector;
-
 class Dialog : public QDialog, private Ui::Dialog {
 	Q_OBJECT
 
 public:
-	explicit Dialog(std::unique_ptr<IBluetoothConnector> connector,
+	explicit Dialog(BluetoothWrapper bt,
 					QDialog *parent = nullptr);
 
 private:

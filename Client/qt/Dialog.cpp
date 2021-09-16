@@ -2,8 +2,8 @@
 #include "BluetoothWrapper.h"
 #include "CommandSerializer.h"
 
-Dialog::Dialog(std::unique_ptr<IBluetoothConnector> connector, QDialog *parent)
-	: btWrap(BluetoothWrapper(std::move(connector))) {
+Dialog::Dialog(BluetoothWrapper bt, QDialog *parent)
+	: btWrap(std::move(bt)) {
 	setupUi(this);
 	setupConnectedDevices();
 }
