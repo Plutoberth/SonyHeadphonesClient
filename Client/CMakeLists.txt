@@ -7,8 +7,6 @@ find_package(Threads REQUIRED)
 
 add_executable(SonyHeadphonesClient)
 
-option(WITH_QT "Build Qt version" OFF)
-
 target_sources(
   SonyHeadphonesClient
   PRIVATE BluetoothWrapper.cpp ByteMagic.cpp CommandSerializer.cpp
@@ -18,18 +16,12 @@ target_include_directories(SonyHeadphonesClient PRIVATE ${CMAKE_SOURCE_DIR})
 
 target_sources(
   SonyHeadphonesClient
-  PRIVATE CrossPlatformGUI.cpp imgui/imgui.cpp imgui/imgui_draw.cpp
-          imgui/imgui_tables.cpp imgui/imgui_widgets.cpp CascadiaCodeFont.cpp)
-
-target_include_directories(SonyHeadphonesClient
-                           PRIVATE ${CMAKE_SOURCE_DIR}/imgui)
+  PRIVATE CascadiaCodeFont.cpp)
 
 if(UNIX)
   target_sources(
     SonyHeadphonesClient
-    PRIVATE linux/main.cpp linux/LinuxGUI.cpp
-            imgui/backends/imgui_impl_glfw.cpp
-            imgui/backends/imgui_impl_opengl3.cpp)
+    PRIVATE linux/main.cpp)
   if(NOT APPLE)
     target_sources(
       SonyHeadphonesClient PRIVATE linux/DBusHelper.cpp
@@ -94,17 +86,12 @@ if(WIN32)
 
   target_sources(
     SonyHeadphonesClient
-    PRIVATE windows/WindowsGUI.cpp
-            windows/main.cpp
-            windows/WindowsBluetoothConnector.cpp
-            imgui/backends/imgui_impl_dx11.cpp
-            imgui/backends/imgui_impl_win32.cpp)
+    PRIVATE windows/main.cpp
+            windows/WindowsBluetoothConnector.cpp)
 
   target_link_libraries(SonyHeadphonesClient PRIVATE d3d11)
 endif()
 
 target_link_libraries(SonyHeadphonesClient PRIVATE Threads::Threads)
 
-if(WITH_QT)
-  add_subdirectory(qt)
-endif()
+add_subdirectory(qt)
