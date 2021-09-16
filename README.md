@@ -55,7 +55,9 @@ So I reverse-engineered the application (for intercompatibility purposes, of cou
 
 ## Supported Platforms And Headsets
 
-For now, only the WH-1000-XM3 is supported. Other headsets may work, but I haven't tested them. 
+* WH-1000-XM3: Fully works and supported
+* [WH-1000-XM4](https://github.com/Plutoberth/SonyHeadphonesClient/issues/29#issuecomment-792459162): Partially works, more work is needed 
+* [MDR-XB950BT](https://github.com/Plutoberth/SonyHeadphonesClient/issues/29#issuecomment-804292227): Fully works
 
 #### **Please report about your experiences using other Sony headsets in the [Headset Reports](https://github.com/Plutoberth/SonyHeadphonesClient/issues/29) issue.**
 

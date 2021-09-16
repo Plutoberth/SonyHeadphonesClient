@@ -7,6 +7,7 @@
 #include "Exceptions.h"
 
 constexpr int MINIMUM_VOICE_FOCUS_STEP = 2;
+constexpr unsigned int ASM_LEVEL_DISABLED = -1;
 
 namespace CommandSerializer
 {
