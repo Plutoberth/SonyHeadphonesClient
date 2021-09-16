@@ -5,19 +5,47 @@ set(CMAKE_CXX_STANDARD 20)
 
 find_package(Threads REQUIRED)
 
-add_executable(SonyHeadphonesClient)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOUIC ON)
 
-target_sources(
-  SonyHeadphonesClient
-  PRIVATE BluetoothWrapper.cpp ByteMagic.cpp CommandSerializer.cpp
-          TimedMessageQueue.cpp)
+find_package(Qt5Widgets REQUIRED)
 
-target_include_directories(SonyHeadphonesClient PRIVATE ${CMAKE_SOURCE_DIR})
+add_definitions(
+  -DQT_NO_CAST_FROM_ASCII
+  -DQT_NO_CAST_FROM_BYTEARRAY
+  -DQT_NO_CAST_TO_ASCII
+  -DQT_NO_SIGNALS_SLOTS_KEYWORDS
+  -DQT_NO_URL_CAST_FROM_STRING
+  -DQT_STRICT_ITERATORS
+  -DQT_USE_FAST_OPERATOR_PLUS
+  -DQT_USE_QSTRINGBUILDER)
 
-target_sources(
-  SonyHeadphonesClient
-  PRIVATE CascadiaCodeFont.cpp)
+add_executable(
+  SonyHeadphonesClient MACOSX_BUNDLE
+  ../BluetoothWrapper.cpp ../ByteMagic.cpp ../CommandSerializer.cpp
+  ../TimedMessageQueue.cpp qt/Dialog.cpp qt/main.cpp)
 
-target_link_libraries(SonyHeadphonesClient PRIVATE Threads::Threads)
+if(UNIX AND NOT APPLE)
+  target_sources(
+    SonyHeadphonesClient PRIVATE ../linux/DBusHelper.cpp
+                                 ../linux/LinuxBluetoothConnector.cpp)
+  target_link_libraries(SonyHeadphonesClient PRIVATE bluetooth
+                                                     ${DBUS_LIBRARIES})
+  target_include_directories(SonyHeadphonesClient PRIVATE ${DBUS_INCLUDE_DIRS})
 
-add_subdirectory(qt)
+elseif(WIN32)
+  # See WindowsBluetoothConnector.h for linking pragmas
+  add_compile_definitions(UNICODE)
+  target_sources(SonyHeadphonesClient
+                 PRIVATE ../windows/WindowsBluetoothConnector.cpp)
+elseif(APPLE)
+  target_sources(SonyHeadphonesClient
+                 PRIVATE ../macos/MacOSBluetoothConnector.mm)
+  target_link_libraries(
+    SonyHeadphonesClient PRIVATE ${BT_UI_FRAMEWORK} ${BT_FRAMEWORK}
+                                 ${COCOA_FRAMEWORK})
+endif()
+target_include_directories(SonyHeadphonesClient
+                           PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(SonyHeadphonesClient PRIVATE Qt5::Widgets
+                                                   Threads::Threads)
