@@ -17,7 +17,16 @@
 #endif
 
 int main(int argc, char *argv[]) {
-	QApplication app(argc, argv);
-	(new Dialog(std::make_unique<BluetoothConnector>()))->show();
-	return app.exec();
+	try
+	{
+		QApplication app(argc, argv);
+		Dialog dialog(std::make_unique<BluetoothConnector>());
+		dialog.show();
+		return app.exec();
+	}
+	catch(const std::exception& e)
+	{
+		std::cerr << "Fatal error: " << e.what() << '\n';
+		return -1337;
+	}
 }
