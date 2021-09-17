@@ -26,6 +26,8 @@ add_executable(
   ../TimedMessageQueue.cpp qt/Dialog.cpp qt/main.cpp)
 
 if(UNIX AND NOT APPLE)
+  set (CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/linux)
+
   find_package(DBus REQUIRED)
 
   if (NOT DBUS_FOUND)
