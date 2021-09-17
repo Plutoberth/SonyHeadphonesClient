@@ -27,10 +27,6 @@ jobs:
             binary_path: Client/build/Release/SonyHeadphonesClient.exe
             artifact_name: "SonyHeadphonesClient-win-x64.exe"
             script: ""
-          - os: "macos-latest"
-            binary_path: Client/build/SonyHeadphonesClient
-            artifact_name: "SonyHeadphonesClient-macos-x64"
-            script: "brew install glew glfw"
     runs-on: ${{ matrix.os }}
 
     steps:
