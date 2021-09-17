@@ -42,7 +42,7 @@ void Dialog::on_deviceConnected() {
 	ambientSoundControlCheckBox->setEnabled(true);
 
 	// Send the initial state
-	this->on_ambientSoundSlider_valueChanged(ambientSoundSlider->value());
+	this->updateNcAsmState();
 }
 
 void Dialog::on_connectButton_clicked() {
@@ -88,12 +88,12 @@ void Dialog::on_commandSent() {
 	statusLabel->setText(QStringLiteral(""));
 }
 
-void Dialog::on_ambientSoundSlider_valueChanged(int asmSliderValue) {
-	focusOnVoiceCheckBox->setEnabled(value >= MINIMUM_VOICE_FOCUS_STEP);
-
+void Dialog::updateNcAsmState() {
 	bool ambientSoundControl = ambientSoundControlCheckBox->isChecked();
 
 	bool focusOnVoice = focusOnVoiceCheckBox->isChecked();
+
+	const int asmSliderValue = ambientSoundSlider->value();
 
 	// If we finished sending a command
 	if (sendCommandFuture.ready()) {
@@ -129,9 +129,6 @@ void Dialog::on_ambientSoundSlider_valueChanged(int asmSliderValue) {
 
 		statusLabel->setText(tr("Sending command"));
 
-		// TODO: Ensure this is called when ambient sound control is turned
-		// off
-
 		sendCommandFuture.setFromAsync([this, asmId, ncAsmEffect, asmLevel]() {
 			btWrap.sendCommand(CommandSerializer::serializeNcAndAsmSetting(
 				ncAsmEffect,
@@ -143,6 +140,12 @@ void Dialog::on_ambientSoundSlider_valueChanged(int asmSliderValue) {
 				this, "on_commandSent", Qt::BlockingQueuedConnection);
 		});
 	}
+
+}
+
+void Dialog::on_ambientSoundSlider_valueChanged(int level) {
+	focusOnVoiceCheckBox->setEnabled(level >= MINIMUM_VOICE_FOCUS_STEP);
+	this->updateNcAsmState();
 }
 
 void Dialog::on_deviceListWidget_itemSelectionChanged() {
@@ -157,8 +160,9 @@ void Dialog::on_ambientSoundControlCheckBox_stateChanged(int state) {
 	focusOnVoiceCheckBox->setEnabled(state == Qt::CheckState::Checked &&
 									 ambientSoundSlider->value() >=
 										 MINIMUM_VOICE_FOCUS_STEP);
+	this->updateNcAsmState();
 }
 
-void Dialog::on_focusOnVoiceCheckBox_stateChanged(int state) {
-	on_ambientSoundSlider_valueChanged(ambientSoundSlider->value());
+void Dialog::on_focusOnVoiceCheckBox_stateChanged() {
+	this->updateNcAsmState();
 }
