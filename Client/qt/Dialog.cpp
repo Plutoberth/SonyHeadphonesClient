@@ -87,12 +87,19 @@ void Dialog::on_connectButton_clicked() {
 	}
 }
 
+void Dialog::on_commandSent() {
+	statusLabel->setText(QStringLiteral(""));
+}
+
 void Dialog::on_ambientSoundSlider_valueChanged(int value) {
 	focusOnVoiceCheckBox->setEnabled(value >= MINIMUM_VOICE_FOCUS_STEP);
+
 	bool ambientSoundControl = ambientSoundControlCheckBox->isChecked();
 	static bool sentAmbientSoundControl = ambientSoundControl;
+
 	bool focusOnVoice = focusOnVoiceCheckBox->isChecked();
 	static bool sentFocusOnVoice = focusOnVoice;
+
 	int asmLevel = ambientSoundSlider->value();
 	static int lastAsmLevel = asmLevel;
 	static int sentAsmLevel = asmLevel;
@@ -108,35 +115,51 @@ void Dialog::on_ambientSoundSlider_valueChanged(int value) {
 										 .arg(QString::fromUtf8(exc.what())));
 			}
 		}
+	}
+
 	// If a command is in-flight
-	} else if (sendCommandFuture.valid()) {
-		statusLabel->setText(tr("Waiting for prior command to send"));
-	// If the configuration was changed, compared to the last sent configuration
-	} else if (sentAsmLevel != asmLevel || sentFocusOnVoice != focusOnVoice ||
-			   sentAmbientSoundControl != ambientSoundControl) {
-		statusLabel->setText(tr("Sending command"));
-		auto ncAsmEffect = ambientSoundSlider->isSliderDown() ?
-								 NC_ASM_EFFECT::ADJUSTMENT_IN_PROGRESS :
-						   ambientSoundControl ?
-								 NC_ASM_EFFECT::ADJUSTMENT_COMPLETION :
-								 NC_ASM_EFFECT::OFF;
-		auto asmId = focusOnVoice ? ASM_ID::VOICE : ASM_ID::NORMAL;
-		lastAsmLevel = asmLevel == -1 ? lastAsmLevel : asmLevel;
-		asmLevel = ambientSoundControl ? lastAsmLevel : -1;
-		sendCommandFuture.setFromAsync([this, asmId, ncAsmEffect, asmLevel]() {
-			auto ret =
-				btWrap.sendCommand(CommandSerializer::serializeNcAndAsmSetting(
-					ncAsmEffect,
-					NC_ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
-					ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
-					asmId,
-					asmLevel));
-			statusLabel->setText(QStringLiteral(""));
-			return ret;
-		});
-		sentAsmLevel = asmLevel;
-		sentFocusOnVoice = focusOnVoice;
-		sentAmbientSoundControl = ambientSoundControl;
+	if (sendCommandFuture.valid()) {
+		// TODO: Maybe we can do something more interesting in this state
+		statusLabel->setText(tr("Waiting for prior command to send..."));
+	} else {
+		// If the configuration was changed, compared to the last sent
+		// configuration
+		if (sentAsmLevel != asmLevel || sentFocusOnVoice != focusOnVoice ||
+			sentAmbientSoundControl != ambientSoundControl) {
+			statusLabel->setText(tr("Sending command"));
+
+			// TODO: Ensure this is called when ambient sound control is turned off
+			const NC_ASM_EFFECT ncAsmEffect = [this, ambientSoundControl] {
+				if (ambientSoundSlider->isSliderDown()) {
+					return NC_ASM_EFFECT::ADJUSTMENT_IN_PROGRESS;
+				} else if (ambientSoundControl) {
+					return NC_ASM_EFFECT::ADJUSTMENT_COMPLETION;
+				} else {
+					return NC_ASM_EFFECT::OFF;
+				}
+			}();
+
+			auto asmId = focusOnVoice ? ASM_ID::VOICE : ASM_ID::NORMAL;
+			lastAsmLevel = asmLevel == -1 ? lastAsmLevel : asmLevel;
+			asmLevel = ambientSoundControl ? lastAsmLevel : -1;
+
+			sendCommandFuture.setFromAsync(
+				[this, asmId, ncAsmEffect, asmLevel]() {
+					btWrap.sendCommand(
+						CommandSerializer::serializeNcAndAsmSetting(
+							ncAsmEffect,
+							NC_ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
+							ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
+							asmId,
+							asmLevel));
+					QMetaObject::invokeMethod(
+						this, "on_commandSent", Qt::BlockingQueuedConnection);
+				});
+
+			sentAsmLevel = asmLevel;
+			sentFocusOnVoice = focusOnVoice;
+			sentAmbientSoundControl = ambientSoundControl;
+		}
 	}
 }
 

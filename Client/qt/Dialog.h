@@ -19,7 +19,7 @@ private:
 	BluetoothWrapper btWrap;
 	QMap<std::string, std::string> deviceMap;
 	QString selectedDevice;
-	SingleInstanceFuture<int> sendCommandFuture;
+	SingleInstanceFuture<void> sendCommandFuture;
 	SingleInstanceFuture<void> connectionFuture;
 
 private Q_SLOTS:
@@ -30,6 +30,5 @@ private Q_SLOTS:
 	void on_focusOnVoiceCheckBox_stateChanged(int);
 	void on_refreshButton_clicked();
 
-	void deviceConnected();
-	void deviceDisconnected();
+	void on_commandSent();
 };
