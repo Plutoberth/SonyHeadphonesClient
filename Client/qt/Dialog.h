@@ -20,8 +20,7 @@ private:
 	QMap<std::string, std::string> deviceMap;
 	QString selectedDevice;
 	SingleInstanceFuture<int> sendCommandFuture;
-	SingleInstanceFuture<void> connectFuture;
-	SingleInstanceFuture<void> disconnectFuture;
+	SingleInstanceFuture<void> connectionFuture;
 
 private Q_SLOTS:
 	void on_ambientSoundControlCheckBox_stateChanged(int);
@@ -30,4 +29,7 @@ private Q_SLOTS:
 	void on_deviceListWidget_itemSelectionChanged();
 	void on_focusOnVoiceCheckBox_stateChanged(int);
 	void on_refreshButton_clicked();
+
+	void deviceConnected();
+	void deviceDisconnected();
 };

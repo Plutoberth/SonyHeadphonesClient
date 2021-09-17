@@ -2,8 +2,7 @@
 #include "BluetoothWrapper.h"
 #include "CommandSerializer.h"
 
-Dialog::Dialog(BluetoothWrapper bt, QDialog *parent)
-	: btWrap(std::move(bt)) {
+Dialog::Dialog(BluetoothWrapper bt, QDialog *parent) : btWrap(std::move(bt)) {
 	setupUi(this);
 	setupConnectedDevices();
 }
@@ -23,21 +22,44 @@ void Dialog::on_refreshButton_clicked() {
 	deviceListWidget->clearSelection();
 }
 
+void Dialog::deviceDisconnected() {
+	statusLabel->setText(QStringLiteral(""));
+	deviceListWidget->setEnabled(true);
+	refreshButton->setEnabled(true);
+	ambientSoundModeGroupBox->setEnabled(false);
+	connectButton->setText(tr("&Connect"));
+	this->isConnected = false;
+}
+
+void Dialog::deviceConnected() {
+	statusLabel->setText(QStringLiteral(""));
+	this->isConnected = true;
+	connectButton->setText(tr("&Disconnect"));
+	connectButton->setEnabled(true);
+	refreshButton->setEnabled(false);
+	deviceListWidget->setEnabled(false);
+	ambientSoundModeGroupBox->setEnabled(true);
+	ambientSoundControlCheckBox->setEnabled(true);
+}
+
 void Dialog::on_connectButton_clicked() {
+	if (connectionFuture.ready()) {
+		connectionFuture.get();
+	} else if (connectionFuture.valid()) {
+		// TODO: if something is in flight and this button was clicked, we should indicate we failed and terminate
+	}
+
+	// TODO: Add a timeout and fail connections
+	// TODO: Handle connections failing and report.
 	if (isConnected) {
-		statusLabel->setText(tr("Disconnecting"));
-		if (disconnectFuture.ready()) {
-			disconnectFuture.get();
-		}
-		disconnectFuture.setFromAsync([this]() {
+		statusLabel->setText(tr("Disconnecting..."));
+
+		connectButton->setEnabled(false);
+
+		connectionFuture.setFromAsync([this]() {
 			btWrap.disconnect();
-			statusLabel->setText(QStringLiteral(""));
-			deviceListWidget->setEnabled(true);
-			refreshButton->setEnabled(true);
-			ambientSoundModeGroupBox->setEnabled(false);
-			connectButton->setText(tr("&Connect"));
-			connectButton->setEnabled(false);
-			isConnected = false;
+			QMetaObject::invokeMethod(
+				this, "deviceDisconnected", Qt::BlockingQueuedConnection);
 		});
 	} else {
 		statusLabel->setText(tr("Connecting"));
@@ -47,19 +69,11 @@ void Dialog::on_connectButton_clicked() {
 		deviceListWidget->clearSelection();
 		label->setText(
 			tr("Control ambient sound for your %1s").arg(selectedDevice));
-		if (connectFuture.ready()) {
-			connectFuture.get();
-		}
-		connectFuture.setFromAsync([this]() {
-			btWrap.connect(deviceMap[selectedDevice.toStdString()]);
-			statusLabel->setText(QStringLiteral(""));
-			isConnected = true;
-			connectButton->setText(tr("&Disconnect"));
-			connectButton->setEnabled(true);
-			refreshButton->setEnabled(false);
-			deviceListWidget->setEnabled(false);
-			ambientSoundModeGroupBox->setEnabled(true);
-			ambientSoundControlCheckBox->setEnabled(true);
+
+
+		auto selectedDevice = this->selectedDevice.toStdString();
+		connectionFuture.setFromAsync([this]() {
+			btWrap.connect(deviceMap[this->selectedDevice.toStdString()]);
 			// Send initial state
 			btWrap.sendCommand(CommandSerializer::serializeNcAndAsmSetting(
 				NC_ASM_EFFECT::ADJUSTMENT_COMPLETION,
@@ -67,6 +81,8 @@ void Dialog::on_connectButton_clicked() {
 				ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
 				ASM_ID::NORMAL,
 				0));
+			QMetaObject::invokeMethod(
+				this, "deviceConnected", Qt::BlockingQueuedConnection);
 		});
 	}
 }
