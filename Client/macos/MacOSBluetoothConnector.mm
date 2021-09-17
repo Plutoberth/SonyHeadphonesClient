@@ -1,3 +1,5 @@
+#import <Foundation/Foundation.h>
+
 #include "MacOSBluetoothConnector.h"
 
 MacOSBluetoothConnector::MacOSBluetoothConnector()
@@ -52,7 +54,7 @@ void MacOSBluetoothConnector::connectToMac(MacOSBluetoothConnector* macOSBluetoo
     // create new channel
     IOBluetoothRFCOMMChannel *channel = [[IOBluetoothRFCOMMChannel alloc] init];
     // create sppServiceid
-    IOBluetoothSDPUUID *sppServiceUUID = [IOBluetoothSDPUUID uuidWithBytes:(void*)SERVICE_UUID_IN_BYTES length: 16];
+    IOBluetoothSDPUUID *sppServiceUUID = [IOBluetoothSDPUUID uuidWithBytes:SERVICE_UUID_IN_BYTES length:sizeof(SERVICE_UUID_IN_BYTES)];
     // get sppServiceRecord
     IOBluetoothSDPServiceRecord *sppServiceRecord = [device getServiceRecordForUUID:sppServiceUUID];
     // get rfcommChannelID from sppServiceRecord
@@ -78,12 +80,12 @@ void MacOSBluetoothConnector::connectToMac(MacOSBluetoothConnector* macOSBluetoo
     
     // keep thread running
     while (macOSBluetoothConnector->running) {
-        [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:.1]];
+        [NSRunLoop.currentRunLoop runUntilDate:[NSDate dateWithTimeIntervalSinceNow:.1]];
     }
 }
 void MacOSBluetoothConnector::connect(const std::string& addrStr){
     // convert mac address to nsstring
-    NSString *addressNSString = [NSString stringWithCString:addrStr.c_str() encoding:[NSString defaultCStringEncoding]];
+    NSString *addressNSString = [NSString stringWithCString:addrStr.c_str() encoding:NSString.defaultCStringEncoding];
     // get device based on mac address
     IOBluetoothDevice *device = [IOBluetoothDevice deviceWithAddressString:addressNSString];
     // if device is not connected
@@ -127,16 +129,20 @@ int MacOSBluetoothConnector::recv(char* buf, size_t length)
 
 std::vector<BluetoothDevice> MacOSBluetoothConnector::getConnectedDevices()
 {
+    IOBluetoothSDPUUID *uuid = [IOBluetoothSDPUUID uuidWithBytes:SERVICE_UUID_IN_BYTES length:sizeof(SERVICE_UUID_IN_BYTES)];
     // create the output vector
     std::vector<BluetoothDevice> res;
     // loop through the paired devices (also includes non paired devices for some reason)
-    for (IOBluetoothDevice* device in [IOBluetoothDevice pairedDevices]) {
+    for (IOBluetoothDevice* device in IOBluetoothDevice.pairedDevices) {
+        if (![device getServiceRecordForUUID:uuid]) {
+          continue;
+        }
         // check if device is connected
-        if ([device isConnected]) {
+        if (device.isConnected) {
             BluetoothDevice dev;
             // save the mac address and name
-            dev.mac =  [[device addressString]UTF8String];
-            dev.name = [[device name] UTF8String];
+            dev.mac =  device.addressString.UTF8String;
+            dev.name = device.name.UTF8String;
             // add device to the connected devices vector
             res.push_back(dev);
         }
@@ -156,7 +162,7 @@ void MacOSBluetoothConnector::disconnect() noexcept
 void MacOSBluetoothConnector::closeConnection() {
     // get the channel
     IOBluetoothRFCOMMChannel *chan = (__bridge IOBluetoothRFCOMMChannel*) rfcommchannel;
-    [chan setDelegate: nil];
+    chan.delegate = nil;
     // close the channel
     [chan closeChannel];
 }

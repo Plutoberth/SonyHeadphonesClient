@@ -7,6 +7,7 @@ on:
   pull_request:
     branches:
     - master
+    - qt
 
 jobs:
   build:
@@ -37,12 +38,12 @@ jobs:
       working-directory: ${{github.workspace}}/Client/build
       # Exports the archive to a .app file
       run: xcodebuild -exportArchive -archivePath ./archive.xcarchive -exportPath ./ -exportOptionsPlist ../macos/exportOptions.plist | xcpretty
-      
+
     - name: Zip the exported file
       working-directory: ${{github.workspace}}/Client/build
       # Zip the application for easier downloading
       run: zip -r SonyHeadphonesClient.zip SonyHeadphonesClient.app
-      
+
     - name: Upload the zipped application
       uses: actions/upload-artifact@v2.2.2
       with:
@@ -52,4 +53,4 @@ jobs:
         path: ${{github.workspace}}/${{matrix.binary_path}}
         # The desired behavior if no files are found using the provided path.
 
-    
+

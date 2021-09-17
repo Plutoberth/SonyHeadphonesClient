@@ -111,6 +111,7 @@ Use the provided xcodeproj file.
 * [semvis123](https://github.com/semvis123) - macOS Version
 * [jimzrt](https://github.com/jimzrt) - Linux Version
 * [guilhermealbm](https://github.com/guilhermealbm) - Noise Cancelling Switch
+* [Tatsh](https://github.com/Tatsh) - Amazing work on the Qt version
 
 <!-- LICENSE -->
 ## License

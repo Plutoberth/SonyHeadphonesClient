@@ -28,6 +28,15 @@ int BluetoothWrapper::sendCommand(const std::vector<char>& bytes)
 	auto data = CommandSerializer::packageDataForBt(bytes, DATA_TYPE::DATA_MDR, this->_seqNumber++);
 	auto bytesSent = this->_connector->send(data.data(), data.size());
 
+	if (bytesSent != data.size()) {
+		std::stringstream ss;
+		ss << "bluetooth connector sent fewer bytes than expected, ";
+		ss << bytesSent;
+		ss << " != ";
+		ss << bytes.size();
+		throw RecoverableException(ss.str(), true);
+	}
+
 	this->_waitForAck();
 
 	return bytesSent;

@@ -7,6 +7,7 @@ on:
   pull_request:
     branches:
     - master
+    - qt
 
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
@@ -21,7 +22,7 @@ jobs:
           - os: ubuntu-latest
             binary_path: Client/build/SonyHeadphonesClient
             artifact_name: "SonyHeadphonesClient-linux-x64"
-            script: "sudo apt-get update && sudo apt-get install libbluetooth-dev libglew-dev libglfw3-dev libdbus-1-dev"
+            script: "sudo apt-get update && sudo apt-get install libbluetooth-dev libdbus-1-dev"
           - os: windows-latest
             binary_path: Client/build/Release/SonyHeadphonesClient.exe
             artifact_name: "SonyHeadphonesClient-win-x64.exe"
@@ -32,7 +33,7 @@ jobs:
     - uses: actions/checkout@v2
       with:
         submodules: true
-    
+
     - name: Download Packages
       run: ${{ matrix.script }}
 
@@ -41,13 +42,16 @@ jobs:
       # We'll use this as our working directory for all subsequent commands
       run: cmake -E make_directory ${{github.workspace}}/Client/build
 
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v2
+
     - name: Configure CMake
       # Use a bash shell so we can use the same syntax for environment variable
       # access regardless of the host operating system
       shell: bash
       working-directory: ${{github.workspace}}/Client/build
-      # Note the current convention is to use the -S and -B options here to specify source 
-      # and build directories, but this is only available with CMake 3.13 and higher.  
+      # Note the current convention is to use the -S and -B options here to specify source
+      # and build directories, but this is only available with CMake 3.13 and higher.
       # The CMake binaries on the Github Actions machines are (as of this writing) 3.12
       run: cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE
 
@@ -64,5 +68,3 @@ jobs:
         # A file, directory or wildcard pattern that describes what to upload
         path: ${{github.workspace}}/${{matrix.binary_path}}
         # The desired behavior if no files are found using the provided path.
-
-    

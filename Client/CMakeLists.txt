@@ -5,101 +5,59 @@ set(CMAKE_CXX_STANDARD 20)
 
 find_package(Threads REQUIRED)
 
-add_executable(SonyHeadphonesClient)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOUIC ON)
 
-target_sources(SonyHeadphonesClient
-    PRIVATE BluetoothWrapper.cpp
-    ByteMagic.cpp
-    CommandSerializer.cpp
-    TimedMessageQueue.cpp
-    CrossPlatformGUI.cpp)
+find_package(Qt5Widgets REQUIRED)
 
-target_include_directories (SonyHeadphonesClient
-    PRIVATE ${CMAKE_SOURCE_DIR}
-)
+add_definitions(
+  -DQT_NO_CAST_FROM_ASCII
+  -DQT_NO_CAST_FROM_BYTEARRAY
+  -DQT_NO_CAST_TO_ASCII
+  -DQT_NO_SIGNALS_SLOTS_KEYWORDS
+  -DQT_NO_URL_CAST_FROM_STRING
+  -DQT_STRICT_ITERATORS
+  -DQT_USE_FAST_OPERATOR_PLUS
+  -DQT_USE_QSTRINGBUILDER)
+
+add_executable(
+  SonyHeadphonesClient MACOSX_BUNDLE
+  ../BluetoothWrapper.cpp ../ByteMagic.cpp ../CommandSerializer.cpp
+  ../TimedMessageQueue.cpp qt/Dialog.cpp qt/main.cpp)
 
 if(UNIX AND NOT APPLE)
-    set(LINUX TRUE)
+  set (CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/linux)
+
+  find_package(DBus REQUIRED)
+
+  if (NOT DBUS_FOUND)
+      message ( FATAL_ERROR
+      "Didn't find dbus. For Debian based systems, use:"
+      "sudo apt install libdbus-1-dev" )
+  endif ()
+
+  target_sources(
+    SonyHeadphonesClient PRIVATE ../linux/DBusHelper.cpp
+                                 ../linux/LinuxBluetoothConnector.cpp)
+
+  target_link_libraries(SonyHeadphonesClient PRIVATE bluetooth
+                                                     ${DBUS_LIBRARIES})
+  target_include_directories(SonyHeadphonesClient PRIVATE ${DBUS_INCLUDE_DIRS})
+
+elseif(WIN32)
+  # See WindowsBluetoothConnector.h for linking pragmas
+  add_compile_definitions(UNICODE)
+  target_sources(SonyHeadphonesClient
+                 PRIVATE ../windows/WindowsBluetoothConnector.cpp)
+elseif(APPLE)
+  target_sources(SonyHeadphonesClient
+                 PRIVATE ../macos/MacOSBluetoothConnector.mm)
+  target_link_libraries(
+    SonyHeadphonesClient PRIVATE ${BT_UI_FRAMEWORK} ${BT_FRAMEWORK}
+                                 ${COCOA_FRAMEWORK})
 endif()
 
-if (WIN32 OR LINUX)
-    set (DEAR_IMGUI TRUE)
-endif()
-
-if (DEAR_IMGUI)
-    target_sources(SonyHeadphonesClient
-        PRIVATE CrossPlatformGUI.cpp
-        imgui/imgui.cpp
-        imgui/imgui_draw.cpp
-        imgui/imgui_tables.cpp
-        imgui/imgui_widgets.cpp
-        CascadiaCodeFont.cpp
-    )
-
-    target_include_directories (SonyHeadphonesClient
-        PRIVATE ${CMAKE_SOURCE_DIR}/imgui
-    )
-endif ()
-
-if (LINUX)
-	target_sources(SonyHeadphonesClient
-		PRIVATE linux/DBusHelper.cpp
-		linux/LinuxBluetoothConnector.cpp
-		linux/LinuxGUI.cpp
-        linux/main.cpp
-        imgui/backends/imgui_impl_glfw.cpp
-        imgui/backends/imgui_impl_opengl3.cpp
-    )
-
-    set (CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/linux)
-
-    set (OpenGL_GL_PREFERENCE GLVND)
-	
-    find_package(DBus REQUIRED)
-
-    find_package(GLEW REQUIRED)
-
-    find_package(glfw3 REQUIRED)
-
-    find_package(OpenGL REQUIRED)
-
-    if ((NOT DBUS_FOUND) OR (NOT GLEW_FOUND) OR (NOT glfw3_FOUND) OR (NOT OPENGL_FOUND))
-        message ( FATAL_ERROR 
-        "Didn't find one of the packages. For Debian based systems, use:"
-        "sudo apt install libbluetooth-dev libglew-dev libglfw3-dev libdbus-1-dev" )
-    endif ()
-
-    target_include_directories(SonyHeadphonesClient
-        PRIVATE ${DBUS_INCLUDE_DIRS}
-        ${OPENGL_INCLUDE_DIRS}
-    )
-
-    target_link_libraries(SonyHeadphonesClient
-        PRIVATE ${DBUS_LIBRARIES}
-        GLEW::GLEW 
-        glfw
-        bluetooth
-        OpenGL::GL
-    )
-
-endif ()
-
-if (WIN32)
-    ADD_DEFINITIONS(-DUNICODE)
-
-    target_sources(SonyHeadphonesClient
-        PRIVATE windows/WindowsGUI.cpp
-        windows/main.cpp
-        windows/WindowsBluetoothConnector.cpp
-        imgui/backends/imgui_impl_dx11.cpp
-        imgui/backends/imgui_impl_win32.cpp
-    )
-
-    target_link_libraries(SonyHeadphonesClient
-        PRIVATE d3d11
-    )
-endif ()
-
-target_link_libraries(SonyHeadphonesClient
-    PRIVATE Threads::Threads
-)
+target_include_directories(SonyHeadphonesClient
+                           PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(SonyHeadphonesClient PRIVATE Qt5::Widgets
+                                                   Threads::Threads)
