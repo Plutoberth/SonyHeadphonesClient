@@ -30,5 +30,7 @@ private Q_SLOTS:
 	void on_focusOnVoiceCheckBox_stateChanged(int);
 	void on_refreshButton_clicked();
 
+	void on_deviceConnected();
+	void on_deviceDisconnected();
 	void on_commandSent();
 };

@@ -22,7 +22,7 @@ void Dialog::on_refreshButton_clicked() {
 	deviceListWidget->clearSelection();
 }
 
-void Dialog::deviceDisconnected() {
+void Dialog::on_deviceDisconnected() {
 	statusLabel->setText(QStringLiteral(""));
 	deviceListWidget->setEnabled(true);
 	refreshButton->setEnabled(true);
@@ -31,7 +31,7 @@ void Dialog::deviceDisconnected() {
 	this->isConnected = false;
 }
 
-void Dialog::deviceConnected() {
+void Dialog::on_deviceConnected() {
 	statusLabel->setText(QStringLiteral(""));
 	this->isConnected = true;
 	connectButton->setText(tr("&Disconnect"));
@@ -46,7 +46,8 @@ void Dialog::on_connectButton_clicked() {
 	if (connectionFuture.ready()) {
 		connectionFuture.get();
 	} else if (connectionFuture.valid()) {
-		// TODO: if something is in flight and this button was clicked, we should indicate we failed and terminate
+		// TODO: if something is in flight and this button was clicked, we
+		// should indicate we failed and terminate
 	}
 
 	// TODO: Add a timeout and fail connections
@@ -59,7 +60,7 @@ void Dialog::on_connectButton_clicked() {
 		connectionFuture.setFromAsync([this]() {
 			btWrap.disconnect();
 			QMetaObject::invokeMethod(
-				this, "deviceDisconnected", Qt::BlockingQueuedConnection);
+				this, "on_deviceDisconnected", Qt::BlockingQueuedConnection);
 		});
 	} else {
 		statusLabel->setText(tr("Connecting"));
@@ -69,7 +70,6 @@ void Dialog::on_connectButton_clicked() {
 		deviceListWidget->clearSelection();
 		label->setText(
 			tr("Control ambient sound for your %1s").arg(selectedDevice));
-
 
 		auto selectedDevice = this->selectedDevice.toStdString();
 		connectionFuture.setFromAsync([this]() {
@@ -82,7 +82,7 @@ void Dialog::on_connectButton_clicked() {
 				ASM_ID::NORMAL,
 				0));
 			QMetaObject::invokeMethod(
-				this, "deviceConnected", Qt::BlockingQueuedConnection);
+				this, "on_deviceConnected", Qt::BlockingQueuedConnection);
 		});
 	}
 }
