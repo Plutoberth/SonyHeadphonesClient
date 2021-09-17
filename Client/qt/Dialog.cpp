@@ -40,6 +40,9 @@ void Dialog::on_deviceConnected() {
 	deviceListWidget->setEnabled(false);
 	ambientSoundModeGroupBox->setEnabled(true);
 	ambientSoundControlCheckBox->setEnabled(true);
+
+	// Send the initial state
+	this->on_ambientSoundSlider_valueChanged(ambientSoundSlider->value());
 }
 
 void Dialog::on_connectButton_clicked() {
@@ -74,13 +77,7 @@ void Dialog::on_connectButton_clicked() {
 		auto selectedDevice = this->selectedDevice.toStdString();
 		connectionFuture.setFromAsync([this]() {
 			btWrap.connect(deviceMap[this->selectedDevice.toStdString()]);
-			// Send initial state
-			btWrap.sendCommand(CommandSerializer::serializeNcAndAsmSetting(
-				NC_ASM_EFFECT::ADJUSTMENT_COMPLETION,
-				NC_ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
-				ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
-				ASM_ID::NORMAL,
-				0));
+
 			QMetaObject::invokeMethod(
 				this, "on_deviceConnected", Qt::BlockingQueuedConnection);
 		});
@@ -91,18 +88,12 @@ void Dialog::on_commandSent() {
 	statusLabel->setText(QStringLiteral(""));
 }
 
-void Dialog::on_ambientSoundSlider_valueChanged(int value) {
+void Dialog::on_ambientSoundSlider_valueChanged(int asmSliderValue) {
 	focusOnVoiceCheckBox->setEnabled(value >= MINIMUM_VOICE_FOCUS_STEP);
 
 	bool ambientSoundControl = ambientSoundControlCheckBox->isChecked();
-	static bool sentAmbientSoundControl = ambientSoundControl;
 
 	bool focusOnVoice = focusOnVoiceCheckBox->isChecked();
-	static bool sentFocusOnVoice = focusOnVoice;
-
-	int asmLevel = ambientSoundSlider->value();
-	static int lastAsmLevel = asmLevel;
-	static int sentAsmLevel = asmLevel;
 
 	// If we finished sending a command
 	if (sendCommandFuture.ready()) {
@@ -122,44 +113,35 @@ void Dialog::on_ambientSoundSlider_valueChanged(int value) {
 		// TODO: Maybe we can do something more interesting in this state
 		statusLabel->setText(tr("Waiting for prior command to send..."));
 	} else {
-		// If the configuration was changed, compared to the last sent
-		// configuration
-		if (sentAsmLevel != asmLevel || sentFocusOnVoice != focusOnVoice ||
-			sentAmbientSoundControl != ambientSoundControl) {
-			statusLabel->setText(tr("Sending command"));
+		const NC_ASM_EFFECT ncAsmEffect = [this, ambientSoundControl] {
+			if (ambientSoundSlider->isSliderDown()) {
+				return NC_ASM_EFFECT::ADJUSTMENT_IN_PROGRESS;
+			} else if (ambientSoundControl) {
+				return NC_ASM_EFFECT::ADJUSTMENT_COMPLETION;
+			} else {
+				return NC_ASM_EFFECT::OFF;
+			}
+		}();
 
-			// TODO: Ensure this is called when ambient sound control is turned off
-			const NC_ASM_EFFECT ncAsmEffect = [this, ambientSoundControl] {
-				if (ambientSoundSlider->isSliderDown()) {
-					return NC_ASM_EFFECT::ADJUSTMENT_IN_PROGRESS;
-				} else if (ambientSoundControl) {
-					return NC_ASM_EFFECT::ADJUSTMENT_COMPLETION;
-				} else {
-					return NC_ASM_EFFECT::OFF;
-				}
-			}();
+		const auto asmId = focusOnVoice ? ASM_ID::VOICE : ASM_ID::NORMAL;
 
-			auto asmId = focusOnVoice ? ASM_ID::VOICE : ASM_ID::NORMAL;
-			lastAsmLevel = asmLevel == -1 ? lastAsmLevel : asmLevel;
-			asmLevel = ambientSoundControl ? lastAsmLevel : -1;
+		const auto asmLevel = ambientSoundControl ? asmSliderValue : -1;
 
-			sendCommandFuture.setFromAsync(
-				[this, asmId, ncAsmEffect, asmLevel]() {
-					btWrap.sendCommand(
-						CommandSerializer::serializeNcAndAsmSetting(
-							ncAsmEffect,
-							NC_ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
-							ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
-							asmId,
-							asmLevel));
-					QMetaObject::invokeMethod(
-						this, "on_commandSent", Qt::BlockingQueuedConnection);
-				});
+		statusLabel->setText(tr("Sending command"));
 
-			sentAsmLevel = asmLevel;
-			sentFocusOnVoice = focusOnVoice;
-			sentAmbientSoundControl = ambientSoundControl;
-		}
+		// TODO: Ensure this is called when ambient sound control is turned
+		// off
+
+		sendCommandFuture.setFromAsync([this, asmId, ncAsmEffect, asmLevel]() {
+			btWrap.sendCommand(CommandSerializer::serializeNcAndAsmSetting(
+				ncAsmEffect,
+				NC_ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
+				ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
+				asmId,
+				asmLevel));
+			QMetaObject::invokeMethod(
+				this, "on_commandSent", Qt::BlockingQueuedConnection);
+		});
 	}
 }
 
