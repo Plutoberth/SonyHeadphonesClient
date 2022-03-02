@@ -27,6 +27,8 @@ bool CrossPlatformGUI::performGUIPass()
 		{
 			ImGui::Spacing();
 			this->_drawASMControls();
+			ImGui::Spacing();
+			this->_drawEQControls();
 		}
 	}
 
@@ -220,7 +222,7 @@ void CrossPlatformGUI::_drawASMControls()
 			lastAsmLevel = asmLevel == ASM_LEVEL_DISABLED ? lastAsmLevel : asmLevel;
 			asmLevel = ambientSoundControl ? lastAsmLevel : ASM_LEVEL_DISABLED;
 
-			this->_sendCommandFuture.setFromAsync([=, this]() {
+			this->_sendCommandFuture.setFromAsync([=]() {
 				return this->_bt.sendCommand(CommandSerializer::serializeNcAndAsmSetting(
 					ncAsmEffect,
 					NC_ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
@@ -234,6 +236,39 @@ void CrossPlatformGUI::_drawASMControls()
 			sentAmbientSoundControl = ambientSoundControl;
 		}
 	}
+}
+
+void CrossPlatformGUI::_drawEQControls() {
+	static EqPresetId eqPresetId = EqPresetId::UNSPECIFIED;
+	static EqPresetId sentEqPresetId = eqPresetId;
+	const int presetIdInt = static_cast<int>(eqPresetId);
+	const char *preset_names[8] = { "OFF", "ROCK", "POP", "JAZZ", "DANCE", "EDM", "R_AND_B_HIP_HOP", "ACOUSTIC" };
+
+	if (!ImGui::CollapsingHeader("Equalizer Settings", ImGuiTreeNodeFlags_DefaultOpen)) {
+		return;
+	}
+
+	if (0 <= presetIdInt && presetIdInt < 8) {
+		ImGui::Text("Preset %s(%d)", preset_names[presetIdInt], presetIdInt);
+	} else {
+		ImGui::Text("Preset UNSPECIFIED(%d)", presetIdInt);
+	}
+
+	bool clicked = ImGui::Button("Next Preset");
+	if (clicked) {
+		eqPresetId = static_cast<EqPresetId>((presetIdInt + 1) % 8);
+	}
+
+	if (sentEqPresetId == eqPresetId || this->_sendCommandFuture.valid()) {
+		return;
+	}
+	this->_sendCommandFuture.setFromAsync([=]() {
+		return this->_bt.sendCommand(CommandSerializer::serializeEqEbbSetParam(
+			EQ_EBB_INQUIRED_TYPE::PRESET_EQ,
+			eqPresetId
+		));
+	});
+	sentEqPresetId = eqPresetId;
 }
 
 CrossPlatformGUI::CrossPlatformGUI(BluetoothWrapper bt) : _bt(std::move(bt))

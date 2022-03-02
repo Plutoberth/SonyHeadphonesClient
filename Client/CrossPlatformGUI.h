@@ -33,6 +33,7 @@ private:
 	void _drawErrors();
 	void _drawDeviceDiscovery();
 	void _drawASMControls();
+	void _drawEQControls();
 
 	BluetoothDevice _connectedDevice;
 	BluetoothWrapper _bt;

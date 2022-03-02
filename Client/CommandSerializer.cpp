@@ -1,3 +1,5 @@
+#include <stdexcept>
+
 #include "CommandSerializer.h"
 
 constexpr unsigned char ESCAPED_BYTE_SENTRY = 61;
@@ -138,15 +140,15 @@ namespace CommandSerializer
 		//Message data format: ESCAPE_SPECIALS(<DATA_TYPE><SEQ_NUMBER><BIG ENDIAN 4 BYTE SIZE OF UNESCAPED DATA><DATA><1 BYTE CHECKSUM>)
 		auto unescaped = _unescapeSpecials(src);
 
-		if (src.size() < 7)
+		if (unescaped.size() < 7)
 		{
 			throw std::runtime_error("Invalid message: Smaller than the minimum message size");
 		}
 
 		Message ret;
-		ret.dataType = static_cast<DATA_TYPE>(src[0]);
-		ret.seqNumber = src[1];
-		if ((unsigned char)src[src.size() - 1] != _sumChecksum(src.data(), src.size() - 1))
+		ret.dataType = static_cast<DATA_TYPE>(unescaped[0]);
+		ret.seqNumber = unescaped[1];
+		if ((unsigned char)unescaped[unescaped.size() - 1] != _sumChecksum(unescaped.data(), unescaped.size() - 1))
 		{
 			throw RecoverableException("Invalid checksum!", true);
 		}
@@ -185,5 +187,41 @@ namespace CommandSerializer
 		return ret;
 	}
 
-}
+	Buffer serializeEqEbbSetParam(EQ_EBB_INQUIRED_TYPE inquired_type, EqPresetId preset_id, char level)
+	{
+		if (inquired_type != EQ_EBB_INQUIRED_TYPE::EBB) {
+			throw std::domain_error("inquired_type should be EBB.");
+		}
+		if(-127 <= level && level <= 127) {
+			throw std::out_of_range("level should be in range [-127, 127]");
+		}
 
+		Buffer ret;
+		ret.push_back(static_cast<unsigned char>(COMMAND_TYPE::EQEBB_SET_PARAM));
+		ret.push_back(static_cast<unsigned char>(inquired_type));
+		ret.push_back(static_cast<unsigned char>(level));
+		return ret;
+	}
+
+	Buffer serializeEqEbbSetParam(EQ_EBB_INQUIRED_TYPE inquired_type, EqPresetId preset_id, std::vector<char> data)
+	{
+		if (inquired_type != EQ_EBB_INQUIRED_TYPE::PRESET_EQ && inquired_type != EQ_EBB_INQUIRED_TYPE::PRESET_EQ_NONCUSTOMIZABLE) {
+			throw std::domain_error("inquired_type should be PRESET_EQ or PRESET_EQ_NONCUSTOMIZABLE.");
+		}
+
+		Buffer ret;
+		ret.push_back(static_cast<unsigned char>(COMMAND_TYPE::EQEBB_SET_PARAM));
+		ret.push_back(static_cast<unsigned char>(inquired_type));
+		ret.push_back(static_cast<unsigned char>(preset_id));
+		ret.push_back(static_cast<unsigned char>(data.size()));
+		for (const char& d : data) {
+			ret.push_back(static_cast<unsigned char>(d));
+		}
+		return ret;
+	}
+
+	Buffer serializeEqEbbSetParam(EQ_EBB_INQUIRED_TYPE inquired_type, EqPresetId preset_id)
+	{
+		return serializeEqEbbSetParam(inquired_type, preset_id, std::vector<char>());
+	}
+}

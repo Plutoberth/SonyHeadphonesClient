@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "BluetoothWrapper.h"
 
 BluetoothWrapper::BluetoothWrapper(std::unique_ptr<IBluetoothConnector> connector)
@@ -26,6 +28,11 @@ int BluetoothWrapper::sendCommand(const std::vector<char>& bytes)
 {
 	std::lock_guard guard(this->_connectorMtx);
 	auto data = CommandSerializer::packageDataForBt(bytes, DATA_TYPE::DATA_MDR, this->_seqNumber++);
+	std::cout << "↑";
+	for (const auto& d : data) {
+		std::cout << std::hex << std::setfill('0') << std::setw(2) << (int)d << " ";
+	}
+	std::cout << std::endl;
 	auto bytesSent = this->_connector->send(data.data(), data.size());
 
 	this->_waitForAck();
@@ -92,7 +99,12 @@ void BluetoothWrapper::_waitForAck()
 		msgBytes.insert(msgBytes.end(), buf + messageStart, buf + messageEnd);
 	} while (!messageFinished);
 
+	std::cout << "↓";
+	for (const auto& d : msgBytes) {
+		std::cout << std::hex << std::setfill('0') << std::setw(2) << (int)d << " ";
+	}
+	std::cout << std::endl;
+
 	auto msg = CommandSerializer::unpackBtMessage(msgBytes);
 	this->_seqNumber = msg.seqNumber;
 }
-

@@ -39,6 +39,44 @@ enum class DATA_TYPE : char
     UNKNOWN = -1
 };
 
+enum class EQ_EBB_INQUIRED_TYPE: char
+{
+	NO_USE = 0,
+	PRESET_EQ = 1,
+	EBB = 2,
+	PRESET_EQ_NONCUSTOMIZABLE = 3,
+	OUT_OF_RANGE = -1,
+};
+
+enum class EqPresetId: char {
+  OFF = 0,
+  ROCK = 1,
+  POP = 2,
+  JAZZ = 3,
+  DANCE = 4,
+  EDM = 5,
+  R_AND_B_HIP_HOP = 6,
+  ACOUSTIC = 7,
+  /*RESERVED_FOR_FUTURE_NO8 = 8,… */
+  /*RESERVED_FOR_FUTURE_NO15 = 15,*/
+  BRIGHT = 16,
+  EXCITED = 17,
+  MELLOW = 18,
+  RELAXED = 19,
+  VOCAL = 20,
+  TREBLE = 21,
+  BASS = 22,
+  SPEECH = 23,
+  /*RESERVED_FOR_FUTURE_NO24 = 24,… */
+  /*RESERVED_FOR_FUTURE_NO31 = 31,*/
+  CUSTOM = -96,
+  USER_SETTING1 = -95,
+  USER_SETTING2 = -94,
+  USER_SETTING3 = -93,
+  USER_SETTING4 = -92,
+  USER_SETTING5 = -91,
+  UNSPECIFIED = -1,
+};
 
 enum class NC_ASM_INQUIRED_TYPE : char
 {
@@ -84,5 +122,10 @@ enum class NC_DUAL_SINGLE_VALUE : char
 
 enum class COMMAND_TYPE : char
 {
+	COMMON_NTFY_UPSCALING_EFFECT = 23,
+	EQEBB_SET_PARAM = 88,
+	EQEBB_NTFY_PARAM = 89,
+	EQEBB_GET_EXTENDED_INFO = 90,
+	EQEBB_RET_EXTENDED_INFO = 91,
 	NCASM_SET_PARAM = 104
 };
