@@ -222,7 +222,7 @@ void CrossPlatformGUI::_drawASMControls()
 			lastAsmLevel = asmLevel == ASM_LEVEL_DISABLED ? lastAsmLevel : asmLevel;
 			asmLevel = ambientSoundControl ? lastAsmLevel : ASM_LEVEL_DISABLED;
 
-			this->_sendCommandFuture.setFromAsync([=, this]() {
+			this->_sendCommandFuture.setFromAsync([=]() {
 				return this->_bt.sendCommand(CommandSerializer::serializeNcAndAsmSetting(
 					ncAsmEffect,
 					NC_ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
@@ -262,7 +262,7 @@ void CrossPlatformGUI::_drawEQControls() {
 	if (sentEqPresetId == eqPresetId || this->_sendCommandFuture.valid()) {
 		return;
 	}
-	this->_sendCommandFuture.setFromAsync([=, this]() {
+	this->_sendCommandFuture.setFromAsync([=]() {
 		return this->_bt.sendCommand(CommandSerializer::serializeEqEbbSetParam(
 			EQ_EBB_INQUIRED_TYPE::PRESET_EQ,
 			eqPresetId
