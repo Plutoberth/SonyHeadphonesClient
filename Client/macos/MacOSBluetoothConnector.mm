@@ -78,7 +78,7 @@ void MacOSBluetoothConnector::connectToMac(MacOSBluetoothConnector* macOSBluetoo
     
     // keep thread running
     while (macOSBluetoothConnector->running) {
-        [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:.1]];
+        [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:.1]];
     }
 }
 void MacOSBluetoothConnector::connect(const std::string& addrStr){
