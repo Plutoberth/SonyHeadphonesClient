@@ -156,14 +156,17 @@
     // send current settings
     auto ncAsmEffect = ANCEnabled.state ? NC_ASM_EFFECT::ADJUSTMENT_COMPLETION : NC_ASM_EFFECT::OFF;
     auto asmId = focusOnVoice.state == NSControlStateValueOn ? ASM_ID::VOICE : ASM_ID::NORMAL;
+    int sliderState = ANCEnabled.state ? ANCSlider.intValue : -1;
     try {
-        bt.sendCommand(CommandSerializer::serializeNcAndAsmSetting(
-                                                                   ncAsmEffect,
-                                                                   NC_ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
-                                                                   ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
-                                                                   asmId,
-                                                                   ANCEnabled.state ? ANCSlider.intValue : -1
-                                                                   ));
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^(void) {
+            bt.sendCommand(CommandSerializer::serializeNcAndAsmSetting(
+                                                                       ncAsmEffect,
+                                                                       NC_ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
+                                                                       ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
+                                                                       asmId,
+                                                                       sliderState
+                                                                       ));
+        });
     } catch (RecoverableException& exc) {
         [self displayError:exc];
     }
