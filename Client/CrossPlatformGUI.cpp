@@ -27,6 +27,8 @@ bool CrossPlatformGUI::performGUIPass()
 		{
 			ImGui::Spacing();
 			this->_drawASMControls();
+			this->_drawSurroundControls();
+			this->_setHeadphoneSettings();
 		}
 	}
 
@@ -156,11 +158,6 @@ void CrossPlatformGUI::_drawASMControls()
 	static bool ambientSoundControl = true;
 	static bool focusOnVoice = false;
 	static int asmLevel = 0;
-	static int soundPosition = 0;
-	static int vptType = 0;
-
-	//Don't show if the command only takes a few frames to send
-	static int commandLinger = 0;
 
 	if (ImGui::CollapsingHeader("Ambient Sound Mode   ", ImGuiTreeNodeFlags_DefaultOpen))
 	{
@@ -186,6 +183,12 @@ void CrossPlatformGUI::_drawASMControls()
 		this->_headphones.setAsmLevel(asmLevel);
 		this->_headphones.setFocusOnVoice(focusOnVoice);
 	}
+}
+
+void CrossPlatformGUI::_drawSurroundControls()
+{
+	static int soundPosition = 0;
+	static int vptType = 0;
 
 	if (ImGui::CollapsingHeader("Virtual Sound", ImGuiTreeNodeFlags_DefaultOpen))
 	{
@@ -196,7 +199,7 @@ void CrossPlatformGUI::_drawASMControls()
 		{
 			vptType = 0;
 		}
-		
+
 		if (ImGui::Combo("Surround (VPT)", &vptType, "Off\0Outdoor Festival\0Arena\0"
 			"Concert Hall\0Club\0\0"))
 		{
@@ -206,6 +209,11 @@ void CrossPlatformGUI::_drawASMControls()
 		this->_headphones.setSurroundPosition(SOUND_POSITION_PRESET_ARRAY[soundPosition]);
 		this->_headphones.setVptType(vptType);
 	}
+}
+
+void CrossPlatformGUI::_setHeadphoneSettings() {
+	//Don't show if the command only takes a few frames to send
+	static int commandLinger = 0;
 
 	if (this->_sendCommandFuture.ready())
 	{

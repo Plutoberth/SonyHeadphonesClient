@@ -34,6 +34,8 @@ private:
 	void _drawErrors();
 	void _drawDeviceDiscovery();
 	void _drawASMControls();
+	void _drawSurroundControls();
+	void _setHeadphoneSettings();
 
 	BluetoothDevice _connectedDevice;
 	BluetoothWrapper _bt;
