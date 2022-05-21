@@ -13,7 +13,7 @@
 
 #include <future>
 
-constexpr auto GUI_MAX_MESSAGES = 10;
+constexpr auto GUI_MAX_MESSAGES = 5;
 constexpr auto GUI_HEIGHT = 350;
 constexpr auto GUI_WIDTH = 540;
 constexpr auto FPS = 60;

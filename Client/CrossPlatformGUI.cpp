@@ -41,14 +41,15 @@ void CrossPlatformGUI::_drawErrors()
 	//There's a slight race condition here but I don't care, it'd only be for one frame.
 	if (this->_mq.begin() != this->_mq.end())
 	{
-		ImGui::Text("Errors");
-		ImGui::Text("----------------------------");
+		ImGui::Text("Errors:");
+		ImGui::Spacing();
+
 		for (auto&& message : this->_mq)
 		{
 			ImGui::Text(message.message.c_str());
 		}
-		//TODO: add a better ending separator
-		ImGui::Text("----------------------------");
+		
+		ImGui::Spacing();
 	}
 }
 
