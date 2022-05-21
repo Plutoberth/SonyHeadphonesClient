@@ -1,4 +1,4 @@
-#include "CrossPlatformGUI.h"
+﻿#include "CrossPlatformGUI.h"
 
 bool CrossPlatformGUI::performGUIPass()
 {
@@ -73,7 +73,7 @@ void CrossPlatformGUI::_drawDeviceDiscovery()
 			ImGui::Text("Select from one of the available devices: ");
 
 			int temp = 0;
-			for (auto device : connectedDevices)
+			for (const auto& device : connectedDevices)
 			{
 				ImGui::RadioButton(device.name.c_str(), &selectedDevice, temp++);
 			}
@@ -153,36 +153,25 @@ void CrossPlatformGUI::_drawDeviceDiscovery()
 void CrossPlatformGUI::_drawASMControls()
 {
 	static bool ambientSoundControl = true;
-	static bool sentAmbientSoundControl = ambientSoundControl;
 	static bool focusOnVoice = false;
-	static bool sentFocusOnVoice = focusOnVoice;
 	static int asmLevel = 0;
-	static int lastAsmLevel = asmLevel;
-	static int sentAsmLevel = asmLevel;
-
 	static int soundPosition = 0;
-	static SOUND_POSITION_PRESET lastSoundPosition = SOUND_POSITION_PRESET::OFF;
-	static SOUND_POSITION_PRESET sentSoundPosition = lastSoundPosition;
-
-	static int surround = 0;
-	static int lastSurround = static_cast<int>(VPT_PRESET_ID::OFF);
+	static int vptType = 0;
 
 	//Don't show if the command only takes a few frames to send
 	static int commandLinger = 0;
-
-	bool sliderActive;
 
 	if (ImGui::CollapsingHeader("Ambient Sound Mode   ", ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		ImGui::Checkbox("Ambient Sound Control", &ambientSoundControl);
 
-		if (ambientSoundControl)
+		if (this->_headphones.isSetAsmLevelAvailable())
 		{
 			ImGui::Text("Control ambient sound for your %ss", this->_connectedDevice.name.c_str());
 
 			ImGui::SliderInt("Ambient Sound Level", &asmLevel, 0, 19);
 
-			if (asmLevel >= MINIMUM_VOICE_FOCUS_STEP)
+			if (this->_headphones.isFocusOnVoiceAvailable())
 			{
 				ImGui::Checkbox("Focus on Voice", &focusOnVoice);
 			}
@@ -192,19 +181,29 @@ void CrossPlatformGUI::_drawASMControls()
 			}
 		}
 
-		sliderActive = ImGui::IsItemActive();
+		this->_headphones.setAmbientSoundControl(ambientSoundControl);
+		this->_headphones.setAsmLevel(asmLevel);
+		this->_headphones.setFocusOnVoice(focusOnVoice);
 	}
 
-	if (ImGui::CollapsingHeader("Virtual Sound   ", ImGuiTreeNodeFlags_DefaultOpen))
+	if (ImGui::CollapsingHeader("Virtual Sound", ImGuiTreeNodeFlags_DefaultOpen))
 	{
+		ImGui::Text("Only one of the options may be used at a time");
+
 		if (ImGui::Combo("Sound Position", &soundPosition, "Off\0Front Left\0Front Right\0"
 			"Front\0Rear Left\0Rear Right\0\0"))
 		{
-			sentSoundPosition = SOUND_POSITION_PRESET_ARRAY[soundPosition];
+			vptType = 0;
 		}
 		
-		ImGui::Combo("Surround", &surround, "Off\0Outdoor Festival\0Arena\0"
-			"Concert Hall\0Club\0\0");
+		if (ImGui::Combo("Surround (VPT)", &vptType, "Off\0Outdoor Festival\0Arena\0"
+			"Concert Hall\0Club\0\0"))
+		{
+			soundPosition = 0;
+		}
+
+		this->_headphones.setSurroundPosition(SOUND_POSITION_PRESET_ARRAY[soundPosition]);
+		this->_headphones.setVptType(vptType);
 	}
 
 	if (this->_sendCommandFuture.ready())
@@ -230,56 +229,21 @@ void CrossPlatformGUI::_drawASMControls()
 	//This means that we're waiting
 	else if (this->_sendCommandFuture.valid())
 	{
-		if (commandLinger++ > FPS / 10)
+		if (commandLinger++ > (FPS / 10))
 		{
 			ImGui::Text("Sending command %c", "|/-\\"[(int)(ImGui::GetTime() / 0.05f) & 3]);
 		}
 	}
 	//We're not waiting, and there's no command in the air, so we can evaluate sending a new command
-	else if (sentAsmLevel != asmLevel || sentFocusOnVoice != focusOnVoice || sentAmbientSoundControl != ambientSoundControl)
+	else if (this->_headphones.isChanged())
 	{
-		auto ncAsmEffect = sliderActive ? NC_ASM_EFFECT::ADJUSTMENT_IN_PROGRESS : ambientSoundControl ? NC_ASM_EFFECT::ADJUSTMENT_COMPLETION : NC_ASM_EFFECT::OFF;
-		auto asmId = focusOnVoice ? ASM_ID::VOICE : ASM_ID::NORMAL;
-		lastAsmLevel = asmLevel == ASM_LEVEL_DISABLED ? lastAsmLevel : asmLevel;
-		asmLevel = ambientSoundControl ? lastAsmLevel : ASM_LEVEL_DISABLED;
-
 		this->_sendCommandFuture.setFromAsync([=, this]() {
-			return this->_bt.sendCommand(CommandSerializer::serializeNcAndAsmSetting(
-				ncAsmEffect,
-				NC_ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
-				ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
-				asmId,
-				asmLevel
-			));
+			return this->_headphones.setChanges();
 		});
-		sentAsmLevel = asmLevel;
-		sentFocusOnVoice = focusOnVoice;
-		sentAmbientSoundControl = ambientSoundControl;
-	}
-	//Sending the VPT command
-	else if (surround != lastSurround || sentSoundPosition != lastSoundPosition)
-	{
-		auto command = surround != lastSurround ? VPT_INQUIRED_TYPE::VPT
-			: VPT_INQUIRED_TYPE::SOUND_POSITION;
-
-		auto preset = surround != lastSurround ? static_cast<unsigned char>(surround)
-			: static_cast<unsigned char>(sentSoundPosition);
-
-		this->_sendCommandFuture.setFromAsync([=, this]() {
-			return this->_bt.sendCommand(CommandSerializer::serializeVPTSetting(
-				command,
-				preset
-			));
-		});
-
-		if (surround != lastSurround)
-			lastSurround = surround;
-		else
-			lastSoundPosition = sentSoundPosition;
 	}
 }
 
-CrossPlatformGUI::CrossPlatformGUI(BluetoothWrapper bt) : _bt(std::move(bt))
+CrossPlatformGUI::CrossPlatformGUI(BluetoothWrapper bt) : _bt(std::move(bt)), _headphones(_bt)
 {
 	// Setup Dear ImGui style
 	ImGui::StyleColorsDark();

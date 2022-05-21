@@ -12,7 +12,7 @@ target_sources(SonyHeadphonesClient
     ByteMagic.cpp
     CommandSerializer.cpp
     TimedMessageQueue.cpp
-    CrossPlatformGUI.cpp)
+    CrossPlatformGUI.cpp "Headphones.cpp")
 
 target_include_directories (SonyHeadphonesClient
     PRIVATE ${CMAKE_SOURCE_DIR}

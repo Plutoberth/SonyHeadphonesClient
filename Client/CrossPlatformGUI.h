@@ -9,6 +9,7 @@
 #include "TimedMessageQueue.h"
 #include "SingleInstanceFuture.h"
 #include "CascadiaCodeFont.h"
+#include "Headphones.h"
 
 #include <future>
 
@@ -37,9 +38,10 @@ private:
 	BluetoothDevice _connectedDevice;
 	BluetoothWrapper _bt;
 	SingleInstanceFuture<std::vector<BluetoothDevice>> _connectedDevicesFuture;
-	SingleInstanceFuture<int> _sendCommandFuture;
+	SingleInstanceFuture<void> _sendCommandFuture;
 	SingleInstanceFuture<void> _connectFuture;
 	TimedMessageQueue _mq;
+	Headphones _headphones;
 };
 
 
