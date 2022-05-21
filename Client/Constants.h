@@ -14,7 +14,8 @@ inline unsigned char SERVICE_UUID_IN_BYTES[] = { // this is the SERVICE_UUID but
 	0xb3, 0x2d, 0xe3, 0x16, 0xf5, 0xe0, 0x69, 0xba
 };
 
-inline constexpr auto APP_NAME_W = L"Sony Headphones App";
+#define APP_NAME "Sony Headphones App v" __HEADPHONES_APP_VERSION__
+#define APP_NAME_W (L"" APP_NAME)
 
 using Buffer = std::vector<char>;
 

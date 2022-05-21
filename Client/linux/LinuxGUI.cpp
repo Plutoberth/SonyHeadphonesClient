@@ -33,7 +33,7 @@ void EnterGUIMainLoop(BluetoothWrapper bt)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 
     // Create window with graphics context
-    GLFWwindow *window = glfwCreateWindow(GUI_WIDTH, GUI_HEIGHT, "Sony Headphones App", NULL, NULL);
+    GLFWwindow *window = glfwCreateWindow(GUI_WIDTH, GUI_HEIGHT, APP_NAME, NULL, NULL);
     if (window == NULL)
         return;
 
