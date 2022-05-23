@@ -76,10 +76,10 @@ void MacOSBluetoothConnector::connectToMac(MacOSBluetoothConnector* macOSBluetoo
     // tell the other tread that we are done connecting
     connectPromise.set_value();
     
-    // keep thread running
-    while (macOSBluetoothConnector->running) {
-        [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:.1]];
-    }
+    // keep thread running, until we are disconnected
+    std::unique_lock<std::mutex> lk(macOSBluetoothConnector->disconnectionMutex);
+    macOSBluetoothConnector->disconnectionConditionVariable.wait(lk, [&]{return !macOSBluetoothConnector->running;});
+    lk.unlock();
 }
 void MacOSBluetoothConnector::connect(const std::string& addrStr){
     // convert mac address to nsstring
@@ -135,7 +135,7 @@ std::vector<BluetoothDevice> MacOSBluetoothConnector::getConnectedDevices()
         if ([device isConnected]) {
             BluetoothDevice dev;
             // save the mac address and name
-            dev.mac =  [[device addressString]UTF8String];
+            dev.mac = [[device addressString] UTF8String];
             dev.name = [[device name] UTF8String];
             // add device to the connected devices vector
             res.push_back(dev);
@@ -147,11 +147,13 @@ std::vector<BluetoothDevice> MacOSBluetoothConnector::getConnectedDevices()
 
 void MacOSBluetoothConnector::disconnect() noexcept
 {
-    running = false;
-    // wait for the thread to finish
-    uthread.join();
     // close connection
     closeConnection();
+    running = false;
+    // notify the other thread that we are done disconnecting
+    disconnectionConditionVariable.notify_all();
+    // wait for the thread to finish
+    uthread.join();
 }
 void MacOSBluetoothConnector::closeConnection() {
     // get the channel
