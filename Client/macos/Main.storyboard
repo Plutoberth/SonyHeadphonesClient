@@ -308,12 +308,12 @@ Source: https://github.com/Plutoberth/SonyHeadphonesClient</string>
                         <outlet property="ANCSlider" destination="O6v-na-xL2" id="9FJ-Ic-Yxh"/>
                         <outlet property="ANCValueLabel" destination="aux-7E-1O2" id="WV8-JF-9vz"/>
                         <outlet property="ANCValuePrefixLabel" destination="HVf-Ir-otU" id="rSp-o2-pok"/>
-                        <outlet property="SoundPosition" destination="Aj9-d1-8g1" id="WgZ-q1-tRF"/>
-                        <outlet property="Surround" destination="w97-Mz-47B" id="JwU-Rr-gcn"/>
                         <outlet property="connectButton" destination="aqv-Ws-wbl" id="Nb4-ol-PCV"/>
                         <outlet property="connectedLabel" destination="V6f-ZQ-bKY" id="72M-GZ-WnM"/>
                         <outlet property="focusOnVoice" destination="ALy-EG-jxf" id="blO-Rb-V33"/>
+                        <outlet property="soundPosition" destination="Aj9-d1-8g1" id="659-KC-9lq"/>
                         <outlet property="soundPositionLabel" destination="8E2-4g-KE4" id="sQX-yz-OCS"/>
+                        <outlet property="surround" destination="w97-Mz-47B" id="gJ7-ii-H7x"/>
                         <outlet property="surroundLabel" destination="jdH-0J-cfw" id="GAQ-jZ-24u"/>
                         <outlet property="virtualSoundLabel" destination="ANG-u3-UEi" id="2uj-CL-mix"/>
                     </connections>

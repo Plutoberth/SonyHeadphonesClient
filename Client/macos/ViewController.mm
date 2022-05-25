@@ -8,7 +8,7 @@
 #import "ViewController.h"
 
 @implementation ViewController
-@synthesize connectedLabel, connectButton, ANCSlider, ANCValueLabel, focusOnVoice, ANCEnabled, ANCValuePrefixLabel;
+@synthesize connectedLabel, connectButton, ANCSlider, ANCValueLabel, focusOnVoice, ANCEnabled, ANCValuePrefixLabel, virtualSoundLabel, soundPositionLabel, surroundLabel, soundPosition, surround;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -45,10 +45,18 @@
     [focusOnVoice setEnabled:FALSE];
     [ANCEnabled setEnabled:FALSE];
     [ANCEnabled setState:FALSE];
-    [connectButton setTitle:@"Connect to Bluetooth device"];
-    [connectedLabel setStringValue:text];
+    [focusOnVoice setEnabled:FALSE];
+    [surround setEnabled:FALSE];
+    [soundPosition setEnabled:FALSE];
+    [virtualSoundLabel setTextColor:NSColor.tertiaryLabelColor];
+    [surroundLabel setTextColor:NSColor.tertiaryLabelColor];
+    [soundPositionLabel setTextColor:NSColor.tertiaryLabelColor];
     [ANCValuePrefixLabel setTextColor:NSColor.tertiaryLabelColor];
     [ANCValueLabel setTextColor:NSColor.tertiaryLabelColor];
+    [connectedLabel setStringValue:text];
+    [surround selectItemAtIndex:0];
+    [soundPosition selectItemAtIndex:0];
+    [connectButton setTitle:@"Connect to Bluetooth device"];
     statusItem.button.image = [NSImage imageNamed:@"NSRefreshTemplate"];
 }
 
@@ -108,9 +116,14 @@
             [ANCSlider setEnabled:TRUE];
             [ANCEnabled setEnabled:TRUE];
             [ANCEnabled setState:TRUE];
+            [focusOnVoice setEnabled:FALSE];
+            [surround setEnabled:TRUE];
+            [soundPosition setEnabled:TRUE];
+            [virtualSoundLabel setTextColor:NSColor.labelColor];
+            [surroundLabel setTextColor:NSColor.labelColor];
+            [soundPositionLabel setTextColor:NSColor.labelColor];
             [ANCValuePrefixLabel setTextColor:NSColor.labelColor];
             [ANCValueLabel setTextColor:NSColor.labelColor];
-            [focusOnVoice setEnabled:FALSE];
             statusItem.button.image = [NSImage imageNamed:@"NSHomeTemplate"];
         } else {
             [self displayDisconnectedWithText:@"Not connected, connection timed out."];
