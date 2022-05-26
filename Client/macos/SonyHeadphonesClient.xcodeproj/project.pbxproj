@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		A87B328B259FAA8B00EA6551 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A87B328A259FAA8B00EA6551 /* Cocoa.framework */; };
 		A87B328E259FAB0E00EA6551 /* IOBluetoothUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A87B328D259FAB0E00EA6551 /* IOBluetoothUI.framework */; };
+		A8A3D31E283EC38600148E80 /* Headphones.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A8A3D31D283EC38600148E80 /* Headphones.cpp */; };
 		A8DC78EB2576923D00447738 /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = A8DC78EA2576923D00447738 /* main.mm */; };
 		A8DC78EC2576923D00447738 /* MacOSBluetoothConnector.mm in Sources */ = {isa = PBXBuildFile; fileRef = A8DC78E82576923D00447738 /* MacOSBluetoothConnector.mm */; };
 		A8DC78F12576952E00447738 /* BluetoothWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A8DC78EF2576952E00447738 /* BluetoothWrapper.cpp */; };
@@ -26,6 +27,8 @@
 		A87B327A259F69BA00EA6551 /* Constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Constants.h; path = ../Constants.h; sourceTree = "<group>"; };
 		A87B328A259FAA8B00EA6551 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		A87B328D259FAB0E00EA6551 /* IOBluetoothUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOBluetoothUI.framework; path = System/Library/Frameworks/IOBluetoothUI.framework; sourceTree = SDKROOT; };
+		A8A3D31C283EC38500148E80 /* Headphones.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Headphones.h; path = ../Headphones.h; sourceTree = "<group>"; };
+		A8A3D31D283EC38600148E80 /* Headphones.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Headphones.cpp; path = ../Headphones.cpp; sourceTree = "<group>"; };
 		A8DC78E32576922700447738 /* info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = info.plist; sourceTree = "<group>"; };
 		A8DC78E62576922D00447738 /* SonyHeadphonesClient.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SonyHeadphonesClient.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A8DC78E72576923D00447738 /* MacOSBluetoothConnector.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MacOSBluetoothConnector.h; sourceTree = "<group>"; };
@@ -84,6 +87,8 @@
 				A8DC78F72576954100447738 /* TimedMessageQueue.h */,
 				A8DC78FD2576967D00447738 /* ByteMagic.cpp */,
 				A8DC78FE2576967D00447738 /* ByteMagic.h */,
+				A8A3D31D283EC38600148E80 /* Headphones.cpp */,
+				A8A3D31C283EC38500148E80 /* Headphones.h */,
 				A8DC792B25769C9900447738 /* AppDelegate.h */,
 				A8DC792825769C9900447738 /* AppDelegate.mm */,
 				A8DC792925769C9900447738 /* ViewController.h */,
@@ -169,6 +174,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A8A3D31E283EC38600148E80 /* Headphones.cpp in Sources */,
 				A8DC78EB2576923D00447738 /* main.mm in Sources */,
 				A8DC78EC2576923D00447738 /* MacOSBluetoothConnector.mm in Sources */,
 				A8DC792D25769C9900447738 /* ViewController.mm in Sources */,

@@ -206,7 +206,7 @@ Source: https://github.com/Plutoberth/SonyHeadphonesClient</string>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                                 <sliderCell key="cell" enabled="NO" state="on" alignment="left" maxValue="19" tickMarkPosition="below" numberOfTickMarks="20" allowsTickMarkValuesOnly="YES" sliderType="linear" id="q5G-me-sXi"/>
                                 <connections>
-                                    <action selector="sendData:" target="XfG-lQ-9wD" id="5p1-OX-wuC"/>
+                                    <action selector="ANCSliderChanged:" target="XfG-lQ-9wD" id="eNN-mn-mkT"/>
                                 </connections>
                             </slider>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ANG-u3-UEi">
@@ -226,7 +226,7 @@ Source: https://github.com/Plutoberth/SonyHeadphonesClient</string>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
                                 <connections>
-                                    <action selector="sendData:" target="XfG-lQ-9wD" id="NRS-p8-lU5"/>
+                                    <action selector="ANCEnabledButtonChanged:" target="XfG-lQ-9wD" id="T2G-mZ-Zg4"/>
                                 </connections>
                             </button>
                             <box verticalHuggingPriority="750" fixedFrame="YES" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="bHH-7z-47s">
@@ -241,7 +241,7 @@ Source: https://github.com/Plutoberth/SonyHeadphonesClient</string>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
                                 <connections>
-                                    <action selector="sendData:" target="XfG-lQ-9wD" id="VS7-xg-wZb"/>
+                                    <action selector="focusOnVoiceChanged:" target="XfG-lQ-9wD" id="5Hg-63-w5X"/>
                                 </connections>
                             </button>
                             <box verticalHuggingPriority="750" fixedFrame="YES" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="Ocw-OM-fwY">
@@ -265,6 +265,9 @@ Source: https://github.com/Plutoberth/SonyHeadphonesClient</string>
                                         </items>
                                     </menu>
                                 </popUpButtonCell>
+                                <connections>
+                                    <action selector="soundPositionChanged:" target="XfG-lQ-9wD" id="p3l-dZ-i7D"/>
+                                </connections>
                             </popUpButton>
                             <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="w97-Mz-47B" userLabel="Surround">
                                 <rect key="frame" x="17" y="13" width="149" height="25"/>
@@ -282,6 +285,9 @@ Source: https://github.com/Plutoberth/SonyHeadphonesClient</string>
                                         </items>
                                     </menu>
                                 </popUpButtonCell>
+                                <connections>
+                                    <action selector="surroundChanged:" target="XfG-lQ-9wD" id="5lT-Xg-ED6"/>
+                                </connections>
                             </popUpButton>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8E2-4g-KE4">
                                 <rect key="frame" x="168" y="51" width="95" height="16"/>

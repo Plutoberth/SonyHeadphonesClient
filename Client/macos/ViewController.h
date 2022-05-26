@@ -9,6 +9,7 @@
 #import "AppDelegate.h"
 
 BluetoothWrapper bt = (BluetoothWrapper)nil;
+Headphones* headphones;
 NSStatusItem* statusItem;
 
 @interface ViewController : NSViewController
