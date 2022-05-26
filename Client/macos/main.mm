@@ -1,9 +1,8 @@
-#include <stdio.h>
 #import <Cocoa/Cocoa.h>
-#include "MacOSBluetoothConnector.h"
+#include <stdio.h>
 #include "BluetoothWrapper.h"
+#include "MacOSBluetoothConnector.h"
 
-int main(int argc, const char * argv[])
-{
-     return NSApplicationMain(argc, argv);
+int main(int argc, const char* argv[]) {
+    return NSApplicationMain(argc, argv);
 }

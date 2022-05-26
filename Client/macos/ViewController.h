@@ -9,8 +9,8 @@
 #import "AppDelegate.h"
 
 BluetoothWrapper bt = (BluetoothWrapper)nil;
-Headphones* headphones;
-NSStatusItem* statusItem;
+Headphones *headphones;
+NSStatusItem *statusItem;
 
 @interface ViewController : NSViewController
 @property (weak, nonatomic) IBOutlet NSTextField *connectedLabel;
@@ -26,4 +26,3 @@ NSStatusItem* statusItem;
 @property (weak, nonatomic) IBOutlet NSPopUpButton *soundPosition;
 @property (weak, nonatomic) IBOutlet NSPopUpButton *surround;
 @end
-
