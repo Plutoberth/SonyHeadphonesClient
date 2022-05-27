@@ -1,5 +1,0 @@
-BasedOnStyle: Google
-IndentWidth: 4
-ObjCBlockIndentWidth: 4
-ObjCSpaceAfterProperty: true
-AllowShortFunctionsOnASingleLine: false
