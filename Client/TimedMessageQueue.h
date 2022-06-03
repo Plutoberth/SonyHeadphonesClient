@@ -17,10 +17,9 @@ constexpr auto DEFAULT_ERROR_MESSAGE_MS = 10000;
 struct Message
 {
 public:
-	Message(std::string message, TimePoint releaseTime) 
+	Message(std::string msg, TimePoint releaseTime)
+		: message(msg), _releaseTime(releaseTime)
 	{
-		this->message = std::move(message);
-		this->_releaseTime = releaseTime;
 	}
 
 	friend class TimedMessageQueue;

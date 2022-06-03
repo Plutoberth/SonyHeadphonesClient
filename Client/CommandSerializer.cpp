@@ -138,18 +138,20 @@ namespace CommandSerializer
 		//Message data format: ESCAPE_SPECIALS(<DATA_TYPE><SEQ_NUMBER><BIG ENDIAN 4 BYTE SIZE OF UNESCAPED DATA><DATA><1 BYTE CHECKSUM>)
 		auto unescaped = _unescapeSpecials(src);
 
-		if (src.size() < 7)
+		if (unescaped.size() < 7)
 		{
 			throw std::runtime_error("Invalid message: Smaller than the minimum message size");
 		}
 
-		Message ret;
-		ret.dataType = static_cast<DATA_TYPE>(src[0]);
-		ret.seqNumber = src[1];
-		if ((unsigned char)src[src.size() - 1] != _sumChecksum(src.data(), src.size() - 1))
+		if ((unsigned char)unescaped[unescaped.size() - 1] != _sumChecksum(unescaped.data(), unescaped.size() - 1))
 		{
 			throw RecoverableException("Invalid checksum!", true);
 		}
+
+		Message ret;
+		ret.dataType = static_cast<DATA_TYPE>(unescaped[0]);
+		ret.seqNumber = unescaped[1];
+		
 		return ret;
 	}
 
@@ -174,6 +176,7 @@ namespace CommandSerializer
 	Buffer serializeNcAndAsmSetting(NC_ASM_EFFECT ncAsmEffect, NC_ASM_SETTING_TYPE ncAsmSettingType, ASM_SETTING_TYPE asmSettingType, ASM_ID asmId, char asmLevel)
 	{
 		Buffer ret;
+		ret.reserve(8);
 		ret.push_back(static_cast<unsigned char>(COMMAND_TYPE::NCASM_SET_PARAM));
 		ret.push_back(static_cast<unsigned char>(NC_ASM_INQUIRED_TYPE::NOISE_CANCELLING_AND_AMBIENT_SOUND_MODE));
 		ret.push_back(static_cast<unsigned char>(ncAsmEffect));
@@ -188,6 +191,7 @@ namespace CommandSerializer
 	Buffer serializeVPTSetting(VPT_INQUIRED_TYPE type, unsigned char preset)
 	{
 		Buffer ret;
+		ret.reserve(3);
 		ret.push_back(static_cast<unsigned char>(COMMAND_TYPE::VPT_SET_PARAM));
 		ret.push_back(static_cast<unsigned char>(type));
 		ret.push_back(preset);

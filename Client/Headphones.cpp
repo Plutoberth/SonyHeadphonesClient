@@ -36,7 +36,7 @@ bool Headphones::getFocusOnVoice()
 
 bool Headphones::isSetAsmLevelAvailable()
 {
-	return this->_ambientSoundControl.current;
+	return this->_asmLevel.current;
 }
 
 void Headphones::setAsmLevel(int val)
