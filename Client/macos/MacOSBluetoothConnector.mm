@@ -76,19 +76,16 @@ void MacOSBluetoothConnector::connectToMac(MacOSBluetoothConnector* macOSBluetoo
     // tell the other tread that we are done connecting
     connectPromise.set_value();
     
-    // check if we are running on an older version of OSX (before Monterey 12.0)
-    if (@available(macOS 12.0, *)) {
-        // keep thread running, until we are disconnected
-        std::unique_lock<std::mutex> lk(macOSBluetoothConnector->disconnectionMutex);
-        macOSBluetoothConnector->disconnectionConditionVariable.wait(lk, [&]{return !macOSBluetoothConnector->running;});
-        lk.unlock();
-    } else {
-        // if we are on an older version of OSX
-        // we have to run the runloop
-        while (macOSBluetoothConnector->running) {
-            [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:.1]];
-        }
+    // keep thread running, until we are disconnected
+    std::unique_lock<std::mutex> lk(macOSBluetoothConnector->disconnectionMutex);
+    while (macOSBluetoothConnector->running) {
+        [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:.1]];
+        macOSBluetoothConnector->disconnectionConditionVariable.wait_for(lk, std::chrono::milliseconds(1000), [&]() {
+            return !macOSBluetoothConnector->running;
+        });
     }
+
+    lk.unlock();
 }
 void MacOSBluetoothConnector::connect(const std::string& addrStr){
     // convert mac address to nsstring
