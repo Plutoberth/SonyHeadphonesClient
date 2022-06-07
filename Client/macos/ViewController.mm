@@ -179,7 +179,7 @@
                 [self displayError:exc];
             }
         });
-    }   
+    }
 }
 
 - (void)updateGUI {
