@@ -7,7 +7,7 @@ find_package(Threads REQUIRED)
 
 add_executable(SonyHeadphonesClient)
 
-add_definitions(-D__HEADPHONES_APP_VERSION__="1.3.0")
+add_definitions(-D__HEADPHONES_APP_VERSION__="1.3.1")
 
 target_sources(SonyHeadphonesClient
     PRIVATE BluetoothWrapper.cpp
