@@ -75,14 +75,15 @@ void MacOSBluetoothConnector::connectToMac(MacOSBluetoothConnector* macOSBluetoo
     
     // tell the other tread that we are done connecting
     connectPromise.set_value();
-    
+
     // keep thread running, until we are disconnected
     std::unique_lock<std::mutex> lk(macOSBluetoothConnector->disconnectionMutex);
     while (macOSBluetoothConnector->running) {
         [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:.1]];
-        macOSBluetoothConnector->disconnectionConditionVariable.wait_for(lk, std::chrono::milliseconds(1000), [&]() {
-            return !macOSBluetoothConnector->running;
-        });
+
+        macOSBluetoothConnector->disconnectionConditionVariable.wait_for(
+            lk, std::chrono::milliseconds(1000),
+            [&]() { return !macOSBluetoothConnector->running; });
     }
 
     lk.unlock();
