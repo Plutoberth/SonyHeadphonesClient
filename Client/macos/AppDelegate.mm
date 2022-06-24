@@ -9,6 +9,7 @@
 
 @interface AppDelegate ()
 
+
 @end
 
 @implementation AppDelegate
@@ -16,10 +17,12 @@
     _window = [[[NSApplication sharedApplication] windows] firstObject];
 }
 
-- (BOOL)applicationShouldHandleReopen:(NSApplication *)theApplication hasVisibleWindows:(BOOL)flag {
+- (BOOL)applicationShouldHandleReopen:(NSApplication *)theApplication hasVisibleWindows:(BOOL)flag
+{
     if (flag) {
         return NO;
-    } else {
+    }
+    else {
         [_window makeKeyAndOrderFront:self];
         return YES;
     }
