@@ -9,6 +9,7 @@
 #import <stdio.h>
 #import <IOBluetoothUI/IOBluetoothUI.h>
 #import "BluetoothWrapper.h"
+#import "Headphones.h"
 #import "MacOSBluetoothConnector.h"
 
 @interface AppDelegate : NSObject <NSApplicationDelegate>
