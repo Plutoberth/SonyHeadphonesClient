@@ -19,7 +19,7 @@ inline unsigned char SERVICE_UUID_IN_BYTES[] = { // this is the SERVICE_UUID but
 
 using Buffer = std::vector<char>;
 
-enum class DATA_TYPE : char
+enum class DATA_TYPE : signed char
 {
 	DATA = 0,
 	ACK = 1,
@@ -41,7 +41,7 @@ enum class DATA_TYPE : char
 };
 
 
-enum class NC_ASM_INQUIRED_TYPE : char
+enum class NC_ASM_INQUIRED_TYPE : signed char
 {
 	NO_USE = 0,
 	NOISE_CANCELLING = 1,
@@ -49,7 +49,7 @@ enum class NC_ASM_INQUIRED_TYPE : char
 	AMBIENT_SOUND_MODE = 3
 };
 
-enum class NC_ASM_EFFECT : char
+enum class NC_ASM_EFFECT : signed char
 {
 	OFF = 0,
 	ON = 1,
@@ -57,39 +57,39 @@ enum class NC_ASM_EFFECT : char
 	ADJUSTMENT_COMPLETION = 17
 };
 
-enum class NC_ASM_SETTING_TYPE : char
+enum class NC_ASM_SETTING_TYPE : signed char
 {
 	ON_OFF = 0,
 	LEVEL_ADJUSTMENT = 1,
 	DUAL_SINGLE_OFF = 2
 };
 
-enum class ASM_SETTING_TYPE : char
+enum class ASM_SETTING_TYPE : signed char
 {
 	ON_OFF = 0,
 	LEVEL_ADJUSTMENT = 1
 };
 
-enum class ASM_ID : char
+enum class ASM_ID : signed char
 {
 	NORMAL = 0,
 	VOICE = 1
 };
 
-enum class NC_DUAL_SINGLE_VALUE : char
+enum class NC_DUAL_SINGLE_VALUE : signed char
 {
 	OFF = 0,
 	SINGLE = 1,
 	DUAL = 2
 };
 
-enum class COMMAND_TYPE : char
+enum class COMMAND_TYPE : signed char
 {
 	VPT_SET_PARAM = 72,
 	NCASM_SET_PARAM = 104
 };
 
-enum class VPT_PRESET_ID : char
+enum class VPT_PRESET_ID : signed char
 {
 	OFF = 0,
 	OUTDOOR_FESTIVAL = 1,
@@ -99,7 +99,7 @@ enum class VPT_PRESET_ID : char
 	//Note: Sony reserved 5~15 "for future"
 };
 
-enum class SOUND_POSITION_PRESET : char
+enum class SOUND_POSITION_PRESET : signed char
 {
 	OFF = 0,
 	FRONT_LEFT = 1,
@@ -121,7 +121,7 @@ inline const SOUND_POSITION_PRESET SOUND_POSITION_PRESET_ARRAY[] = {
 	SOUND_POSITION_PRESET::OUT_OF_RANGE
 };
 
-enum class VPT_INQUIRED_TYPE : char
+enum class VPT_INQUIRED_TYPE : signed char
 {
 	NO_USE = 0,
 	VPT = 1,
