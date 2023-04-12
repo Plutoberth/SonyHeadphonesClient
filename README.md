@@ -82,22 +82,29 @@ Some enums and data are present in the code. The rest has to be obtained either 
 
 Sniffing messages - See [this helpful comment](https://github.com/Plutoberth/SonyHeadphonesClient/pull/36#issuecomment-795633877) by @guilhermealbm.
 
+
+
+### Dependencies
+
+##### Linux
+
+```bash
+sudo apt install libbluetooth-dev libdbus-1-dev
+```
+
 ### Compiling
 
 #### Windows & Linux
 
+1. Set the `CMAKE_PREFIX_PATH` env var to the Qt dir, like `D:\\Qt\\6.5.0\\msvc2019_64`
+
+2.
 ```
 cd Client
 mkdir build
 cd build
 cmake ..
 cmake --build .
-```
-
-Linux Dependencies (Debian/Ubuntu):
-
-```bash
-sudo apt install libbluetooth-dev libglew-dev libglfw3-dev libdbus-1-dev
 ```
 
 #### macOS
