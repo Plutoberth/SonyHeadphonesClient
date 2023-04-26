@@ -1,198 +1,328 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-  <class>Dialog</class>
-  <widget class="QDialog" name="Dialog">
-    <property name="geometry">
-      <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>438</width>
-        <height>444</height>
-      </rect>
-    </property>
-    <property name="minimumSize">
-      <size>
-        <width>280</width>
-        <height>345</height>
-      </size>
-    </property>
-    <property name="windowTitle">
-      <string>Sony Headphones App</string>
-    </property>
-    <property name="windowIcon">
-      <iconset theme="headphones" />
-    </property>
-    <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="0">
-        <layout class="QVBoxLayout" name="verticalLayout">
+ <class>Dialog</class>
+ <widget class="QDialog" name="Dialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>413</width>
+    <height>501</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>280</width>
+    <height>345</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Sony Headphones App</string>
+  </property>
+  <property name="windowIcon">
+   <iconset theme="headphones">
+    <normaloff>.</normaloff>.</iconset>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QGroupBox" name="deviceDiscoveryGroupBox">
+       <property name="title">
+        <string>Device Discovery</string>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item row="0" column="0">
+         <layout class="QVBoxLayout" name="verticalLayout_2">
           <item>
-            <widget class="QGroupBox" name="deviceDiscoveryGroupBox">
-              <property name="title">
-                <string>Device Discovery</string>
-              </property>
-              <layout class="QGridLayout" name="gridLayout_2">
-                <item row="0" column="0">
-                  <layout class="QVBoxLayout" name="verticalLayout_2">
-                    <item>
-                      <widget class="QListWidget" name="deviceListWidget"></widget>
-                    </item>
-                    <item>
-                      <layout class="QHBoxLayout" name="horizontalLayout_5">
-                        <item>
-                          <widget class="QPushButton" name="connectButton">
-                            <property name="enabled">
-                              <bool>false</bool>
-                            </property>
-                            <property name="text">
-                              <string>&amp;Connect</string>
-                            </property>
-                          </widget>
-                        </item>
-                        <item>
-                          <widget class="QPushButton" name="refreshButton">
-                            <property name="text">
-                              <string>&amp;Refresh devices</string>
-                            </property>
-                          </widget>
-                        </item>
-                      </layout>
-                    </item>
-                  </layout>
-                </item>
-              </layout>
-            </widget>
+           <widget class="QListWidget" name="deviceListWidget"/>
           </item>
           <item>
-            <widget class="QGroupBox" name="ambientSoundModeGroupBox">
+           <layout class="QHBoxLayout" name="horizontalLayout_5">
+            <item>
+             <widget class="QPushButton" name="connectButton">
               <property name="enabled">
-                <bool>false</bool>
+               <bool>false</bool>
               </property>
-              <property name="title">
-                <string>Ambient Sound Mode</string>
+              <property name="text">
+               <string>&amp;Connect</string>
               </property>
-              <layout class="QGridLayout" name="gridLayout_3">
-                <item row="0" column="0">
-                  <layout class="QVBoxLayout" name="verticalLayout_3">
-                    <item>
-                      <widget class="QLabel" name="label">
-                        <property name="text">
-                          <string>Control ambient sound for your headphones</string>
-                        </property>
-                      </widget>
-                    </item>
-                    <item>
-                      <widget class="QCheckBox" name="ambientSoundControlCheckBox">
-                        <property name="minimumSize">
-                          <size>
-                            <width>0</width>
-                            <height>20</height>
-                          </size>
-                        </property>
-                        <property name="text">
-                          <string>&amp;Ambient Sound Control</string>
-                        </property>
-                        <property name="checkable">
-                          <bool>true</bool>
-                        </property>
-                        <property name="checked">
-                          <bool>true</bool>
-                        </property>
-                      </widget>
-                    </item>
-                    <item>
-                      <layout class="QHBoxLayout" name="horizontalLayout_6">
-                        <property name="sizeConstraint">
-                          <enum>QLayout::SetFixedSize</enum>
-                        </property>
-                        <item>
-                          <widget class="QSlider" name="ambientSoundSlider">
-                            <property name="maximumSize">
-                              <size>
-                                <width>16777215</width>
-                                <height>20</height>
-                              </size>
-                            </property>
-                            <property name="maximum">
-                              <number>19</number>
-                            </property>
-                            <property name="orientation">
-                              <enum>Qt::Horizontal</enum>
-                            </property>
-                            <property name="tickPosition">
-                              <enum>QSlider::TicksAbove</enum>
-                            </property>
-                          </widget>
-                        </item>
-                        <item>
-                          <widget class="QLabel" name="label_2">
-                            <property name="minimumSize">
-                              <size>
-                                <width>130</width>
-                                <height>17</height>
-                              </size>
-                            </property>
-                            <property name="text">
-                              <string>Ambient Sound Level</string>
-                            </property>
-                          </widget>
-                        </item>
-                      </layout>
-                    </item>
-                    <item>
-                      <widget class="QCheckBox" name="focusOnVoiceCheckBox">
-                        <property name="enabled">
-                          <bool>false</bool>
-                        </property>
-                        <property name="text">
-                          <string>&amp;Focus on Voice</string>
-                        </property>
-                        <property name="checkable">
-                          <bool>true</bool>
-                        </property>
-                      </widget>
-                    </item>
-                  </layout>
-                </item>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="refreshButton">
+              <property name="text">
+               <string>&amp;Refresh devices</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QFrame" name="controlsFrame">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_5">
+        <item>
+         <widget class="QGroupBox" name="ambientSoundModeGroupBox">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="title">
+           <string>Ambient Sound Mode</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_3">
+           <item row="1" column="0">
+            <layout class="QVBoxLayout" name="verticalLayout_3">
+             <item>
+              <widget class="QLabel" name="label">
+               <property name="text">
+                <string>Control ambient sound for your headphones</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QCheckBox" name="ambientSoundControlCheckBox">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>20</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>&amp;Ambient Sound Control</string>
+               </property>
+               <property name="checkable">
+                <bool>true</bool>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_6">
+               <property name="sizeConstraint">
+                <enum>QLayout::SetFixedSize</enum>
+               </property>
+               <item>
+                <widget class="QSlider" name="ambientSoundSlider">
+                 <property name="maximumSize">
+                  <size>
+                   <width>16777215</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                 <property name="maximum">
+                  <number>19</number>
+                 </property>
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="tickPosition">
+                  <enum>QSlider::TicksAbove</enum>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_2">
+                 <property name="minimumSize">
+                  <size>
+                   <width>130</width>
+                   <height>17</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>Ambient Sound Level</string>
+                 </property>
+                </widget>
+               </item>
               </layout>
-            </widget>
-          </item>
-          <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_7">
-              <item>
-                <widget class="QLabel" name="statusLabel">
-                  <property name="minimumSize">
-                    <size>
-                      <width>0</width>
-                      <height>20</height>
-                    </size>
-                  </property>
-                  <property name="text">
-                    <string />
-                  </property>
-                </widget>
-              </item>
-              <item>
-                <widget class="QLabel" name="notEndorsedLabel">
-                  <property name="minimumSize">
-                    <size>
-                      <width>0</width>
-                      <height>20</height>
-                    </size>
-                  </property>
-                  <property name="text">
-                    <string>Not endorsed by Sony!</string>
-                  </property>
-                  <property name="alignment">
-                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                  </property>
-                </widget>
-              </item>
+             </item>
+             <item>
+              <widget class="QCheckBox" name="focusOnVoiceCheckBox">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="text">
+                <string>&amp;Focus on Voice</string>
+               </property>
+               <property name="checkable">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
             </layout>
-          </item>
-        </layout>
-      </item>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="verticalGroupBox">
+          <property name="title">
+           <string>Virtual Sound</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_4">
+           <item>
+            <widget class="QLabel" name="warningLabel">
+             <property name="text">
+              <string>Only one of the options may be used at a time!</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QFrame" name="soundPositionLayout">
+             <layout class="QHBoxLayout" name="horizontalLayout">
+              <item>
+               <widget class="QLabel" name="label_3">
+                <property name="text">
+                 <string>Sound Position</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="soundPositionComboBox">
+                <property name="currentText">
+                 <string>Off</string>
+                </property>
+                <property name="sizeAdjustPolicy">
+                 <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>Off</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Front Left</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Front Right</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Front</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Rear Left</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Rear Right</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QFrame" name="vptLayout">
+             <layout class="QHBoxLayout" name="horizontalLayout_2">
+              <item>
+               <widget class="QLabel" name="label_4">
+                <property name="text">
+                 <string>Surround (VPT)</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="vptComboBox">
+                <property name="sizeAdjustPolicy">
+                 <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>Off</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Outdoor Festival</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Arena</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Concert Hall</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Club</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_7">
+       <item>
+        <widget class="QLabel" name="statusLabel">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="projectLinkLabel">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Unofficial Client, &lt;a href=&quot;https://github.com/Plutoberth/SonyHeadphonesClient/&quot;&gt;Project Page&lt;/a&gt;</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+         <property name="openExternalLinks">
+          <bool>true</bool>
+         </property>
+         <property name="textInteractionFlags">
+          <set>Qt::TextBrowserInteraction</set>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
     </layout>
-  </widget>
-  <resources />
-  <connections />
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
 </ui>

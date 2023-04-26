@@ -26,7 +26,7 @@ void Dialog::on_deviceDisconnected() {
 	statusLabel->setText(QStringLiteral(""));
 	deviceListWidget->setEnabled(true);
 	refreshButton->setEnabled(true);
-	ambientSoundModeGroupBox->setEnabled(false);
+	controlsFrame->setEnabled(false);
 	connectButton->setText(tr("&Connect"));
 	this->isConnected = false;
 }
@@ -38,8 +38,7 @@ void Dialog::on_deviceConnected() {
 	connectButton->setEnabled(true);
 	refreshButton->setEnabled(false);
 	deviceListWidget->setEnabled(false);
-	ambientSoundModeGroupBox->setEnabled(true);
-	ambientSoundControlCheckBox->setEnabled(true);
+	controlsFrame->setEnabled(true);
 
 	// when new widgets are added, add the values both here and in stateChanged 
 	_headphones.setAmbientSoundControl(
