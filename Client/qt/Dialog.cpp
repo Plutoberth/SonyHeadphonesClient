@@ -2,7 +2,7 @@
 #include "BluetoothWrapper.h"
 #include "CommandSerializer.h"
 
-Dialog::Dialog(BluetoothWrapper bt, QDialog *parent) : btWrap(std::move(bt)) {
+Dialog::Dialog(BluetoothWrapper bt, QDialog *parent) : btWrap(std::move(bt)), _headphones(btWrap) {
 	setupUi(this);
 	setupConnectedDevices();
 }
@@ -41,8 +41,14 @@ void Dialog::on_deviceConnected() {
 	ambientSoundModeGroupBox->setEnabled(true);
 	ambientSoundControlCheckBox->setEnabled(true);
 
+	// when new widgets are added, add the values both here and in stateChanged 
+	_headphones.setAmbientSoundControl(
+		ambientSoundControlCheckBox->isChecked());
+	_headphones.setAsmLevel(ambientSoundSlider->value());
+	_headphones.setFocusOnVoice(focusOnVoiceCheckBox->isChecked());
+
 	// Send the initial state
-	this->updateNcAsmState();
+	this->updateHeadphonesState();
 }
 
 void Dialog::on_connectButton_clicked() {
@@ -71,6 +77,7 @@ void Dialog::on_connectButton_clicked() {
 		refreshButton->setEnabled(false);
 		deviceListWidget->setEnabled(false);
 		deviceListWidget->clearSelection();
+
 		label->setText(
 			tr("Control ambient sound for your %1s").arg(selectedDevice));
 
@@ -86,14 +93,15 @@ void Dialog::on_connectButton_clicked() {
 
 void Dialog::on_commandSent() {
 	statusLabel->setText(QStringLiteral(""));
+
+	focusOnVoiceCheckBox->setEnabled(_headphones.isFocusOnVoiceAvailable());
+	ambientSoundSlider->setEnabled(_headphones.isSetAsmLevelAvailable());
 }
 
-void Dialog::updateNcAsmState() {
-	bool ambientSoundControl = ambientSoundControlCheckBox->isChecked();
-
-	bool focusOnVoice = focusOnVoiceCheckBox->isChecked();
-
-	const int asmSliderValue = ambientSoundSlider->value();
+void Dialog::updateHeadphonesState() {
+	if (!_headphones.isConnected()) {
+		return;
+	}
 
 	// If we finished sending a command
 	if (sendCommandFuture.ready()) {
@@ -113,39 +121,21 @@ void Dialog::updateNcAsmState() {
 		// TODO: Maybe we can do something more interesting in this state
 		statusLabel->setText(tr("Waiting for prior command to send..."));
 	} else {
-		const NC_ASM_EFFECT ncAsmEffect = [this, ambientSoundControl] {
-			if (ambientSoundSlider->isSliderDown()) {
-				return NC_ASM_EFFECT::ADJUSTMENT_IN_PROGRESS;
-			} else if (ambientSoundControl) {
-				return NC_ASM_EFFECT::ADJUSTMENT_COMPLETION;
-			} else {
-				return NC_ASM_EFFECT::OFF;
-			}
-		}();
-
-		const auto asmId = focusOnVoice ? ASM_ID::VOICE : ASM_ID::NORMAL;
-
-		const auto asmLevel = ambientSoundControl ? asmSliderValue : -1;
+		// TODO: re-add ADJUSTMENT_IN_PROGRESS, is it even needed?
 
 		statusLabel->setText(tr("Sending command"));
 
-		sendCommandFuture.setFromAsync([this, asmId, ncAsmEffect, asmLevel]() {
-			btWrap.sendCommand(CommandSerializer::serializeNcAndAsmSetting(
-				ncAsmEffect,
-				NC_ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
-				ASM_SETTING_TYPE::LEVEL_ADJUSTMENT,
-				asmId,
-				asmLevel));
+		sendCommandFuture.setFromAsync([this]() {
+			this->_headphones.setChanges();
 			QMetaObject::invokeMethod(
 				this, "on_commandSent", Qt::BlockingQueuedConnection);
 		});
 	}
-
 }
 
 void Dialog::on_ambientSoundSlider_valueChanged(int level) {
-	focusOnVoiceCheckBox->setEnabled(level >= MINIMUM_VOICE_FOCUS_STEP);
-	this->updateNcAsmState();
+	_headphones.setAsmLevel(level);
+	this->updateHeadphonesState();
 }
 
 void Dialog::on_deviceListWidget_itemSelectionChanged() {
@@ -156,13 +146,11 @@ void Dialog::on_deviceListWidget_itemSelectionChanged() {
 }
 
 void Dialog::on_ambientSoundControlCheckBox_stateChanged(int state) {
-	ambientSoundSlider->setEnabled(state == Qt::CheckState::Checked);
-	focusOnVoiceCheckBox->setEnabled(state == Qt::CheckState::Checked &&
-									 ambientSoundSlider->value() >=
-										 MINIMUM_VOICE_FOCUS_STEP);
-	this->updateNcAsmState();
+	_headphones.setAmbientSoundControl(state == Qt::CheckState::Checked);
+	this->updateHeadphonesState();
 }
 
 void Dialog::on_focusOnVoiceCheckBox_stateChanged() {
-	this->updateNcAsmState();
+	_headphones.setFocusOnVoice(focusOnVoiceCheckBox->isChecked());
+	this->updateHeadphonesState();
 }

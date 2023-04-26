@@ -1,9 +1,11 @@
 #pragma once
 
+#include "Headphones.h"
 #include "BluetoothWrapper.h"
 #include "SingleInstanceFuture.h"
 
 #include "ui_dialog.h"
+
 
 class Dialog : public QDialog, private Ui::Dialog {
 	Q_OBJECT
@@ -17,12 +19,14 @@ private:
 
 	bool isConnected = false;
 	BluetoothWrapper btWrap;
+	Headphones _headphones;
+
 	QMap<std::string, std::string> deviceMap;
 	QString selectedDevice;
 	SingleInstanceFuture<void> sendCommandFuture;
 	SingleInstanceFuture<void> connectionFuture;
 
-	void updateNcAsmState();
+	void updateHeadphonesState();
 
 private Q_SLOTS:
 	void on_ambientSoundControlCheckBox_stateChanged(int);
