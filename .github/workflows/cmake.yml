@@ -43,7 +43,9 @@ jobs:
       run: cmake -E make_directory ${{github.workspace}}/Client/build
 
     - name: Install Qt
-      uses: jurplel/install-qt-action@v2
+      uses: jurplel/install-qt-action@v3
+      with:
+        version: 6.5.*
 
     - name: Configure CMake
       # Use a bash shell so we can use the same syntax for environment variable
