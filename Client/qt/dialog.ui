@@ -27,6 +27,29 @@
    <item row="0" column="0">
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
+      <widget class="QFrame" name="deviceNameFrame">
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <item>
+         <widget class="QLabel" name="deviceNameLabel">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="text">
+           <string>Connected to %s</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="disconnectButton">
+          <property name="text">
+           <string>&amp;Disconnect</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
       <widget class="QGroupBox" name="deviceDiscoveryGroupBox">
        <property name="title">
         <string>Device Discovery</string>
@@ -66,7 +89,7 @@
      <item>
       <widget class="QFrame" name="controlsFrame">
        <property name="enabled">
-        <bool>true</bool>
+        <bool>false</bool>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_5">
         <item>
@@ -80,13 +103,6 @@
           <layout class="QGridLayout" name="gridLayout_3">
            <item row="1" column="0">
             <layout class="QVBoxLayout" name="verticalLayout_3">
-             <item>
-              <widget class="QLabel" name="label">
-               <property name="text">
-                <string>Control ambient sound for your headphones</string>
-               </property>
-              </widget>
-             </item>
              <item>
               <widget class="QCheckBox" name="ambientSoundControlCheckBox">
                <property name="minimumSize">
@@ -281,7 +297,7 @@
       </widget>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_7">
+      <layout class="QHBoxLayout" name="bottomBarLayout">
        <item>
         <widget class="QLabel" name="statusLabel">
          <property name="minimumSize">

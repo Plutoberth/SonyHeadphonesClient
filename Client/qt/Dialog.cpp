@@ -5,6 +5,9 @@
 Dialog::Dialog(BluetoothWrapper bt, QDialog *parent) : btWrap(std::move(bt)), _headphones(btWrap) {
 	setupUi(this);
 	setupConnectedDevices();
+
+	// Initially hidden
+	deviceNameFrame->setVisible(false);
 }
 
 void Dialog::setupConnectedDevices() {
@@ -24,20 +27,22 @@ void Dialog::on_refreshButton_clicked() {
 
 void Dialog::on_deviceDisconnected() {
 	statusLabel->setText(QStringLiteral(""));
-	deviceListWidget->setEnabled(true);
-	refreshButton->setEnabled(true);
+
 	controlsFrame->setEnabled(false);
-	connectButton->setText(tr("&Connect"));
-	this->isConnected = false;
+	deviceNameFrame->setVisible(false);
+
+	deviceDiscoveryGroupBox->setVisible(true);
+	deviceDiscoveryGroupBox->setEnabled(true);
 }
 
 void Dialog::on_deviceConnected() {
 	statusLabel->setText(QStringLiteral(""));
-	this->isConnected = true;
-	connectButton->setText(tr("&Disconnect"));
-	connectButton->setEnabled(true);
-	refreshButton->setEnabled(false);
-	deviceListWidget->setEnabled(false);
+
+	deviceDiscoveryGroupBox->setVisible(false);
+
+	deviceNameLabel->setText(tr("Connected to %1s").arg(selectedDevice));
+	deviceNameFrame->setVisible(true);
+
 	controlsFrame->setEnabled(true);
 
 	// when new widgets are added, add the values both here and in stateChanged 
@@ -51,43 +56,37 @@ void Dialog::on_deviceConnected() {
 }
 
 void Dialog::on_connectButton_clicked() {
-	if (connectionFuture.ready()) {
-		connectionFuture.get();
-	} else if (connectionFuture.valid()) {
-		// TODO: if something is in flight and this button was clicked, we
-		// should indicate we failed and terminate
-	}
+	_resetConnFuture();
 
 	// TODO: Add a timeout and fail connections
 	// TODO: Handle connections failing and report.
-	if (isConnected) {
-		statusLabel->setText(tr("Disconnecting..."));
 
-		connectButton->setEnabled(false);
+	statusLabel->setText(tr("Connecting..."));
+	deviceDiscoveryGroupBox->setEnabled(false);
+	deviceListWidget->clearSelection();
 
-		connectionFuture.setFromAsync([this]() {
-			btWrap.disconnect();
-			QMetaObject::invokeMethod(
-				this, "on_deviceDisconnected", Qt::BlockingQueuedConnection);
-		});
-	} else {
-		statusLabel->setText(tr("Connecting"));
-		connectButton->setEnabled(false);
-		refreshButton->setEnabled(false);
-		deviceListWidget->setEnabled(false);
-		deviceListWidget->clearSelection();
+	auto selectedDevice = this->selectedDevice.toStdString();
 
-		label->setText(
-			tr("Control ambient sound for your %1s").arg(selectedDevice));
+	connectionFuture.setFromAsync([this]() {
+		btWrap.connect(deviceMap[this->selectedDevice.toStdString()]);
 
-		auto selectedDevice = this->selectedDevice.toStdString();
-		connectionFuture.setFromAsync([this]() {
-			btWrap.connect(deviceMap[this->selectedDevice.toStdString()]);
+		QMetaObject::invokeMethod(
+			this, "on_deviceConnected", Qt::BlockingQueuedConnection);
+	});
+}
 
-			QMetaObject::invokeMethod(
-				this, "on_deviceConnected", Qt::BlockingQueuedConnection);
-		});
-	}
+void Dialog::on_disconnectButton_clicked() {
+	_resetConnFuture();
+
+	statusLabel->setText(tr("Disconnecting..."));
+
+	connectButton->setEnabled(false);
+
+	connectionFuture.setFromAsync([this]() {
+		btWrap.disconnect();
+		QMetaObject::invokeMethod(
+			this, "on_deviceDisconnected", Qt::BlockingQueuedConnection);
+	});
 }
 
 void Dialog::on_commandSent() {
@@ -129,6 +128,15 @@ void Dialog::updateHeadphonesState() {
 			QMetaObject::invokeMethod(
 				this, "on_commandSent", Qt::BlockingQueuedConnection);
 		});
+	}
+}
+
+void Dialog::_resetConnFuture() {
+	if (connectionFuture.ready()) {
+		connectionFuture.get();
+	} else if (connectionFuture.valid()) {
+		// TODO: if something is in flight and this button was clicked, we
+		// should indicate we failed and terminate
 	}
 }
 

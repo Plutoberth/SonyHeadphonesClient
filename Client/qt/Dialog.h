@@ -17,7 +17,6 @@ public:
 private:
 	void setupConnectedDevices();
 
-	bool isConnected = false;
 	BluetoothWrapper btWrap;
 	Headphones _headphones;
 
@@ -28,13 +27,19 @@ private:
 
 	void updateHeadphonesState();
 
+	void _resetConnFuture();
+
 private Q_SLOTS:
+	
+	void on_disconnectButton_clicked();
+	void on_connectButton_clicked();
+	void on_refreshButton_clicked();
+
 	void on_ambientSoundControlCheckBox_stateChanged(int);
 	void on_ambientSoundSlider_valueChanged(int);
-	void on_connectButton_clicked();
+
 	void on_deviceListWidget_itemSelectionChanged();
 	void on_focusOnVoiceCheckBox_stateChanged();
-	void on_refreshButton_clicked();
 
 	void on_deviceConnected();
 	void on_deviceDisconnected();

@@ -16,7 +16,7 @@ if(NOT APPLE)
   qt_standard_project_setup()
   target_link_libraries(SonyHeadphonesClient PRIVATE Qt6::Widgets)
 
-  target_sources(SonyHeadphonesClient PRIVATE qt/Dialog.cpp qt/main.cpp)
+  target_sources(SonyHeadphonesClient PRIVATE qt/Dialog.cpp qt/main.cpp qt/dialog.ui)
 
   add_definitions(
     -DQT_NO_CAST_FROM_ASCII
