@@ -8,7 +8,8 @@ inline constexpr char END_MARKER{ 60 };
 
 inline constexpr auto MAC_ADDR_STR_SIZE = 17;
 
-inline constexpr auto SERVICE_UUID = "96CC203E-5068-46ad-B32D-E316F5E069BA";
+inline constexpr auto SERVICE_UUID = "96CC203E-5068-46AD-B32D-E316F5E069BA";
+inline constexpr auto SERVICE_UUID_LOWER = "96cc203e-5068-46ad-b32d-e316f5e069ba";
 inline unsigned char SERVICE_UUID_IN_BYTES[] = { // this is the SERVICE_UUID but in bytes
 	0x96, 0xcc, 0x20, 0x3e, 0x50, 0x68, 0x46, 0xad,
 	0xb3, 0x2d, 0xe3, 0x16, 0xf5, 0xe0, 0x69, 0xba

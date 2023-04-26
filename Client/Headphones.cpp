@@ -20,7 +20,8 @@ bool Headphones::getAmbientSoundControl()
 
 bool Headphones::isFocusOnVoiceAvailable()
 {
-	return this->_ambientSoundControl.current && this->_asmLevel.current > MINIMUM_VOICE_FOCUS_STEP;
+	return this->_conn.isConnected() && this->_ambientSoundControl.current &&
+		   this->_asmLevel.current > MINIMUM_VOICE_FOCUS_STEP;
 }
 
 void Headphones::setFocusOnVoice(bool val)
@@ -36,7 +37,7 @@ bool Headphones::getFocusOnVoice()
 
 bool Headphones::isSetAsmLevelAvailable()
 {
-	return this->_ambientSoundControl.current;
+	return this->_conn.isConnected() && this->_ambientSoundControl.current;
 }
 
 void Headphones::setAsmLevel(int val)
@@ -72,8 +73,11 @@ int Headphones::getVptType()
 	return this->_vptType.current;
 }
 
-bool Headphones::isChanged()
-{
+bool Headphones::isConnected() {
+	return _conn.isConnected();
+}
+
+bool Headphones::isChanged() {
 	return !(this->_ambientSoundControl.isFulfilled() && this->_asmLevel.isFulfilled() && this->_focusOnVoice.isFulfilled() && this->_surroundPosition.isFulfilled() && this->_vptType.isFulfilled());
 }
 

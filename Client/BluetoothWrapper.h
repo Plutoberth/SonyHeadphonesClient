@@ -7,6 +7,7 @@
 #include <vector>
 #include <string>
 #include <mutex>
+#include <sstream>
 
 
 //Thread-safety: This class is thread-safe.

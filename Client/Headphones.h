@@ -34,6 +34,7 @@ public:
 	void setVptType(int val);
 	int getVptType();
 	
+	bool isConnected();
 	bool isChanged();
 	void setChanges();
 private:

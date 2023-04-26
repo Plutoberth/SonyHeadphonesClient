@@ -7,6 +7,7 @@ on:
   pull_request:
     branches:
     - master
+    - qt
 
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
@@ -21,7 +22,7 @@ jobs:
           - os: ubuntu-latest
             binary_path: Client/build/SonyHeadphonesClient
             artifact_name: "SonyHeadphonesClient-linux-x64"
-            script: "sudo apt-get update && sudo apt-get install libbluetooth-dev libglew-dev libglfw3-dev libdbus-1-dev"
+            script: "sudo apt-get update && sudo apt-get install libbluetooth-dev libdbus-1-dev"
           - os: windows-latest
             binary_path: Client/build/Release/SonyHeadphonesClient.exe
             artifact_name: "SonyHeadphonesClient-win-x64.exe"
@@ -40,6 +41,11 @@ jobs:
       # Some projects don't allow in-source building, so create a separate build directory
       # We'll use this as our working directory for all subsequent commands
       run: cmake -E make_directory ${{github.workspace}}/Client/build
+
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v3
+      with:
+        version: 6.5.*
 
     - name: Configure CMake
       # Use a bash shell so we can use the same syntax for environment variable
@@ -64,5 +70,3 @@ jobs:
         # A file, directory or wildcard pattern that describes what to upload
         path: ${{github.workspace}}/${{matrix.binary_path}}
         # The desired behavior if no files are found using the provided path.
-
-

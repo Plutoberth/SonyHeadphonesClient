@@ -1,8 +1,10 @@
+#import <Foundation/Foundation.h>
+
 #include "MacOSBluetoothConnector.h"
 
 MacOSBluetoothConnector::MacOSBluetoothConnector()
 {
-    
+
 }
 MacOSBluetoothConnector::~MacOSBluetoothConnector()
 {
@@ -27,10 +29,10 @@ MacOSBluetoothConnector::~MacOSBluetoothConnector()
 -(void)rfcommChannelData:(IOBluetoothRFCOMMChannel *)rfcommChannel data:(void *)dataPointer length:(size_t)dataLength
 {
     std::lock_guard<std::mutex> g(delegateCPP->receiveDataMutex);
-    
+
     unsigned char* buffer = (unsigned char*)dataPointer;
     std::vector<unsigned char> vectorBuffer(buffer, buffer+dataLength);
-    
+
     delegateCPP->receivedBytes.push_back(vectorBuffer);
     delegateCPP->receiveDataConditionVariable.notify_one();
 }
@@ -52,7 +54,7 @@ void MacOSBluetoothConnector::connectToMac(MacOSBluetoothConnector* macOSBluetoo
     // create new channel
     IOBluetoothRFCOMMChannel *channel = [[IOBluetoothRFCOMMChannel alloc] init];
     // create sppServiceid
-    IOBluetoothSDPUUID *sppServiceUUID = [IOBluetoothSDPUUID uuidWithBytes:(void*)SERVICE_UUID_IN_BYTES length: 16];
+    IOBluetoothSDPUUID *sppServiceUUID = [IOBluetoothSDPUUID uuidWithBytes:SERVICE_UUID_IN_BYTES length:sizeof(SERVICE_UUID_IN_BYTES)];
     // get sppServiceRecord
     IOBluetoothSDPServiceRecord *sppServiceRecord = [device getServiceRecordForUUID:sppServiceUUID];
     // get rfcommChannelID from sppServiceRecord
@@ -70,9 +72,9 @@ void MacOSBluetoothConnector::connectToMac(MacOSBluetoothConnector* macOSBluetoo
     }
     // store the channel
     macOSBluetoothConnector->rfcommchannel = (__bridge void*) channel;
-    
+
     macOSBluetoothConnector->running = true;
-    
+
     // tell the other tread that we are done connecting
     connectPromise.set_value();
 
@@ -90,7 +92,7 @@ void MacOSBluetoothConnector::connectToMac(MacOSBluetoothConnector* macOSBluetoo
 }
 void MacOSBluetoothConnector::connect(const std::string& addrStr){
     // convert mac address to nsstring
-    NSString *addressNSString = [NSString stringWithCString:addrStr.c_str() encoding:[NSString defaultCStringEncoding]];
+    NSString *addressNSString = [NSString stringWithCString:addrStr.c_str() encoding:NSString.defaultCStringEncoding];
     // get device based on mac address
     IOBluetoothDevice *device = [IOBluetoothDevice deviceWithAddressString:addressNSString];
     // if device is not connected
@@ -103,7 +105,7 @@ void MacOSBluetoothConnector::connect(const std::string& addrStr){
     // store the device in a variable
     rfcommDevice = (__bridge void*) device;
     uthread = std::thread(MacOSBluetoothConnector::connectToMac, this, std::move(connectPromise));
-    
+
     // wait till the device is connected
     connectFuture.get();
 }
@@ -113,33 +115,37 @@ int MacOSBluetoothConnector::recv(char* buf, size_t length)
     // wait for newly received data
     std::unique_lock<std::mutex> g(receiveDataMutex);
     receiveDataConditionVariable.wait(g, [this]{ return !receivedBytes.empty(); });
-    
+
     // fill the buf with the new data
     std::vector<unsigned char> receivedVector = receivedBytes.front();
     receivedBytes.pop_front();
-    
+
     size_t lengthCopied = std::min(length, receivedVector.size());
 
     // copy the first amount of bytes
     std::memcpy(buf, receivedVector.data(), lengthCopied);
-    
+
     // too much data, save it for next time
     if (receivedVector.size() > length){
         receivedVector.erase(receivedVector.begin(), receivedVector.begin() + lengthCopied);
         receivedBytes.push_front(receivedVector);
     }
-    
+
     return (int)lengthCopied;
 }
 
 std::vector<BluetoothDevice> MacOSBluetoothConnector::getConnectedDevices()
 {
+    IOBluetoothSDPUUID *uuid = [IOBluetoothSDPUUID uuidWithBytes:SERVICE_UUID_IN_BYTES length:sizeof(SERVICE_UUID_IN_BYTES)];
     // create the output vector
     std::vector<BluetoothDevice> res;
     // loop through the paired devices (also includes non paired devices for some reason)
-    for (IOBluetoothDevice* device in [IOBluetoothDevice pairedDevices]) {
+    for (IOBluetoothDevice* device in IOBluetoothDevice.pairedDevices) {
+        if (![device getServiceRecordForUUID:uuid]) {
+          continue;
+        }
         // check if device is connected
-        if ([device isConnected]) {
+        if (device.isConnected) {
             BluetoothDevice dev;
             // save the mac address and name
             dev.mac = [[device addressString] UTF8String];
@@ -148,7 +154,7 @@ std::vector<BluetoothDevice> MacOSBluetoothConnector::getConnectedDevices()
             res.push_back(dev);
         }
     }
-    
+
     return res;
 }
 
@@ -165,7 +171,7 @@ void MacOSBluetoothConnector::disconnect() noexcept
 void MacOSBluetoothConnector::closeConnection() {
     // get the channel
     IOBluetoothRFCOMMChannel *chan = (__bridge IOBluetoothRFCOMMChannel*) rfcommchannel;
-    [chan setDelegate: nil];
+    chan.delegate = nil;
     // close the channel
     [chan closeChannel];
 }

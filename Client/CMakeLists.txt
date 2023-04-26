@@ -4,104 +4,69 @@ cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
 set(CMAKE_CXX_STANDARD 20)
 
 find_package(Threads REQUIRED)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOUIC ON)
 
-add_executable(SonyHeadphonesClient)
+add_executable(SonyHeadphonesClient BluetoothWrapper.cpp ByteMagic.cpp
+                                    CommandSerializer.cpp TimedMessageQueue.cpp
+                                    Headphones.cpp)
 
-add_definitions(-D__HEADPHONES_APP_VERSION__="1.3.1")
+if(NOT APPLE)
+  find_package(Qt6 REQUIRED COMPONENTS Widgets)
+  qt_standard_project_setup()
+  target_link_libraries(SonyHeadphonesClient PRIVATE Qt6::Widgets)
 
-target_sources(SonyHeadphonesClient
-    PRIVATE BluetoothWrapper.cpp
-    ByteMagic.cpp
-    CommandSerializer.cpp
-    TimedMessageQueue.cpp
-    CrossPlatformGUI.cpp "Headphones.cpp")
+  target_sources(SonyHeadphonesClient PRIVATE qt/Dialog.cpp qt/main.cpp qt/dialog.ui)
 
-target_include_directories (SonyHeadphonesClient
-    PRIVATE ${CMAKE_SOURCE_DIR}
-)
-
-if(UNIX AND NOT APPLE)
-    set(LINUX TRUE)
+  add_definitions(
+    -DQT_NO_CAST_FROM_ASCII
+    -DQT_NO_CAST_FROM_BYTEARRAY
+    -DQT_NO_CAST_TO_ASCII
+    -DQT_NO_SIGNALS_SLOTS_KEYWORDS
+    -DQT_NO_URL_CAST_FROM_STRING
+    -DQT_STRICT_ITERATORS
+    -DQT_USE_FAST_OPERATOR_PLUS
+    -DQT_USE_QSTRINGBUILDER)
 endif()
 
-if (WIN32 OR LINUX)
-    set (DEAR_IMGUI TRUE)
-endif()
+if(NOT APPLE)
+  if(UNIX)
+    set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/linux)
 
-if (DEAR_IMGUI)
-    target_sources(SonyHeadphonesClient
-        PRIVATE CrossPlatformGUI.cpp
-        imgui/imgui.cpp
-        imgui/imgui_draw.cpp
-        imgui/imgui_tables.cpp
-        imgui/imgui_widgets.cpp
-        CascadiaCodeFont.cpp
-    )
-
-    target_include_directories (SonyHeadphonesClient
-        PRIVATE ${CMAKE_SOURCE_DIR}/imgui
-    )
-endif ()
-
-if (LINUX)
-	target_sources(SonyHeadphonesClient
-		PRIVATE linux/DBusHelper.cpp
-		linux/LinuxBluetoothConnector.cpp
-		linux/LinuxGUI.cpp
-        linux/main.cpp
-        imgui/backends/imgui_impl_glfw.cpp
-        imgui/backends/imgui_impl_opengl3.cpp
-    )
-
-    set (CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/linux)
-
-    set (OpenGL_GL_PREFERENCE GLVND)
-	
     find_package(DBus REQUIRED)
 
-    find_package(GLEW REQUIRED)
+    if(NOT DBUS_FOUND)
+      message(FATAL_ERROR "Didn't find dbus. For Debian based systems, use:"
+                          "sudo apt install libdbus-1-dev")
+    endif()
 
-    find_package(glfw3 REQUIRED)
+    target_sources(
+      SonyHeadphonesClient PRIVATE linux/DBusHelper.cpp
+                                   linux/LinuxBluetoothConnector.cpp)
 
-    find_package(OpenGL REQUIRED)
-
-    if ((NOT DBUS_FOUND) OR (NOT GLEW_FOUND) OR (NOT glfw3_FOUND) OR (NOT OPENGL_FOUND))
-        message ( FATAL_ERROR 
-        "Didn't find one of the packages. For Debian based systems, use:"
-        "sudo apt install libbluetooth-dev libglew-dev libglfw3-dev libdbus-1-dev" )
-    endif ()
-
+    target_link_libraries(SonyHeadphonesClient PRIVATE bluetooth
+                                                       ${DBUS_LIBRARIES})
     target_include_directories(SonyHeadphonesClient
-        PRIVATE ${DBUS_INCLUDE_DIRS}
-        ${OPENGL_INCLUDE_DIRS}
-    )
-
-    target_link_libraries(SonyHeadphonesClient
-        PRIVATE ${DBUS_LIBRARIES}
-        GLEW::GLEW 
-        glfw
-        bluetooth
-        OpenGL::GL
-    )
-
-endif ()
-
-if (WIN32)
-    ADD_DEFINITIONS(-DUNICODE)
-
+                               PRIVATE ${DBUS_INCLUDE_DIRS})
+  elseif(WIN32)
+    # See WindowsBluetoothConnector.h for linking pragmas
+    add_compile_definitions(UNICODE)
     target_sources(SonyHeadphonesClient
-        PRIVATE windows/WindowsGUI.cpp
-        windows/main.cpp
-        windows/WindowsBluetoothConnector.cpp
-        imgui/backends/imgui_impl_dx11.cpp
-        imgui/backends/imgui_impl_win32.cpp
-    )
+                   PRIVATE windows/WindowsBluetoothConnector.cpp)
+  endif()
+elseif(APPLE)
+  target_sources(SonyHeadphonesClient PRIVATE macos/MacOSBluetoothConnector.mm)
 
-    target_link_libraries(SonyHeadphonesClient
-        PRIVATE d3d11
-    )
-endif ()
+  find_library(BT_FRAMEWORK IOBluetooth REQUIRED)
+  find_library(BT_UI_FRAMEWORK IOBluetoothUI REQUIRED)
+  find_library(COCOA_FRAMEWORK Cocoa REQUIRED)
 
-target_link_libraries(SonyHeadphonesClient
-    PRIVATE Threads::Threads
-)
+  target_link_libraries(
+    SonyHeadphonesClient PRIVATE ${BT_UI_FRAMEWORK} ${BT_FRAMEWORK}
+                                 ${COCOA_FRAMEWORK})
+endif()
+
+target_include_directories(SonyHeadphonesClient
+                           PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+
+target_link_libraries(SonyHeadphonesClient PRIVATE Threads::Threads)
