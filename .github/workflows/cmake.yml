@@ -29,10 +29,10 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         submodules: true
-    
+
     - name: Download Packages
       run: ${{ matrix.script }}
 
@@ -46,8 +46,8 @@ jobs:
       # access regardless of the host operating system
       shell: bash
       working-directory: ${{github.workspace}}/Client/build
-      # Note the current convention is to use the -S and -B options here to specify source 
-      # and build directories, but this is only available with CMake 3.13 and higher.  
+      # Note the current convention is to use the -S and -B options here to specify source
+      # and build directories, but this is only available with CMake 3.13 and higher.
       # The CMake binaries on the Github Actions machines are (as of this writing) 3.12
       run: cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE
 
@@ -57,7 +57,7 @@ jobs:
       # Execute the build.  You can specify a specific target with "--target <NAME>"
       run: cmake --build . --config $BUILD_TYPE
     - name: Upload a Build Artifact
-      uses: actions/upload-artifact@v2.2.2
+      uses: actions/upload-artifact@v3
       with:
         # Artifact name
         name: ${{ matrix.artifact_name }}
@@ -65,4 +65,4 @@ jobs:
         path: ${{github.workspace}}/${{matrix.binary_path}}
         # The desired behavior if no files are found using the provided path.
 
-    
+
