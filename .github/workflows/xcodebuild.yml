@@ -20,7 +20,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v2
       with:
         submodules: true
 
@@ -37,14 +37,14 @@ jobs:
       working-directory: ${{github.workspace}}/Client/build
       # Exports the archive to a .app file
       run: xcodebuild -exportArchive -archivePath ./archive.xcarchive -exportPath ./ -exportOptionsPlist ../macos/exportOptions.plist | xcpretty
-
+      
     - name: Zip the exported file
       working-directory: ${{github.workspace}}/Client/build
       # Zip the application for easier downloading
       run: zip -r SonyHeadphonesClient.zip SonyHeadphonesClient.app
-
+      
     - name: Upload the zipped application
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v2.2.2
       with:
         # Artifact name
         name: ${{ matrix.artifact_name }}
@@ -52,4 +52,4 @@ jobs:
         path: ${{github.workspace}}/${{matrix.binary_path}}
         # The desired behavior if no files are found using the provided path.
 
-
+    
