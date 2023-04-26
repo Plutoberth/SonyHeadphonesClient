@@ -7,8 +7,8 @@
 
   This project features a PC alternative for the mobile-only Sony Headphones app.
   <br/><br/>
-  <img width="650" src="static/showcase.gif" alt="Program Showcase"><p> <br/>
-  
+  <img width="556" src="static/showcase.gif" alt="Program Showcase"><p> <br/>
+
   [![macOS](https://github.com/plutoberth/sonyheadphonesclient/actions/workflows/xcodebuild.yml/badge.svg)](https://github.com/Plutoberth/SonyHeadphonesClient/actions/workflows/xcodebuild.yml)
   [![Linux & Windows](https://github.com/plutoberth/sonyheadphonesclient/actions/workflows/cmake.yml/badge.svg)](https://github.com/Plutoberth/SonyHeadphonesClient/actions/workflows/cmake.yml)
   [![Github all releases](https://img.shields.io/github/downloads/Plutoberth/SonyHeadphonesClient/total.svg)](https://GitHub.com/Plutoberth/SonyHeadphonesClient/releases/)
@@ -48,16 +48,16 @@ So I reverse-engineered the application (for intercompatibility purposes, of cou
 
 - [x] Ambient Sound Control
 - [x] Disabling noise cancelling
+- [x] Virtual Sound - VPT and Sound Position
 - [ ] Display battery life and fetch existing settings from device
 - [ ] Equalizer
-
-### TODO: ADD SCREENSHOTS
 
 ## Supported Platforms And Headsets
 
 * WH-1000-XM3: Fully works and supported
-* [WH-1000-XM4](https://github.com/Plutoberth/SonyHeadphonesClient/issues/29#issuecomment-792459162): Partially works, more work is needed 
+* [WH-1000-XM4](https://github.com/Plutoberth/SonyHeadphonesClient/issues/29#issuecomment-792459162): Partially works, more work is needed
 * [MDR-XB950BT](https://github.com/Plutoberth/SonyHeadphonesClient/issues/29#issuecomment-804292227): Fully works
+* And more! Check out [Headset Reports](https://github.com/Plutoberth/SonyHeadphonesClient/issues/29)
 
 #### **Please report about your experiences using other Sony headsets in the [Headset Reports](https://github.com/Plutoberth/SonyHeadphonesClient/issues/29) issue.**
 

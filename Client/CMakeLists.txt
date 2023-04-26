@@ -8,7 +8,8 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 
 add_executable(SonyHeadphonesClient BluetoothWrapper.cpp ByteMagic.cpp
-                                    CommandSerializer.cpp TimedMessageQueue.cpp)
+                                    CommandSerializer.cpp TimedMessageQueue.cpp
+                                    Headphones.cpp)
 
 if(NOT APPLE)
   find_package(Qt6 REQUIRED COMPONENTS Widgets)

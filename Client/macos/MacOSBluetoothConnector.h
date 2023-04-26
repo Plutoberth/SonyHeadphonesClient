@@ -28,6 +28,8 @@ public:
     std::mutex receiveDataMutex;
     std::condition_variable receiveDataConditionVariable;
     std::atomic<bool> running = false;
+    std::mutex disconnectionMutex;
+    std::condition_variable disconnectionConditionVariable;
     
 private:
     void *rfcommDevice;
