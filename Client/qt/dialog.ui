@@ -167,7 +167,7 @@
                 <bool>false</bool>
                </property>
                <property name="text">
-                <string>&amp;Focus on Voice</string>
+                <string>&amp;Voice Passthrough</string>
                </property>
                <property name="checkable">
                 <bool>true</bool>
