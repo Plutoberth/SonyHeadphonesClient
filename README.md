@@ -84,7 +84,7 @@ Sniffing messages - See [this helpful comment](https://github.com/Plutoberth/Son
 
 ### Compiling
 
-#### Windows & Linux
+#### Windows
 
 ```
 cd Client
@@ -94,10 +94,17 @@ cmake ..
 cmake --build .
 ```
 
-Linux Dependencies (Debian/Ubuntu):
+#### Linux
+
+Debian / Ubuntu:
 
 ```bash
 sudo apt install libbluetooth-dev libglew-dev libglfw3-dev libdbus-1-dev
+```
+
+Fedora:
+```bash
+sudo dnf install bluez-libs-devel glew-devel glfw-devel dbus-devel
 ```
 
 #### macOS
