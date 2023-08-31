@@ -31,6 +31,11 @@ public:
 	void setOptimizerState(OPTIMIZER_STATE val);
 	OPTIMIZER_STATE getOptimizerState();
 
+	void setS2CToggle(S2C_TOGGLE val);
+	void setS2COptions(int sensitivity, bool voice, int offTime);
+	S2C_TOGGLE getS2CToggle();
+	unsigned int getS2COptions();
+
 	void setSurroundPosition(SOUND_POSITION_PRESET val);
 	SOUND_POSITION_PRESET getSurroundPosition();
 
@@ -48,6 +53,9 @@ private:
 	Property<int> _vptType = { 0 };
 
 	Property<OPTIMIZER_STATE> _optimizerState = { OPTIMIZER_STATE::IDLE };
+
+	Property<S2C_TOGGLE> _speakToChat = { S2C_TOGGLE::INACTIVE };
+	Property<unsigned int> _s2cOptions = { 0 };
 	
 	std::mutex _propertyMtx;
 

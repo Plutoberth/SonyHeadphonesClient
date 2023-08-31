@@ -213,5 +213,26 @@ namespace CommandSerializer
 		return ret;
 	}
 
+	Buffer serializeXM4SpeakToChat(S2C_TOGGLE s2cState)
+	{
+		Buffer ret;
+		ret.push_back(static_cast<unsigned char>(COMMAND_TYPE::XM4_S2C_TOGGLE_PARAM));
+		ret.push_back(static_cast<unsigned char>(0x05));
+		ret.push_back(static_cast<unsigned char>(0x01));
+		ret.push_back(static_cast<unsigned char>(s2cState));
+		return ret;
+	}
+
+	Buffer serializeXM4_S2C_Options(unsigned char sensitivity, unsigned char voice, unsigned char offTime)
+	{
+		Buffer ret;
+		ret.push_back(static_cast<unsigned char>(COMMAND_TYPE::XM4_S2C_OPTIONS_PARAM));
+		ret.push_back(static_cast<unsigned char>(0x05));
+		ret.push_back(static_cast<unsigned char>(0x00));
+		ret.push_back(static_cast<unsigned char>(sensitivity));
+		ret.push_back(static_cast<unsigned char>(voice));
+		ret.push_back(static_cast<unsigned char>(offTime));
+		return ret;
+	}
 }
 

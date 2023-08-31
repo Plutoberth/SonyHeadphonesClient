@@ -25,10 +25,11 @@ bool CrossPlatformGUI::performGUIPass()
 
 		if (this->_bt.isConnected())
 		{
-			ImGui::Spacing();
+			// ImGui::Spacing();
+			ImGui::Separator();
 			this->_drawASMControls();
 			if (this->_bt.isConnected() && (std::string(this->_connectedDevice.name.c_str()) == "WH-1000XM4")){
-				ImGui::Separator();
+				this->_drawSpeakToChat();
 				this->_drawOptimizerButton();
 			}
 			else {
@@ -236,6 +237,52 @@ void CrossPlatformGUI::_drawOptimizerButton()
 			this->_headphones.setOptimizerState(OPTIMIZER_STATE::IDLE);
 		}
 	}
+}
+
+void CrossPlatformGUI::_drawSpeakToChat()
+{
+	enum Sensitivity { Sens_Auto, Sens_High, Sens_Low, Sens_count};
+	const char* Sens_hints[Sens_count] = { "Auto", "High", "Low" };
+
+	enum AutoOff { Time_Short, Time_Std, Time_Long, Time_Inf, Time_count};
+	const char* Time_hints[Time_count] = { "Short", "Standard", "Long", "Off" };
+
+	static bool S2Ctoggle_check = true;
+	static int S2C_Sens = Sens_Low;
+	static bool S2C_Voice = 0;
+	static int S2C_AutoOff = Time_Short;
+	
+	const char* Sens_name = (S2C_Sens >= 0 && S2C_Sens < Sens_count) ? Sens_hints[S2C_Sens] : "Unknown";
+	const char* Time_name = (S2C_AutoOff >= 0 && S2C_AutoOff < Time_count) ? Time_hints[S2C_AutoOff] : "Unknown";
+	// S2Ctoggle = (this->_headphones.getS2CToggle() == S2C_TOGGLE::ACTIVE) ? true : false;
+	// S2C_Sens  = (this->_headphones.getS2COptions() & 0x00ff0000)>>16;
+	// S2C_Voice = (this->_headphones.getS2COptions() & 0x0000ff00)>>8;
+	// S2C_AutoOff = (this->_headphones.getS2COptions() & 0x000000ff);
+
+	if (ImGui::CollapsingHeader("Speak To Chat Controls", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		ImGui::Checkbox("Speak To Chat", &S2Ctoggle_check);
+
+		if (S2Ctoggle_check)
+		{
+			if (S2Ctoggle_check){
+				// ImGui::SameLine();
+				ImGui::SliderInt("Speak to chat sensitivity", &S2C_Sens, 0, Sens_count - 1, Sens_name);
+				ImGui::SliderInt("Speak to chat Auto close", &S2C_AutoOff, 0, Time_count - 1, Time_name);
+				ImGui::Checkbox("Voice passthrough", &S2C_Voice);
+			}
+			else {
+			}
+		}
+	}
+
+	if (S2Ctoggle_check)
+		this->_headphones.setS2CToggle(S2C_TOGGLE::ACTIVE);
+	else
+		this->_headphones.setS2CToggle(S2C_TOGGLE::INACTIVE);
+
+	this->_headphones.setS2COptions(S2C_Sens, S2C_Voice, S2C_AutoOff);
+
 }
 
 void CrossPlatformGUI::_setHeadphoneSettings() {

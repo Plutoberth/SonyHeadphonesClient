@@ -22,6 +22,7 @@ public:
 	BluetoothWrapper& operator=(BluetoothWrapper&& other) noexcept;
 
 	int sendCommand(const std::vector<char>& bytes);
+	int sendCommand(const std::vector<char>& bytes, DATA_TYPE dtype);
 
 	bool isConnected() noexcept;
 	//Try to connect to the headphones

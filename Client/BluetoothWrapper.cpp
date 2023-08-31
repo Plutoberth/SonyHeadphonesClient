@@ -33,6 +33,17 @@ int BluetoothWrapper::sendCommand(const std::vector<char>& bytes)
 	return bytesSent;
 }
 
+int BluetoothWrapper::sendCommand(const std::vector<char>& bytes, DATA_TYPE dtype)
+{
+	std::lock_guard guard(this->_connectorMtx);
+	auto data = CommandSerializer::packageDataForBt(bytes, dtype, this->_seqNumber++);
+	auto bytesSent = this->_connector->send(data.data(), data.size());
+
+	this->_waitForAck();
+
+	return bytesSent;
+}
+
 bool BluetoothWrapper::isConnected() noexcept
 {
 	return this->_connector->isConnected();

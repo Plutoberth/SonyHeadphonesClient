@@ -11,6 +11,7 @@
 #include "CascadiaCodeFont.h"
 #include "Headphones.h"
 
+#include <iostream>
 #include <future>
 #include <string>
 
@@ -38,6 +39,7 @@ private:
 	void _drawSurroundControls();
 	void _setHeadphoneSettings();
 	void _drawOptimizerButton();
+	void _drawSpeakToChat();
 
 	BluetoothDevice _connectedDevice;
 	BluetoothWrapper _bt;

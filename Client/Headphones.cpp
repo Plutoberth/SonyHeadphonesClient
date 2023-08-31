@@ -61,6 +61,30 @@ OPTIMIZER_STATE Headphones::getOptimizerState()
 	return this->_optimizerState.current;
 }
 
+void Headphones::setS2CToggle(S2C_TOGGLE val)
+{
+	std::lock_guard guard(this->_propertyMtx);
+	this->_speakToChat.desired = val;
+}
+
+void Headphones::setS2COptions(int sensitivity, bool voice, int offTime)
+{
+	unsigned int sens = (unsigned int) sensitivity;
+	unsigned int time = (unsigned int) offTime;
+	std::lock_guard guard(this->_propertyMtx);
+	this->_s2cOptions.desired = { (sens << 16) | (voice << 8) | (time) };
+}
+
+S2C_TOGGLE Headphones::getS2CToggle()
+{
+	return this->_speakToChat.current;
+}
+
+unsigned int Headphones::getS2COptions()
+{
+	return this->_s2cOptions.current;
+}
+
 void Headphones::setSurroundPosition(SOUND_POSITION_PRESET val)
 {
 	std::lock_guard guard(this->_propertyMtx);
@@ -90,7 +114,9 @@ bool Headphones::isChanged()
 		this->_focusOnVoice.isFulfilled() &&
 		this->_surroundPosition.isFulfilled() &&
 		this->_vptType.isFulfilled() &&
-		this->_optimizerState.isFulfilled()
+		this->_optimizerState.isFulfilled() &&
+		this->_speakToChat.isFulfilled() &&
+		this->_s2cOptions.isFulfilled()
 		);
 }
 
@@ -106,6 +132,35 @@ void Headphones::setChanges()
 
 		std::lock_guard guard(this->_propertyMtx);
 		this->_optimizerState.fulfill();
+	}
+
+	if (!(this->_speakToChat.isFulfilled()))
+	{
+		auto s2cState = this->_speakToChat.desired;
+
+		this->_conn.sendCommand(CommandSerializer::serializeXM4SpeakToChat(
+			s2cState
+		));
+
+		std::lock_guard guard(this->_propertyMtx);
+		this->_speakToChat.fulfill();
+	}
+
+	if (!(this->_s2cOptions.isFulfilled()))
+	{
+		auto s2cOptions = this->_s2cOptions.desired;
+		unsigned char sensitivity = (unsigned char) (s2cOptions >> 16) & 0xff;
+		unsigned char voice = (unsigned char) (s2cOptions >> 8) & 0xff;
+		unsigned char offTime = (unsigned char) (s2cOptions) & 0xff;
+
+		this->_conn.sendCommand(CommandSerializer::serializeXM4_S2C_Options(
+			sensitivity,
+			voice,
+			offTime
+		));
+
+		std::lock_guard guard(this->_propertyMtx);
+		this->_s2cOptions.fulfill();
 	}
 
 	if (!(this->_ambientSoundControl.isFulfilled() && this->_focusOnVoice.isFulfilled() && this->_asmLevel.isFulfilled()))

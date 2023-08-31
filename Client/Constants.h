@@ -87,7 +87,9 @@ enum class COMMAND_TYPE : signed char
 {
 	VPT_SET_PARAM = 72,
 	NCASM_SET_PARAM = 104,
-	XM4_OPTIMIZER_PARAM = (signed char) 0x84
+	XM4_OPTIMIZER_PARAM = (signed char) 0x84,
+	XM4_S2C_TOGGLE_PARAM = (signed char) 0xf8,
+	XM4_S2C_OPTIONS_PARAM = (signed char) 0xfc,
 };
 
 enum class VPT_PRESET_ID : signed char
@@ -135,3 +137,10 @@ enum class OPTIMIZER_STATE : signed char
 	IDLE = 0,
 	OPTIMIZING = 1
 };
+
+enum class S2C_TOGGLE : signed char
+{
+	ACTIVE = 1,
+	INACTIVE = 0
+};
+
