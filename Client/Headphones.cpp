@@ -50,6 +50,17 @@ int Headphones::getAsmLevel()
 	return this->_asmLevel.current;
 }
 
+void Headphones::setOptimizerState(OPTIMIZER_STATE val)
+{
+	std::lock_guard guard(this->_propertyMtx);
+	this->_optimizerState.desired = val;
+}
+
+OPTIMIZER_STATE Headphones::getOptimizerState()
+{
+	return this->_optimizerState.current;
+}
+
 void Headphones::setSurroundPosition(SOUND_POSITION_PRESET val)
 {
 	std::lock_guard guard(this->_propertyMtx);
@@ -74,11 +85,29 @@ int Headphones::getVptType()
 
 bool Headphones::isChanged()
 {
-	return !(this->_ambientSoundControl.isFulfilled() && this->_asmLevel.isFulfilled() && this->_focusOnVoice.isFulfilled() && this->_surroundPosition.isFulfilled() && this->_vptType.isFulfilled());
+	return !(this->_ambientSoundControl.isFulfilled() && 
+		this->_asmLevel.isFulfilled() &&
+		this->_focusOnVoice.isFulfilled() &&
+		this->_surroundPosition.isFulfilled() &&
+		this->_vptType.isFulfilled() &&
+		this->_optimizerState.isFulfilled()
+		);
 }
 
 void Headphones::setChanges()
 {
+	if (!(this->_optimizerState.isFulfilled()))
+	{
+		auto state = this->_optimizerState.desired;
+
+		this->_conn.sendCommand(CommandSerializer::serializeXM4OptimizeCommand(
+			state
+		));
+
+		std::lock_guard guard(this->_propertyMtx);
+		this->_optimizerState.fulfill();
+	}
+
 	if (!(this->_ambientSoundControl.isFulfilled() && this->_focusOnVoice.isFulfilled() && this->_asmLevel.isFulfilled()))
 	{
 		auto ncAsmEffect = this->_ambientSoundControl.desired ? NC_ASM_EFFECT::ADJUSTMENT_COMPLETION : NC_ASM_EFFECT::OFF;

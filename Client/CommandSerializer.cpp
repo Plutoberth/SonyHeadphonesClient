@@ -1,9 +1,17 @@
 #include "CommandSerializer.h"
 
-constexpr unsigned char ESCAPED_BYTE_SENTRY = 61;
-constexpr unsigned char ESCAPED_60 = 44;
-constexpr unsigned char ESCAPED_61 = 45;
-constexpr unsigned char ESCAPED_62 = 46;
+/* 
+ * Because 
+ * 	0x3E represents beginning of packet
+ * 	0xeC represents end of packet
+ * we need to escape these in the packet payload
+*/
+constexpr unsigned char ESCAPED_BYTE_SENTRY = 61;   // 0x3D
+constexpr unsigned char ESCAPED_60 = 44;	    // 0x2C
+constexpr unsigned char ESCAPED_61 = 45;	    // 0x2D
+constexpr unsigned char ESCAPED_62 = 46;   	    // 0x2E
+
+
 constexpr int MAX_STEPS_WH_1000_XM3 = 19;
 
 namespace CommandSerializer
@@ -169,6 +177,16 @@ namespace CommandSerializer
 			val = NC_DUAL_SINGLE_VALUE::DUAL;
 		}
 		return val;
+	}
+
+	Buffer serializeXM4OptimizeCommand(OPTIMIZER_STATE state)
+	{
+	    Buffer ret;
+	    ret.push_back(static_cast<unsigned char>(COMMAND_TYPE::XM4_OPTIMIZER_PARAM));
+	    ret.push_back(static_cast<unsigned char>(0x01));
+	    ret.push_back(static_cast<unsigned char>(0x00));
+	    ret.push_back(static_cast<unsigned char>(state));
+	    return ret;
 	}
 
 	Buffer serializeNcAndAsmSetting(NC_ASM_EFFECT ncAsmEffect, NC_ASM_SETTING_TYPE ncAsmSettingType, ASM_SETTING_TYPE asmSettingType, ASM_ID asmId, char asmLevel)

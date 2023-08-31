@@ -12,6 +12,7 @@
 #include "Headphones.h"
 
 #include <future>
+#include <string>
 
 constexpr auto GUI_MAX_MESSAGES = 5;
 constexpr auto GUI_HEIGHT = 380;
@@ -36,6 +37,7 @@ private:
 	void _drawASMControls();
 	void _drawSurroundControls();
 	void _setHeadphoneSettings();
+	void _drawOptimizerButton();
 
 	BluetoothDevice _connectedDevice;
 	BluetoothWrapper _bt;

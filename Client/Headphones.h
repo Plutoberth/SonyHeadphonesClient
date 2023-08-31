@@ -28,6 +28,9 @@ public:
 	void setAsmLevel(int val);
 	int getAsmLevel();
 
+	void setOptimizerState(OPTIMIZER_STATE val);
+	OPTIMIZER_STATE getOptimizerState();
+
 	void setSurroundPosition(SOUND_POSITION_PRESET val);
 	SOUND_POSITION_PRESET getSurroundPosition();
 
@@ -40,8 +43,12 @@ private:
 	Property<bool> _ambientSoundControl = { 0 };
 	Property<bool> _focusOnVoice = { 0 };
 	Property<int> _asmLevel = { 0 };
+
 	Property<SOUND_POSITION_PRESET> _surroundPosition = { SOUND_POSITION_PRESET::OUT_OF_RANGE, SOUND_POSITION_PRESET::OFF };
 	Property<int> _vptType = { 0 };
+
+	Property<OPTIMIZER_STATE> _optimizerState = { OPTIMIZER_STATE::IDLE };
+	
 	std::mutex _propertyMtx;
 
 	BluetoothWrapper& _conn;

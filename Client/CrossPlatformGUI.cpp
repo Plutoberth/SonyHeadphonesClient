@@ -27,7 +27,14 @@ bool CrossPlatformGUI::performGUIPass()
 		{
 			ImGui::Spacing();
 			this->_drawASMControls();
-			this->_drawSurroundControls();
+			if (this->_bt.isConnected() && (std::string(this->_connectedDevice.name.c_str()) == "WH-1000XM4")){
+				ImGui::Separator();
+				this->_drawOptimizerButton();
+			}
+			else {
+				this->_drawSurroundControls();
+			}
+
 			this->_setHeadphoneSettings();
 		}
 	}
@@ -113,6 +120,8 @@ void CrossPlatformGUI::_drawDeviceDiscovery()
 					{
 						this->_connectedDevice = connectedDevices[selectedDevice];
 						this->_connectFuture.setFromAsync([this]() { this->_bt.connect(this->_connectedDevice.mac); });
+
+						// Add post-connection setup here
 					}
 				}
 			}
@@ -208,6 +217,24 @@ void CrossPlatformGUI::_drawSurroundControls()
 
 		this->_headphones.setSurroundPosition(SOUND_POSITION_PRESET_ARRAY[soundPosition]);
 		this->_headphones.setVptType(vptType);
+	}
+}
+
+void CrossPlatformGUI::_drawOptimizerButton()
+{
+	if (this->_headphones.getOptimizerState() == OPTIMIZER_STATE::IDLE)
+	{
+		if (ImGui::Button("Optimize"))
+		{
+			this->_headphones.setOptimizerState(OPTIMIZER_STATE::OPTIMIZING);
+		}
+	}
+	else {
+		// TODO: Change button to show cancel option while optimizing state
+		if (ImGui::Button("Optimize"))
+		{
+			this->_headphones.setOptimizerState(OPTIMIZER_STATE::IDLE);
+		}
 	}
 }
 

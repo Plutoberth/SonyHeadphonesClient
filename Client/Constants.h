@@ -86,7 +86,8 @@ enum class NC_DUAL_SINGLE_VALUE : signed char
 enum class COMMAND_TYPE : signed char
 {
 	VPT_SET_PARAM = 72,
-	NCASM_SET_PARAM = 104
+	NCASM_SET_PARAM = 104,
+	XM4_OPTIMIZER_PARAM = (signed char) 0x84
 };
 
 enum class VPT_PRESET_ID : signed char
@@ -127,4 +128,10 @@ enum class VPT_INQUIRED_TYPE : signed char
 	VPT = 1,
 	SOUND_POSITION = 2,
 	OUT_OF_RANGE = -1
+};
+
+enum class OPTIMIZER_STATE : signed char
+{
+	IDLE = 0,
+	OPTIMIZING = 1
 };
