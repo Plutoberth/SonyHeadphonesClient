@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Listener.h"
 #include "IBluetoothConnector.h"
 #include "CommandSerializer.h"
 #include "Constants.h"
@@ -13,7 +14,7 @@
 class BluetoothWrapper
 {
 public:
-	BluetoothWrapper(std::unique_ptr<IBluetoothConnector> connector);
+	BluetoothWrapper(Listener * Listener, std::unique_ptr<IBluetoothConnector> connector);
 
 	BluetoothWrapper(const BluetoothWrapper&) = delete;
 	BluetoothWrapper& operator=(const BluetoothWrapper&) = delete;
@@ -32,10 +33,12 @@ public:
 	void disconnect() noexcept;
 
 	std::vector<BluetoothDevice> getConnectedDevices();
+	void setSeqNumber(unsigned int seqNumber);
 
 private:
 	void _waitForAck();
 
+	Listener * _listener;
 	std::unique_ptr<IBluetoothConnector> _connector;
 	std::mutex _connectorMtx;
 	unsigned int _seqNumber = 0;

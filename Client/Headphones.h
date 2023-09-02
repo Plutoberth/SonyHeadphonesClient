@@ -45,6 +45,8 @@ public:
 	
 	bool isChanged();
 	void setChanges();
+
+	void setStateFromReply(BtMessage replyMessage);
 private:
 	Property<bool> _ambientSoundControl = { 0 };
 	Property<bool> _focusOnVoice = { 0 };
@@ -58,6 +60,8 @@ private:
 	Property<S2C_TOGGLE> _speakToChat = { S2C_TOGGLE::INACTIVE };
 	Property<unsigned int> _s2cOptions = { 0 };
 	
+	std::vector<BluetoothDevice> _savedDevices;
+	BluetoothDevice& _dev1, & _dev2;
 	std::mutex _propertyMtx;
 
 	BluetoothWrapper& _conn;

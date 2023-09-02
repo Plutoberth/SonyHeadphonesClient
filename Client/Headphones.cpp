@@ -3,7 +3,10 @@
 
 #include <stdexcept>
 
-Headphones::Headphones(BluetoothWrapper& conn) : _conn(conn)
+Headphones::Headphones(BluetoothWrapper& conn) : 
+_conn(conn),
+_dev1({"No device", ""}),
+_dev2({"No device", ""})
 {
 }
 
@@ -215,5 +218,55 @@ void Headphones::setChanges()
 		std::lock_guard guard(this->_propertyMtx);
 		this->_vptType.fulfill();
 		this->_surroundPosition.fulfill();
+	}
+}
+
+void Headphones::setStateFromReply(BtMessage replyMessage)
+{
+	Buffer bytes = replyMessage.messageBytes;
+	COMMAND_TYPE cmd = static_cast<COMMAND_TYPE>(bytes[0]);
+
+	switch (cmd)
+	{
+	case COMMAND_TYPE::DEVICES_QUERY_RESPONSE:
+		if (bytes[1] != 1)
+			// Wrong query type, break
+			break;
+
+		int idx = 3;
+		int numDevices = static_cast<int>(bytes[2]);
+		for (; numDevices > 0; numDevices--)
+		{
+			std::string mac_addr = "";
+			for (int i = idx; i<idx+MAC_ADDR_STR_SIZE; i++)
+			{
+				mac_addr += bytes[i];
+			}
+
+			idx += MAC_ADDR_STR_SIZE;
+
+			int number = static_cast<int>(bytes[idx]);
+
+			idx++;
+			int name_length = static_cast<int>(bytes[idx]);
+			std::string name = "";
+			for (int i = idx; i<idx+name_length; i++)
+			{
+				name += bytes[i];
+			}
+
+			idx += name_length;
+
+			BluetoothDevice dev = {name, mac_addr};
+			this->_savedDevices.push_back(dev);
+			if (number == 1)
+				this->_dev1 = this->_savedDevices[this->_savedDevices.size()-1];
+			if (number == 2)
+				this->_dev2 = this->_savedDevices[this->_savedDevices.size()-1];
+		}
+		break;
+	
+	default:
+		break;
 	}
 }

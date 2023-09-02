@@ -90,6 +90,7 @@ enum class COMMAND_TYPE : signed char
 	XM4_OPTIMIZER_PARAM = (signed char) 0x84,
 	XM4_S2C_TOGGLE_PARAM = (signed char) 0xf8,
 	XM4_S2C_OPTIONS_PARAM = (signed char) 0xfc,
+	DEVICES_QUERY_RESPONSE = (signed char) 0x37,
 };
 
 enum class VPT_PRESET_ID : signed char
@@ -144,3 +145,7 @@ enum class S2C_TOGGLE : signed char
 	INACTIVE = 0
 };
 
+enum class QUERY_RESPONSE_TYPE : signed char
+{
+	DEVICES = (signed char) 0x37,
+};

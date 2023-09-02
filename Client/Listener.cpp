@@ -8,12 +8,11 @@
 
 void Listener::listen()
 {
-    // do
     for(;;)
     {
         Buffer reply = _bt.readReplies();
         this->handle_message(reply);
-    }// while(1);
+    }
 }
 
 inline BtMessage Listener::parse(Buffer msg)
@@ -31,7 +30,13 @@ void Listener::handle_message(Buffer msg)
         this->_ackRecvd = true;
     } else if (m.dataType == DATA_TYPE::DATA_MDR || m.dataType == DATA_TYPE::DATA_MDR_NO2) {
         // Set these values as current values of Headphone property
-        // Send ACK message to real headphone to shut it up!
+        this->_headphones.setStateFromReply(m);
         this->_bt.sendCommand({}, DATA_TYPE::ACK);
     }
+}
+
+bool Listener::getAck()
+{
+    std::lock_guard guard(_listenerMtx);
+    return (this->_ackRecvd == true);
 }

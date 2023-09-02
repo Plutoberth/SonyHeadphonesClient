@@ -1,12 +1,14 @@
 #include "BluetoothWrapper.h"
 
-BluetoothWrapper::BluetoothWrapper(std::unique_ptr<IBluetoothConnector> connector)
+BluetoothWrapper::BluetoothWrapper(Listener * listener, std::unique_ptr<IBluetoothConnector> connector)
 {
+	this->_listener = listener;
 	this->_connector.swap(connector);
 }
 
 BluetoothWrapper::BluetoothWrapper(BluetoothWrapper&& other) noexcept
 {
+	this->_listener = other._listener;
 	this->_connector.swap(other._connector);
 	this->_seqNumber = other._seqNumber;
 }
@@ -71,7 +73,10 @@ std::vector<BluetoothDevice> BluetoothWrapper::getConnectedDevices()
 
 void BluetoothWrapper::_waitForAck()
 {
-
+	do{
+		// Spin wait while ACK not received
+		// I want to change it later
+	} while (this->_listener->getAck() == false);
 }
 
 Buffer BluetoothWrapper::readReplies()
@@ -113,4 +118,10 @@ Buffer BluetoothWrapper::readReplies()
 
 	auto msg = CommandSerializer::unpackBtMessage(msgBytes);
 	this->_seqNumber = msg.seqNumber;
+}
+
+void BluetoothWrapper::setSeqNumber(unsigned int seqNumber)
+{
+	std::lock_guard guard(this->_connectorMtx);
+	this->_seqNumber = seqNumber;
 }
