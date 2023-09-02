@@ -9,16 +9,17 @@
 constexpr int MINIMUM_VOICE_FOCUS_STEP = 2;
 constexpr unsigned int ASM_LEVEL_DISABLED = -1;
 
+struct BtMessage
+{
+	DATA_TYPE dataType;
+	unsigned char seqNumber;
+	//Not really needed for now
+	Buffer messageBytes;
+};
+
+
 namespace CommandSerializer
 {
-	struct Message
-	{
-		DATA_TYPE dataType;
-		unsigned char seqNumber;
-		//Not really needed for now
-		//Buffer messageBytes;
-	};
-
 	//escape special chars
 
 	Buffer _escapeSpecials(const Buffer& src);
@@ -36,7 +37,7 @@ namespace CommandSerializer
 	*/
 	Buffer packageDataForBt(const Buffer& src, DATA_TYPE dataType, unsigned int seqNumber);
 
-	Message unpackBtMessage(const Buffer& src);
+	BtMessage unpackBtMessage(const Buffer& src);
 
 	NC_DUAL_SINGLE_VALUE getDualSingleForAsmLevel(char asmLevel);
 	Buffer serializeXM4OptimizeCommand(OPTIMIZER_STATE state);

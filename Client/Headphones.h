@@ -11,6 +11,7 @@ struct Property {
 
 	void fulfill();
 	bool isFulfilled();
+	void setState(T val);
 };
 
 class Headphones {
@@ -72,4 +73,10 @@ template<class T>
 inline bool Property<T>::isFulfilled()
 {
 	return this->desired == this->current;
+}
+
+template<class T>
+inline void Property<T>::setState(T val)
+{
+	this->current = val;
 }

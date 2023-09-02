@@ -39,7 +39,8 @@ int BluetoothWrapper::sendCommand(const std::vector<char>& bytes, DATA_TYPE dtyp
 	auto data = CommandSerializer::packageDataForBt(bytes, dtype, this->_seqNumber++);
 	auto bytesSent = this->_connector->send(data.data(), data.size());
 
-	this->_waitForAck();
+	if (dtype != DATA_TYPE::ACK)
+		this->_waitForAck();
 
 	return bytesSent;
 }
@@ -69,6 +70,11 @@ std::vector<BluetoothDevice> BluetoothWrapper::getConnectedDevices()
 }
 
 void BluetoothWrapper::_waitForAck()
+{
+
+}
+
+Buffer BluetoothWrapper::readReplies()
 {
 	bool ongoingMessage = false;
 	bool messageFinished = false;
@@ -103,7 +109,8 @@ void BluetoothWrapper::_waitForAck()
 		msgBytes.insert(msgBytes.end(), buf + messageStart, buf + messageEnd);
 	} while (!messageFinished);
 
+	return msgBytes;
+
 	auto msg = CommandSerializer::unpackBtMessage(msgBytes);
 	this->_seqNumber = msg.seqNumber;
 }
-
