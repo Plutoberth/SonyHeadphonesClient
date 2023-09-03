@@ -1,18 +1,12 @@
 #pragma once
 
-#include "imgui/imgui.h"
 #include "Constants.h"
-#include "IBluetoothConnector.h"
 #include "BluetoothWrapper.h"
 #include "CommandSerializer.h"
 #include "Exceptions.h"
-#include "TimedMessageQueue.h"
-#include "SingleInstanceFuture.h"
-#include "CascadiaCodeFont.h"
 #include "Headphones.h"
 
 #include <future>
-#include <semaphore>
 
 class Listener
 {
@@ -27,7 +21,7 @@ class Listener
             - when ack is received, set it to 1
     */
 public:
-    Listener();
+    Listener(Headphones& headphones, BluetoothWrapper& bt);
     void listen();
     inline BtMessage parse(Buffer msg);
     void handle_message(Buffer msg);

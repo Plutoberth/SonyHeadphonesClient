@@ -1,14 +1,19 @@
 #include "BluetoothWrapper.h"
 
-BluetoothWrapper::BluetoothWrapper(Listener * listener, std::unique_ptr<IBluetoothConnector> connector)
+BluetoothWrapper::BluetoothWrapper(std::unique_ptr<Listener> listener, std::unique_ptr<IBluetoothConnector> connector)
 {
-	this->_listener = listener;
+	this->_listener.swap(listener);
+	this->_connector.swap(connector);
+}
+
+BluetoothWrapper::BluetoothWrapper(std::unique_ptr<IBluetoothConnector> connector)
+{
 	this->_connector.swap(connector);
 }
 
 BluetoothWrapper::BluetoothWrapper(BluetoothWrapper&& other) noexcept
 {
-	this->_listener = other._listener;
+	this->_listener.swap(other._listener);
 	this->_connector.swap(other._connector);
 	this->_seqNumber = other._seqNumber;
 }
@@ -22,6 +27,16 @@ BluetoothWrapper& BluetoothWrapper::operator=(BluetoothWrapper&& other) noexcept
 	this->_seqNumber = other._seqNumber;
 
 	return *this;
+}
+
+void BluetoothWrapper::moveListener(std::unique_ptr<Listener> listener)
+{
+	this->_listener = std::move(listener);
+}
+
+void BluetoothWrapper::registerListener()
+{
+	auto useless_future = std::async(std::launch::async, this->_listener->listen(), this->_listener.get());
 }
 
 int BluetoothWrapper::sendCommand(const std::vector<char>& bytes)

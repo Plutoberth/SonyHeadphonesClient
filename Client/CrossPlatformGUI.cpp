@@ -123,6 +123,9 @@ void CrossPlatformGUI::_drawDeviceDiscovery()
 						this->_connectFuture.setFromAsync([this]() { this->_bt.connect(this->_connectedDevice.mac); });
 
 						// Add post-connection setup here
+						std::unique_ptr<Listener> listener = std::make_unique<Listener>(this->_headphones, this->_bt);
+						this->_bt.moveListener(std::move(listener));
+						this->_bt.registerListener();
 					}
 				}
 			}

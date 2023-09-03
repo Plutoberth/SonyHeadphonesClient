@@ -8,19 +8,24 @@
 #include <vector>
 #include <string>
 #include <mutex>
+#include <future>
 
 
 //Thread-safety: This class is thread-safe.
 class BluetoothWrapper
 {
 public:
-	BluetoothWrapper(Listener * Listener, std::unique_ptr<IBluetoothConnector> connector);
+	BluetoothWrapper(std::unique_ptr<Listener> listener, std::unique_ptr<IBluetoothConnector> connector);
+	BluetoothWrapper(std::unique_ptr<IBluetoothConnector> connector);
 
 	BluetoothWrapper(const BluetoothWrapper&) = delete;
 	BluetoothWrapper& operator=(const BluetoothWrapper&) = delete;
 
 	BluetoothWrapper(BluetoothWrapper&& other) noexcept;
 	BluetoothWrapper& operator=(BluetoothWrapper&& other) noexcept;
+
+	void moveListener(std::unique_ptr<Listener> listener);
+	void registerListener();
 
 	int sendCommand(const std::vector<char>& bytes);
 	int sendCommand(const std::vector<char>& bytes, DATA_TYPE dtype);
@@ -40,6 +45,7 @@ private:
 
 	Listener * _listener;
 	std::unique_ptr<IBluetoothConnector> _connector;
+	std::unique_ptr<Listener> _listener;
 	std::mutex _connectorMtx;
 	unsigned int _seqNumber = 0;
 };

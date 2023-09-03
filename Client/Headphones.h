@@ -61,7 +61,7 @@ private:
 	Property<unsigned int> _s2cOptions = { 0 };
 	
 	std::vector<BluetoothDevice> _savedDevices;
-	BluetoothDevice& _dev1, & _dev2;
+	BluetoothDevice _dev1, _dev2;
 	std::mutex _propertyMtx;
 
 	BluetoothWrapper& _conn;

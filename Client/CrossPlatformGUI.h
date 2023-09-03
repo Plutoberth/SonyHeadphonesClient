@@ -10,6 +10,7 @@
 #include "SingleInstanceFuture.h"
 #include "CascadiaCodeFont.h"
 #include "Headphones.h"
+#include "Listener.h"
 
 #include <iostream>
 #include <future>

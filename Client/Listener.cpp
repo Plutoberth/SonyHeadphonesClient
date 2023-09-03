@@ -1,10 +1,10 @@
 #include "Listener.h"
 
-// Listener::Listener()//: 
-// // _ackRecvd(false)
-// {
-
-// }
+Listener::Listener(Headphones& headphones, BluetoothWrapper& bt): 
+_headphones(headphones),
+_bt(bt),
+_ackRecvd(false)
+{}
 
 void Listener::listen()
 {
