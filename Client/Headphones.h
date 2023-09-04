@@ -4,6 +4,7 @@
 #include "BluetoothWrapper.h"
 #include "Constants.h"
 
+#include <iostream>
 #include <mutex>
 
 template <class T>
@@ -59,7 +60,7 @@ private:
 
 	Property<OPTIMIZER_STATE> _optimizerState = { OPTIMIZER_STATE::IDLE };
 
-	Property<S2C_TOGGLE> _speakToChat = { S2C_TOGGLE::INACTIVE };
+	Property<S2C_TOGGLE> _speakToChat = { S2C_TOGGLE::INACTIVE, S2C_TOGGLE::INACTIVE };
 	Property<unsigned int> _s2cOptions = { 0 };
 	
 	std::vector<BluetoothDevice> _savedDevices;

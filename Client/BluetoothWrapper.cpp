@@ -1,4 +1,5 @@
 #include "BluetoothWrapper.h"
+#include <iostream>
 
 BluetoothWrapper::BluetoothWrapper(std::unique_ptr<IBluetoothConnector> connector)
 {
@@ -24,10 +25,13 @@ BluetoothWrapper& BluetoothWrapper::operator=(BluetoothWrapper&& other) noexcept
 
 int BluetoothWrapper::sendCommand(const std::vector<char>& bytes)
 {
-	std::lock_guard guard(this->_connectorMtx);
-	std::lock_guard guard2(this->_dataMtx);
-	auto data = CommandSerializer::packageDataForBt(bytes, DATA_TYPE::DATA_MDR, this->_seqNumber++);
-	auto bytesSent = this->_connector->send(data.data(), data.size());
+	int bytesSent;
+	{
+		std::lock_guard guard(this->_connectorMtx);
+		std::lock_guard guard2(this->_dataMtx);
+		auto data = CommandSerializer::packageDataForBt(bytes, DATA_TYPE::DATA_MDR, this->_seqNumber ^ 0x01);
+		bytesSent = this->_connector->send(data.data(), data.size());
+	}
 
 	this->_waitForAck();
 
@@ -36,10 +40,13 @@ int BluetoothWrapper::sendCommand(const std::vector<char>& bytes)
 
 int BluetoothWrapper::sendCommand(const std::vector<char>& bytes, DATA_TYPE dtype)
 {
-	std::lock_guard guard(this->_connectorMtx);
-	std::lock_guard guard2(this->_dataMtx);
-	auto data = CommandSerializer::packageDataForBt(bytes, dtype, this->_seqNumber++);
-	auto bytesSent = this->_connector->send(data.data(), data.size());
+	int bytesSent;
+	{
+		std::lock_guard guard(this->_connectorMtx);
+		std::lock_guard guard2(this->_dataMtx);
+		auto data = CommandSerializer::packageDataForBt(bytes, dtype, this->_seqNumber ^ 0x01);
+		bytesSent = this->_connector->send(data.data(), data.size());
+	}
 
 	if (dtype != DATA_TYPE::ACK)
 		this->_waitForAck();
@@ -102,7 +109,7 @@ Buffer BluetoothWrapper::readReplies()
 		size_t messageStart = 0;
 		size_t messageEnd = numRecvd;
 
-		for (size_t i = 0; i < numRecvd; i++)
+		for (int i = 0; i < numRecvd; i++)
 		{
 			if (buf[i] == START_MARKER)
 			{

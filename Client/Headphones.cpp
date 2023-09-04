@@ -265,6 +265,11 @@ void Headphones::setStateFromReply(BtMessage replyMessage)
 			if (number == 2)
 				this->_dev2 = this->_savedDevices[this->_savedDevices.size()-1];
 		}
+		std::cout<<"Connected devices received:\n";
+		for (auto &dev: this->_savedDevices)
+		{
+			std::cout<< dev.name<<": "<<dev.mac<<std::endl;
+		}
 		break;
 	}
 	

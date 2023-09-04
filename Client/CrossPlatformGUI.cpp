@@ -120,11 +120,14 @@ void CrossPlatformGUI::_drawDeviceDiscovery()
 					if (selectedDevice != -1)
 					{
 						this->_connectedDevice = connectedDevices[selectedDevice];
-						this->_connectFuture.setFromAsync([this]() { this->_bt.connect(this->_connectedDevice.mac); });
+						this->_connectFuture.setFromAsync([this]() { 
+								this->_bt.connect(this->_connectedDevice.mac); 
 
-						// Add post-connection setup here
-						_listener = std::make_unique<Listener>(this->_headphones, this->_bt);
-						auto useless_future = std::async(std::launch::async, &Listener::listen, this->_listener.get());
+								// Add post-connection setup here
+								_listener = std::make_unique<Listener>(this->_headphones, this->_bt);
+								auto useless_future = std::async(std::launch::async, &Listener::listen, this->_listener.get());
+							}
+						);
 					}
 				}
 			}
@@ -249,8 +252,8 @@ void CrossPlatformGUI::_drawSpeakToChat()
 	enum AutoOff { Time_Short, Time_Std, Time_Long, Time_Inf, Time_count};
 	const char* Time_hints[Time_count] = { "Short", "Standard", "Long", "Off" };
 
-	static bool S2Ctoggle_check = true;
-	static int S2C_Sens = Sens_Low;
+	static bool S2Ctoggle_check = false;
+	static int S2C_Sens = Sens_Auto;
 	static bool S2C_Voice = 0;
 	static int S2C_AutoOff = Time_Short;
 	

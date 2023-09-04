@@ -7,9 +7,12 @@ _bt(bt)
 
 void Listener::listen()
 {
+    std::cout << "Listener registered." << std::endl;
     for(;;)
     {
         Buffer reply = this->_bt.readReplies();
+        if (reply[0] == static_cast<char>(DATA_TYPE::UNKNOWN))
+            continue;
         this->handle_message(reply);
     }
 }
