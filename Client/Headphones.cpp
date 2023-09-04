@@ -229,6 +229,7 @@ void Headphones::setStateFromReply(BtMessage replyMessage)
 	switch (cmd)
 	{
 	case COMMAND_TYPE::DEVICES_QUERY_RESPONSE:
+	{
 		if (bytes[1] != 1)
 			// Wrong query type, break
 			break;
@@ -265,6 +266,7 @@ void Headphones::setStateFromReply(BtMessage replyMessage)
 				this->_dev2 = this->_savedDevices[this->_savedDevices.size()-1];
 		}
 		break;
+	}
 	
 	default:
 		break;

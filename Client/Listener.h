@@ -6,6 +6,7 @@
 #include "Exceptions.h"
 #include "Headphones.h"
 
+#include <mutex>
 #include <future>
 
 class Listener
@@ -25,15 +26,8 @@ public:
     void listen();
     inline BtMessage parse(Buffer msg);
     void handle_message(Buffer msg);
-    bool getAck();
 
 private:
-
     Headphones& _headphones;
     BluetoothWrapper& _bt;
-
-    std::mutex _listenerMtx;
-    std::condition_variable _condt;
-    bool _ackRecvd;
-
 };

@@ -1,11 +1,5 @@
 #include "BluetoothWrapper.h"
 
-BluetoothWrapper::BluetoothWrapper(std::unique_ptr<Listener> listener, std::unique_ptr<IBluetoothConnector> connector)
-{
-	this->_listener.swap(listener);
-	this->_connector.swap(connector);
-}
-
 BluetoothWrapper::BluetoothWrapper(std::unique_ptr<IBluetoothConnector> connector)
 {
 	this->_connector.swap(connector);
@@ -13,7 +7,6 @@ BluetoothWrapper::BluetoothWrapper(std::unique_ptr<IBluetoothConnector> connecto
 
 BluetoothWrapper::BluetoothWrapper(BluetoothWrapper&& other) noexcept
 {
-	this->_listener.swap(other._listener);
 	this->_connector.swap(other._connector);
 	this->_seqNumber = other._seqNumber;
 }
@@ -29,19 +22,10 @@ BluetoothWrapper& BluetoothWrapper::operator=(BluetoothWrapper&& other) noexcept
 	return *this;
 }
 
-void BluetoothWrapper::moveListener(std::unique_ptr<Listener> listener)
-{
-	this->_listener = std::move(listener);
-}
-
-void BluetoothWrapper::registerListener()
-{
-	auto useless_future = std::async(std::launch::async, this->_listener->listen(), this->_listener.get());
-}
-
 int BluetoothWrapper::sendCommand(const std::vector<char>& bytes)
 {
 	std::lock_guard guard(this->_connectorMtx);
+	std::lock_guard guard2(this->_dataMtx);
 	auto data = CommandSerializer::packageDataForBt(bytes, DATA_TYPE::DATA_MDR, this->_seqNumber++);
 	auto bytesSent = this->_connector->send(data.data(), data.size());
 
@@ -53,6 +37,7 @@ int BluetoothWrapper::sendCommand(const std::vector<char>& bytes)
 int BluetoothWrapper::sendCommand(const std::vector<char>& bytes, DATA_TYPE dtype)
 {
 	std::lock_guard guard(this->_connectorMtx);
+	std::lock_guard guard2(this->_dataMtx);
 	auto data = CommandSerializer::packageDataForBt(bytes, dtype, this->_seqNumber++);
 	auto bytesSent = this->_connector->send(data.data(), data.size());
 
@@ -88,10 +73,20 @@ std::vector<BluetoothDevice> BluetoothWrapper::getConnectedDevices()
 
 void BluetoothWrapper::_waitForAck()
 {
-	do{
-		// Spin wait while ACK not received
-		// I want to change it later
-	} while (this->_listener->getAck() == false);
+	// std::lock_guard guard(this->_dataMtx);
+	std::unique_lock<std::mutex> guard(this->_dataMtx);
+
+	while (!(this->_ackBuffer > 0)){
+		this->_ack.wait(guard);
+	}
+
+	this->_ackBuffer--;
+}
+
+void BluetoothWrapper::postAck()
+{
+	std::lock_guard guard(this->_dataMtx);
+	this->_ackBuffer++;
 }
 
 Buffer BluetoothWrapper::readReplies()
@@ -135,8 +130,8 @@ Buffer BluetoothWrapper::readReplies()
 	this->_seqNumber = msg.seqNumber;
 }
 
-void BluetoothWrapper::setSeqNumber(unsigned int seqNumber)
+void BluetoothWrapper::setSeqNumber(unsigned char seqNumber)
 {
-	std::lock_guard guard(this->_connectorMtx);
+	std::lock_guard guard(this->_dataMtx);
 	this->_seqNumber = seqNumber;
 }

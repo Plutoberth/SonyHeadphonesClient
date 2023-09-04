@@ -49,6 +49,8 @@ private:
 	SingleInstanceFuture<void> _connectFuture;
 	TimedMessageQueue _mq;
 	Headphones _headphones;
+	// Listener _listener;
+	std::unique_ptr<Listener> _listener;
 };
 
 

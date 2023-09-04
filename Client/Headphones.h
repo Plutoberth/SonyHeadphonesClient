@@ -1,3 +1,5 @@
+#pragma once 
+
 #include "SingleInstanceFuture.h"
 #include "BluetoothWrapper.h"
 #include "Constants.h"

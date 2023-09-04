@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Listener.h"
 #include "IBluetoothConnector.h"
 #include "CommandSerializer.h"
 #include "Constants.h"
@@ -15,7 +14,6 @@
 class BluetoothWrapper
 {
 public:
-	BluetoothWrapper(std::unique_ptr<Listener> listener, std::unique_ptr<IBluetoothConnector> connector);
 	BluetoothWrapper(std::unique_ptr<IBluetoothConnector> connector);
 
 	BluetoothWrapper(const BluetoothWrapper&) = delete;
@@ -23,9 +21,6 @@ public:
 
 	BluetoothWrapper(BluetoothWrapper&& other) noexcept;
 	BluetoothWrapper& operator=(BluetoothWrapper&& other) noexcept;
-
-	void moveListener(std::unique_ptr<Listener> listener);
-	void registerListener();
 
 	int sendCommand(const std::vector<char>& bytes);
 	int sendCommand(const std::vector<char>& bytes, DATA_TYPE dtype);
@@ -38,14 +33,18 @@ public:
 	void disconnect() noexcept;
 
 	std::vector<BluetoothDevice> getConnectedDevices();
-	void setSeqNumber(unsigned int seqNumber);
+	void setSeqNumber(unsigned char seqNumber);
+	void postAck();
 
 private:
 	void _waitForAck();
 
-	Listener * _listener;
 	std::unique_ptr<IBluetoothConnector> _connector;
-	std::unique_ptr<Listener> _listener;
 	std::mutex _connectorMtx;
-	unsigned int _seqNumber = 0;
+	std::mutex _dataMtx;
+	unsigned char _seqNumber = 0;
+	unsigned int _ackBuffer = 0;
+
+public:
+	std::condition_variable _ack;
 };

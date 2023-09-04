@@ -14,6 +14,7 @@ target_sources(SonyHeadphonesClient
     ByteMagic.cpp
     CommandSerializer.cpp
     TimedMessageQueue.cpp
+    Listener.cpp
     CrossPlatformGUI.cpp "Headphones.cpp")
 
 target_include_directories (SonyHeadphonesClient
