@@ -1,4 +1,4 @@
-﻿#include "CrossPlatformGUI.h"
+#include "CrossPlatformGUI.h"
 
 bool CrossPlatformGUI::performGUIPass()
 {
@@ -28,7 +28,7 @@ bool CrossPlatformGUI::performGUIPass()
 			// ImGui::Spacing();
 			ImGui::Separator();
 			this->_drawASMControls();
-			if (this->_bt.isConnected() && (std::string(this->_connectedDevice.name.c_str()) == "WH-1000XM4")){
+			if (this->_bt.isConnected() && (this->_connectedDevice.name) == "WH-1000XM4"){
 				this->_drawSpeakToChat();
 				this->_drawOptimizerButton();
 			}
@@ -124,7 +124,7 @@ void CrossPlatformGUI::_drawDeviceDiscovery()
 								this->_bt.connect(this->_connectedDevice.mac); 
 
 								// Add post-connection setup here
-								_listener = std::make_unique<Listener>(this->_headphones, this->_bt);
+								this->_listener = std::make_unique<Listener>(this->_headphones, this->_bt);
 								auto useless_future = std::async(std::launch::async, &Listener::listen, this->_listener.get());
 							}
 						);

@@ -125,6 +125,7 @@ bool Headphones::isChanged()
 
 void Headphones::setChanges()
 {
+	std::lock_guard guard(this->_sendMtx);
 	if (!(this->_optimizerState.isFulfilled()))
 	{
 		auto state = this->_optimizerState.desired;
@@ -219,6 +220,14 @@ void Headphones::setChanges()
 		this->_vptType.fulfill();
 		this->_surroundPosition.fulfill();
 	}
+	
+
+	// THIS IS A WORKAROUND
+	// My XM4 do not respond when 2 commands of the same function are sent back to back
+	// This command breaks the chain and makes it respond every time
+	{
+		this->_conn.sendCommand({0x36, 0x01}, DATA_TYPE::DATA_MDR_NO2);
+	}
 }
 
 void Headphones::setStateFromReply(BtMessage replyMessage)
@@ -235,7 +244,7 @@ void Headphones::setStateFromReply(BtMessage replyMessage)
 			break;
 
 		int idx = 3;
-		int numDevices = static_cast<int>(bytes[2]);
+		int numDevices = static_cast<unsigned char>(bytes[2]);
 		for (; numDevices > 0; numDevices--)
 		{
 			std::string mac_addr = "";
@@ -246,10 +255,11 @@ void Headphones::setStateFromReply(BtMessage replyMessage)
 
 			idx += MAC_ADDR_STR_SIZE;
 
-			int number = static_cast<int>(bytes[idx]);
+			int number = static_cast<unsigned char>(bytes[idx]);
 
 			idx++;
-			int name_length = static_cast<int>(bytes[idx]);
+			int name_length = static_cast<unsigned char>(bytes[idx]);
+			idx++;
 			std::string name = "";
 			for (int i = idx; i<idx+name_length; i++)
 			{

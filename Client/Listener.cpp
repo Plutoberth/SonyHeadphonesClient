@@ -11,8 +11,6 @@ void Listener::listen()
     for(;;)
     {
         Buffer reply = this->_bt.readReplies();
-        if (reply[0] == static_cast<char>(DATA_TYPE::UNKNOWN))
-            continue;
         this->handle_message(reply);
     }
 }

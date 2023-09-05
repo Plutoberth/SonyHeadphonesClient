@@ -158,7 +158,7 @@ namespace CommandSerializer
 		{
 			throw RecoverableException("Invalid checksum!", true);
 		}
-		int numMsgBytes = static_cast<int>(src[5]);
+		unsigned int numMsgBytes = static_cast<unsigned char>(src[5]);
 		ret.messageBytes.insert(ret.messageBytes.end(), src.begin() + 6, src.begin() + 6 + numMsgBytes); 
 		return ret;
 	}

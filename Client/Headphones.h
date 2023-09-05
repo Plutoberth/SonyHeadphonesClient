@@ -66,6 +66,7 @@ private:
 	std::vector<BluetoothDevice> _savedDevices;
 	BluetoothDevice _dev1, _dev2;
 	std::mutex _propertyMtx;
+	std::mutex _sendMtx;
 
 	BluetoothWrapper& _conn;
 };

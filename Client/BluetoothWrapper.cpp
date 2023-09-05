@@ -80,7 +80,6 @@ std::vector<BluetoothDevice> BluetoothWrapper::getConnectedDevices()
 
 void BluetoothWrapper::_waitForAck()
 {
-	// std::lock_guard guard(this->_dataMtx);
 	std::unique_lock<std::mutex> guard(this->_dataMtx);
 
 	while (!(this->_ackBuffer > 0)){
@@ -108,6 +107,11 @@ Buffer BluetoothWrapper::readReplies()
 		auto numRecvd = this->_connector->recv(buf, sizeof(buf));
 		size_t messageStart = 0;
 		size_t messageEnd = numRecvd;
+		for(int i=0; i<numRecvd; i++){
+			// std::cout << std::hex << buf[i];
+			std::cout << buf[i];
+		}
+		std::cout << std::endl;
 
 		for (int i = 0; i < numRecvd; i++)
 		{

@@ -16,11 +16,6 @@ class Listener
         Parse messages 
         Call message handler
     */
-    /* 
-        have a valid bit for ack messages 
-            - when command is sent, it is set to 0 by locking
-            - when ack is received, set it to 1
-    */
 public:
     Listener(Headphones& headphones, BluetoothWrapper& bt);
     void listen();
