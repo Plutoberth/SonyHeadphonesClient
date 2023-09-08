@@ -1,4 +1,4 @@
-#include "CrossPlatformGUI.h"
+﻿#include "CrossPlatformGUI.h"
 
 bool CrossPlatformGUI::performGUIPass()
 {
@@ -30,6 +30,8 @@ bool CrossPlatformGUI::performGUIPass()
 			this->_drawASMControls();
 			if (this->_bt.isConnected() && (this->_connectedDevice.name) == "WH-1000XM4"){
 				this->_drawSpeakToChat();
+				if (this->_headphones.getMultiPointSetting())
+					this->_drawMultiPointConn();
 				this->_drawOptimizerButton();
 			}
 			else {
@@ -237,7 +239,7 @@ void CrossPlatformGUI::_drawOptimizerButton()
 	}
 	else {
 		// TODO: Change button to show cancel option while optimizing state
-		if (ImGui::Button("Optimize"))
+		if (ImGui::Button("Optimizing... (Press To Cancel)"))
 		{
 			this->_headphones.setOptimizerState(OPTIMIZER_STATE::IDLE);
 		}
@@ -259,10 +261,6 @@ void CrossPlatformGUI::_drawSpeakToChat()
 	
 	const char* Sens_name = (S2C_Sens >= 0 && S2C_Sens < Sens_count) ? Sens_hints[S2C_Sens] : "Unknown";
 	const char* Time_name = (S2C_AutoOff >= 0 && S2C_AutoOff < Time_count) ? Time_hints[S2C_AutoOff] : "Unknown";
-	// S2Ctoggle = (this->_headphones.getS2CToggle() == S2C_TOGGLE::ACTIVE) ? true : false;
-	// S2C_Sens  = (this->_headphones.getS2COptions() & 0x00ff0000)>>16;
-	// S2C_Voice = (this->_headphones.getS2COptions() & 0x0000ff00)>>8;
-	// S2C_AutoOff = (this->_headphones.getS2COptions() & 0x000000ff);
 
 	if (ImGui::CollapsingHeader("Speak To Chat Controls", ImGuiTreeNodeFlags_DefaultOpen))
 	{
@@ -287,6 +285,84 @@ void CrossPlatformGUI::_drawSpeakToChat()
 		this->_headphones.setS2CToggle(S2C_TOGGLE::INACTIVE);
 
 	this->_headphones.setS2COptions(S2C_Sens, S2C_Voice, S2C_AutoOff);
+
+}
+
+void CrossPlatformGUI::_drawMultiPointConn()
+{
+	auto devices = this->_headphones.getDevices();
+	auto connectedDevices = this->_headphones.getConnectedDevices();
+
+	int dev1 = connectedDevices.first;
+	int dev2 = connectedDevices.second;
+	int old_dev1 = dev1;
+	int old_dev2 = dev2;
+	
+	if(ImGui::CollapsingHeader("Connected Devices", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		if (devices[dev1].name!="")
+		{
+			ImGui::Text(devices[dev1].name.c_str());
+			ImGui::SameLine();
+			if (ImGui::Button("Disconnect device 1"))
+			{
+				std::cout << "Button 1 pressed "<<std::endl;
+				this->_headphones.setMultiPointConnection(1, 0, dev1);
+			}
+		}
+
+		if (devices[dev1].name=="" || devices[dev2].name=="")
+		{
+			// const char* combo_preview_value = devices[dev1].name // &(devices[dev1].name);
+			if (ImGui::BeginCombo("Connect", ""))
+			{
+				for (int i = 0; i < devices.size(); i++)
+				{
+					if (i==dev2 || i==dev1)
+						continue;
+
+					const bool is_selected = false;
+					if (ImGui::Selectable(devices[i].name.c_str(), is_selected))
+					{
+						if (devices[dev1].name=="")
+						{
+							dev1 = i;
+							this->_headphones.setMultiPointConnection(1, dev1, 0);
+						}
+						else {
+							dev2 = i;
+							this->_headphones.setMultiPointConnection(2, dev2, 0);
+						}
+					}
+
+					// Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+					if (is_selected)
+						ImGui::SetItemDefaultFocus();
+				}
+				ImGui::EndCombo();
+			}
+		
+			ImGui::SameLine();
+			if (devices[dev1].name=="")
+				ImGui::Text("Device 1");
+			else 
+				ImGui::Text("Device 2");
+		}
+
+		if (devices[dev2].name!="")
+		{
+			ImGui::Text(devices[dev2].name.c_str());
+			ImGui::SameLine();
+			if (ImGui::Button("Disconnect device 2"))
+			{
+				std::cout << "Button 2 pressed "<<std::endl;
+					this->_headphones.setMultiPointConnection(2,0,dev2);				
+					this->_headphones.setMultiPointConnection(2,0,dev2);				
+				this->_headphones.setMultiPointConnection(2,0,dev2);				
+			}
+		}
+		
+	}
 
 }
 

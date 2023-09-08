@@ -4,10 +4,10 @@
 #include <stdexcept>
 
 Headphones::Headphones(BluetoothWrapper& conn) : 
-_conn(conn),
-_dev1({"No device", ""}),
-_dev2({"No device", ""})
+_conn(conn)
 {
+	std::vector<BluetoothDevice> devices({BluetoothDevice({"",""})});
+	this->_savedDevices = devices;
 }
 
 void Headphones::setAmbientSoundControl(bool val)
@@ -110,6 +110,56 @@ int Headphones::getVptType()
 	return this->_vptType.current;
 }
 
+bool Headphones::getMultiPointSetting()
+{
+	return this->_multiPointSetting;
+}
+
+const std::vector<BluetoothDevice>& Headphones::getDevices()
+{
+	return this->_savedDevices;
+}
+
+std::pair<int, int> Headphones::getConnectedDevices()
+{
+	return {this->_dev1.current, this->_dev2.current};
+}
+
+void Headphones::setMultiPointConnection(int connectionId, int newDevice, int oldDevice)
+{
+	Property<int>& dev = this->_dev1;
+
+	if (connectionId==1)
+		dev = this->_dev1;
+	else
+		dev = this->_dev2;
+
+	std::lock_guard guard(this->_propertyMtx);
+	dev.desired = newDevice;
+}
+
+inline void Headphones::disconnect(int deviceIdx)
+{
+	std::string deviceMac = this->_savedDevices[deviceIdx].mac;
+	this->_conn.sendCommand(CommandSerializer::serializeMultiPointCommand(
+			MULTI_POINT_COMMANDS::DISCONNECT,
+			deviceMac
+		),
+		DATA_TYPE::DATA_MDR_NO2
+	);
+}
+
+inline void Headphones::connect(int deviceIdx)
+{
+	std::string deviceMac = this->_savedDevices[deviceIdx].mac;
+	this->_conn.sendCommand(CommandSerializer::serializeMultiPointCommand(
+			MULTI_POINT_COMMANDS::CONNECT,
+			deviceMac
+		),
+		DATA_TYPE::DATA_MDR_NO2
+	);
+}
+
 bool Headphones::isChanged()
 {
 	return !(this->_ambientSoundControl.isFulfilled() && 
@@ -119,13 +169,16 @@ bool Headphones::isChanged()
 		this->_vptType.isFulfilled() &&
 		this->_optimizerState.isFulfilled() &&
 		this->_speakToChat.isFulfilled() &&
-		this->_s2cOptions.isFulfilled()
+		this->_s2cOptions.isFulfilled() && 
+		this->_dev1.isFulfilled() &&
+		this->_dev2.isFulfilled()
 		);
 }
 
+// At most one instance of this function is invoked at any time
+// Synchronization not required
 void Headphones::setChanges()
 {
-	std::lock_guard guard(this->_sendMtx);
 	if (!(this->_optimizerState.isFulfilled()))
 	{
 		auto state = this->_optimizerState.desired;
@@ -221,12 +274,35 @@ void Headphones::setChanges()
 		this->_surroundPosition.fulfill();
 	}
 	
+	if (!(this->_dev1.isFulfilled()))
+	{
+		if (this->_dev1.current!=0)
+			this->disconnect(this->_dev1.current);
+		if (this->_dev1.desired!=0)
+			this->connect(this->_dev1.desired);
+
+		std::lock_guard guard(this->_propertyMtx);
+		this->_dev1.fulfill();
+	}
+
+	if (!(this->_dev2.isFulfilled()))
+	{
+		if (this->_dev2.current!=0)
+			this->disconnect(this->_dev2.current);
+		if (this->_dev2.desired!=0)
+			this->connect(this->_dev2.desired);
+
+		std::lock_guard guard(this->_propertyMtx);
+		this->_dev2.fulfill();
+	}
 
 	// THIS IS A WORKAROUND
 	// My XM4 do not respond when 2 commands of the same function are sent back to back
 	// This command breaks the chain and makes it respond every time
+	// And I can't seem to be able to fix it
 	{
-		this->_conn.sendCommand({0x36, 0x01}, DATA_TYPE::DATA_MDR_NO2);
+		// this->_conn.sendCommand({0x36, 0x01}, DATA_TYPE::DATA_MDR_NO2);
+		this->_conn.sendCommand({0x30, 0x01}, DATA_TYPE::DATA_MDR_NO2);
 	}
 }
 
@@ -238,11 +314,14 @@ void Headphones::setStateFromReply(BtMessage replyMessage)
 	switch (cmd)
 	{
 	case COMMAND_TYPE::DEVICES_QUERY_RESPONSE:
+	case COMMAND_TYPE::DEVICES_STATE_RESPONSE:
 	{
-		if (bytes[1] != 1)
+		if (bytes[1] != 0x01)
 			// Wrong query type, break
 			break;
 
+		std::vector<BluetoothDevice> savedDevices = std::vector<BluetoothDevice>({BluetoothDevice("","")});
+		int dev1 = 0, dev2 = 0;
 		int idx = 3;
 		int numDevices = static_cast<unsigned char>(bytes[2]);
 		for (; numDevices > 0; numDevices--)
@@ -255,10 +334,10 @@ void Headphones::setStateFromReply(BtMessage replyMessage)
 
 			idx += MAC_ADDR_STR_SIZE;
 
-			int number = static_cast<unsigned char>(bytes[idx]);
+			unsigned char number = static_cast<unsigned char>(bytes[idx]);
 
 			idx++;
-			int name_length = static_cast<unsigned char>(bytes[idx]);
+			unsigned char name_length = static_cast<unsigned char>(bytes[idx]);
 			idx++;
 			std::string name = "";
 			for (int i = idx; i<idx+name_length; i++)
@@ -269,20 +348,44 @@ void Headphones::setStateFromReply(BtMessage replyMessage)
 			idx += name_length;
 
 			BluetoothDevice dev = {name, mac_addr};
-			this->_savedDevices.push_back(dev);
-			if (number == 1)
-				this->_dev1 = this->_savedDevices[this->_savedDevices.size()-1];
-			if (number == 2)
-				this->_dev2 = this->_savedDevices[this->_savedDevices.size()-1];
+			savedDevices.push_back(dev);
+			if (number == 0x01)
+			{
+				// dev1 = (this->_savedDevices.end() - this->_savedDevices.begin() - 1);
+				dev1 = savedDevices.size()-1;
+				std::cout<< "device 1: "<< dev1 << std::endl;
+			}
+			if (number == 0x02)
+			{
+				// dev2 = (this->_savedDevices.end() - this->_savedDevices.begin() - 1);
+				dev2 = savedDevices.size()-1;
+				std::cout<< "device 2: "<< dev2 << std::endl;
+			}
 		}
 		std::cout<<"Connected devices received:\n";
-		for (auto &dev: this->_savedDevices)
+		for (auto &dev: savedDevices)
 		{
 			std::cout<< dev.name<<": "<<dev.mac<<std::endl;
+		}
+
+		{
+			std::lock_guard guard(this->_propertyMtx);
+			this->_savedDevices = std::move(savedDevices);
+			this->_dev1.setState(dev1);
+			this->_dev2.setState(dev2);
 		}
 		break;
 	}
 	
+	case COMMAND_TYPE::XM4_OPTIMIZER_RESPONSE:
+	{
+		if (bytes[2] != 0x00)
+			this->_optimizerState.setState(OPTIMIZER_STATE::OPTIMIZING);
+		else
+			this->_optimizerState.setState(OPTIMIZER_STATE::IDLE);
+		break;
+	}
+
 	default:
 		break;
 	}

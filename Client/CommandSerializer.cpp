@@ -146,20 +146,20 @@ namespace CommandSerializer
 		//Message data format: ESCAPE_SPECIALS(<DATA_TYPE><SEQ_NUMBER><BIG ENDIAN 4 BYTE SIZE OF UNESCAPED DATA><DATA><1 BYTE CHECKSUM>)
 		auto unescaped = _unescapeSpecials(src);
 
-		if (src.size() < 7)
+		if (unescaped.size() < 7)
 		{
 			throw std::runtime_error("Invalid message: Smaller than the minimum message size");
 		}
 
 		BtMessage ret;
-		ret.dataType = static_cast<DATA_TYPE>(src[0]);
-		ret.seqNumber = src[1];
-		if ((unsigned char)src[src.size() - 1] != _sumChecksum(src.data(), src.size() - 1))
+		ret.dataType = static_cast<DATA_TYPE>(unescaped[0]);
+		ret.seqNumber = unescaped[1];
+		if ((unsigned char)unescaped[unescaped.size() - 1] != _sumChecksum(unescaped.data(), unescaped.size() - 1))
 		{
 			throw RecoverableException("Invalid checksum!", true);
 		}
-		unsigned int numMsgBytes = static_cast<unsigned char>(src[5]);
-		ret.messageBytes.insert(ret.messageBytes.end(), src.begin() + 6, src.begin() + 6 + numMsgBytes); 
+		unsigned char numMsgBytes = static_cast<unsigned char>(unescaped[5]);
+		ret.messageBytes.insert(ret.messageBytes.end(), unescaped.begin() + 6, unescaped.begin() + 6 + numMsgBytes); 
 		return ret;
 	}
 
@@ -234,6 +234,20 @@ namespace CommandSerializer
 		ret.push_back(static_cast<unsigned char>(sensitivity));
 		ret.push_back(static_cast<unsigned char>(voice));
 		ret.push_back(static_cast<unsigned char>(offTime));
+		return ret;
+	}
+
+	Buffer serializeMultiPointCommand(MULTI_POINT_COMMANDS cmd, std::string macAddr)
+	{
+		Buffer ret;
+		ret.push_back(static_cast<unsigned char>(COMMAND_TYPE::MULTI_POINT_PARAM));
+		ret.push_back(static_cast<unsigned char>(0x01));
+		ret.push_back(static_cast<unsigned char>(0x00));
+		ret.push_back(static_cast<unsigned char>(cmd));
+		for (unsigned char c: macAddr)
+		{
+			ret.push_back(c);
+		}
 		return ret;
 	}
 }

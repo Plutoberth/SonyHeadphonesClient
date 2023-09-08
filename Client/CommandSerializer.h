@@ -45,5 +45,6 @@ namespace CommandSerializer
 	Buffer serializeVPTSetting(VPT_INQUIRED_TYPE type, unsigned char preset);
 	Buffer serializeXM4SpeakToChat(S2C_TOGGLE s2cState);
 	Buffer serializeXM4_S2C_Options(unsigned char sensitivity, unsigned char voice, unsigned char offTime);
+	Buffer serializeMultiPointCommand(MULTI_POINT_COMMANDS cmd, std::string macAddr);
 }
 

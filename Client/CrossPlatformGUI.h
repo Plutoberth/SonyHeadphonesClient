@@ -41,6 +41,7 @@ private:
 	void _setHeadphoneSettings();
 	void _drawOptimizerButton();
 	void _drawSpeakToChat();
+	void _drawMultiPointConn();
 
 	BluetoothDevice _connectedDevice;
 	BluetoothWrapper _bt;

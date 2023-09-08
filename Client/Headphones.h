@@ -6,6 +6,8 @@
 
 #include <iostream>
 #include <mutex>
+#include <vector>
+#include <tuple>
 
 template <class T>
 struct Property {
@@ -45,7 +47,14 @@ public:
 
 	void setVptType(int val);
 	int getVptType();
-	
+
+	bool getMultiPointSetting();
+	const std::vector<BluetoothDevice>& getDevices();
+	std::pair<int, int> getConnectedDevices();
+	void setMultiPointConnection(int connectionId, int newDevice, int oldDevice);
+	inline void disconnect(int deviceIdx);
+	inline void connect(int deviceIdx);
+
 	bool isChanged();
 	void setChanges();
 
@@ -64,9 +73,10 @@ private:
 	Property<unsigned int> _s2cOptions = { 0 };
 	
 	std::vector<BluetoothDevice> _savedDevices;
-	BluetoothDevice _dev1, _dev2;
+	Property<int> _dev1 = { 0, 0 }, _dev2 = { 0, 0 };
+	bool _multiPointSetting = true;
+
 	std::mutex _propertyMtx;
-	std::mutex _sendMtx;
 
 	BluetoothWrapper& _conn;
 };
@@ -87,4 +97,5 @@ template<class T>
 inline void Property<T>::setState(T val)
 {
 	this->current = val;
+	this->desired = val;
 }
