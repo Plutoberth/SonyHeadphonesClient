@@ -27,7 +27,6 @@ void Listener::handle_message(Buffer msg)
 
     if (m.dataType == DATA_TYPE::ACK)
     {
-        std::cout<< "Received Ack"<<std::endl;
         this->_bt.postAck();
         this->_bt._ack.notify_all();
     } 

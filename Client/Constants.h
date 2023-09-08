@@ -92,10 +92,15 @@ enum class COMMAND_TYPE : signed char
 	XM4_S2C_OPTIONS_PARAM = (signed char) 0xfc,
 	MULTI_POINT_PARAM = (signed char) 0x3c,
 
-
 	XM4_OPTIMIZER_RESPONSE = (signed char) 0x85,
 	DEVICES_QUERY_RESPONSE = (signed char) 0x37,
 	DEVICES_STATE_RESPONSE = (signed char) 0x39,
+	MULTI_POINT_SETTING_RESPONSE = (signed char) 0x07,
+
+	MULTI_POINT_SETTING_QUERY = (signed char) 0x06,
+	MULTI_POINT_DEVICES_QUERY = (signed char) 0x36,
+	S2C_QUERY = (signed char) 0xf6,
+	S2C_OPTIONS_QUERY = (signed char) 0xfa
 };
 
 enum class VPT_PRESET_ID : signed char

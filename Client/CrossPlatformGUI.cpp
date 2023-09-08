@@ -32,6 +32,7 @@ bool CrossPlatformGUI::performGUIPass()
 				this->_drawSpeakToChat();
 				if (this->_headphones.getMultiPointSetting())
 					this->_drawMultiPointConn();
+				ImGui::Separator();
 				this->_drawOptimizerButton();
 			}
 			else {
@@ -128,6 +129,8 @@ void CrossPlatformGUI::_drawDeviceDiscovery()
 								// Add post-connection setup here
 								this->_listener = std::make_unique<Listener>(this->_headphones, this->_bt);
 								auto useless_future = std::async(std::launch::async, &Listener::listen, this->_listener.get());
+								if (this->_connectedDevice.name == "WH-1000XM4")
+									this->_headphones.queryState();
 							}
 						);
 					}
@@ -306,7 +309,6 @@ void CrossPlatformGUI::_drawMultiPointConn()
 			ImGui::SameLine();
 			if (ImGui::Button("Disconnect device 1"))
 			{
-				std::cout << "Button 1 pressed "<<std::endl;
 				this->_headphones.setMultiPointConnection(1, 0, dev1);
 			}
 		}
@@ -355,9 +357,6 @@ void CrossPlatformGUI::_drawMultiPointConn()
 			ImGui::SameLine();
 			if (ImGui::Button("Disconnect device 2"))
 			{
-				std::cout << "Button 2 pressed "<<std::endl;
-					this->_headphones.setMultiPointConnection(2,0,dev2);				
-					this->_headphones.setMultiPointConnection(2,0,dev2);				
 				this->_headphones.setMultiPointConnection(2,0,dev2);				
 			}
 		}

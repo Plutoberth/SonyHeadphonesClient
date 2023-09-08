@@ -127,15 +127,15 @@ std::pair<int, int> Headphones::getConnectedDevices()
 
 void Headphones::setMultiPointConnection(int connectionId, int newDevice, int oldDevice)
 {
-	Property<int>& dev = this->_dev1;
+	Property<int>* dev = & this->_dev1;
 
 	if (connectionId==1)
-		dev = this->_dev1;
+		dev = & this->_dev1;
 	else
-		dev = this->_dev2;
+		dev = & this->_dev2;
 
 	std::lock_guard guard(this->_propertyMtx);
-	dev.desired = newDevice;
+	dev->desired = newDevice;
 }
 
 inline void Headphones::disconnect(int deviceIdx)
@@ -282,7 +282,7 @@ void Headphones::setChanges()
 			this->connect(this->_dev1.desired);
 
 		std::lock_guard guard(this->_propertyMtx);
-		this->_dev1.fulfill();
+		this->_dev1.desired = this->_dev1.current;
 	}
 
 	if (!(this->_dev2.isFulfilled()))
@@ -293,7 +293,7 @@ void Headphones::setChanges()
 			this->connect(this->_dev2.desired);
 
 		std::lock_guard guard(this->_propertyMtx);
-		this->_dev2.fulfill();
+		this->_dev2.desired = this->_dev2.current;
 	}
 
 	// THIS IS A WORKAROUND
@@ -301,9 +301,16 @@ void Headphones::setChanges()
 	// This command breaks the chain and makes it respond every time
 	// And I can't seem to be able to fix it
 	{
-		// this->_conn.sendCommand({0x36, 0x01}, DATA_TYPE::DATA_MDR_NO2);
-		this->_conn.sendCommand({0x30, 0x01}, DATA_TYPE::DATA_MDR_NO2);
+		this->_conn.sendCommand({0x02, 0x01}, DATA_TYPE::DATA_MDR_NO2);
 	}
+}
+
+void Headphones::queryState()
+{
+	this->queryMultiPointSetting();
+	this->queryDevices();
+	// this->queryS2C();
+	// this->queryS2COptions();
 }
 
 void Headphones::setStateFromReply(BtMessage replyMessage)
@@ -351,21 +358,12 @@ void Headphones::setStateFromReply(BtMessage replyMessage)
 			savedDevices.push_back(dev);
 			if (number == 0x01)
 			{
-				// dev1 = (this->_savedDevices.end() - this->_savedDevices.begin() - 1);
 				dev1 = savedDevices.size()-1;
-				std::cout<< "device 1: "<< dev1 << std::endl;
 			}
 			if (number == 0x02)
 			{
-				// dev2 = (this->_savedDevices.end() - this->_savedDevices.begin() - 1);
 				dev2 = savedDevices.size()-1;
-				std::cout<< "device 2: "<< dev2 << std::endl;
 			}
-		}
-		std::cout<<"Connected devices received:\n";
-		for (auto &dev: savedDevices)
-		{
-			std::cout<< dev.name<<": "<<dev.mac<<std::endl;
 		}
 
 		{
@@ -386,7 +384,45 @@ void Headphones::setStateFromReply(BtMessage replyMessage)
 		break;
 	}
 
+	case COMMAND_TYPE::MULTI_POINT_SETTING_RESPONSE:
+	{
+		if (bytes[4] == 0x38)
+			this->_multiPointSetting = true;
+		else
+			this->_multiPointSetting = false;
+		
+		break;
+	}
+
 	default:
 		break;
 	}
+}
+
+void Headphones::queryMultiPointSetting()
+{
+	this->_conn.sendCommand({
+		static_cast<char>(COMMAND_TYPE::MULTI_POINT_SETTING_QUERY),
+		0x00
+	});
+}
+
+void Headphones::queryDevices()
+{
+	this->_conn.sendCommand({
+			static_cast<char>(COMMAND_TYPE::MULTI_POINT_DEVICES_QUERY),
+			0x01
+		},
+		DATA_TYPE::DATA_MDR_NO2
+	);
+}
+
+void Headphones::queryS2C()
+{
+
+}
+
+void Headphones::queryS2COptions()
+{
+
 }

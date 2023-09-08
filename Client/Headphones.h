@@ -58,7 +58,13 @@ public:
 	bool isChanged();
 	void setChanges();
 
+	void queryState();
 	void setStateFromReply(BtMessage replyMessage);
+
+	void queryMultiPointSetting();
+	void queryDevices();
+	void queryS2C();
+	void queryS2COptions();
 private:
 	Property<bool> _ambientSoundControl = { 0 };
 	Property<bool> _focusOnVoice = { 0 };
