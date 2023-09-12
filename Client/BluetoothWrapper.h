@@ -8,7 +8,7 @@
 #include <string>
 #include <mutex>
 #include <future>
-
+#include <iostream>
 
 //Thread-safety: This class is thread-safe.
 class BluetoothWrapper
@@ -22,8 +22,8 @@ public:
 	BluetoothWrapper(BluetoothWrapper&& other) noexcept;
 	BluetoothWrapper& operator=(BluetoothWrapper&& other) noexcept;
 
-	int sendCommand(const std::vector<char>& bytes);
-	int sendCommand(const std::vector<char>& bytes, DATA_TYPE dtype);
+	int sendCommand(const std::vector<char>& bytes, DATA_TYPE dtype = DATA_TYPE::DATA_MDR);
+	void sendAck();
 
 	Buffer readReplies();
 
@@ -42,7 +42,7 @@ private:
 	std::unique_ptr<IBluetoothConnector> _connector;
 	std::mutex _connectorMtx;
 	std::mutex _dataMtx;
-	unsigned char _seqNumber = 0;
+	unsigned char _seqNumber = 0x01;
 	unsigned int _ackBuffer = 0;
 
 public:

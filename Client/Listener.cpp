@@ -34,6 +34,6 @@ void Listener::handle_message(Buffer msg)
     {
         // Set these values as current values of Headphone property
         this->_headphones.setStateFromReply(m);
-        this->_bt.sendCommand({}, DATA_TYPE::ACK);
+        this->_bt.sendAck();
     }
 }

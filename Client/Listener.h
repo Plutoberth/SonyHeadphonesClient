@@ -11,11 +11,6 @@
 
 class Listener
 {
-    /*
-        Listen for and read incoming messages
-        Parse messages 
-        Call message handler
-    */
 public:
     Listener(Headphones& headphones, BluetoothWrapper& bt);
     void listen();

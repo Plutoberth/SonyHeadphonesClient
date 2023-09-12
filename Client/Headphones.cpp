@@ -300,17 +300,20 @@ void Headphones::setChanges()
 	// My XM4 do not respond when 2 commands of the same function are sent back to back
 	// This command breaks the chain and makes it respond every time
 	// And I can't seem to be able to fix it
+	// This also queries paired devices
 	{
-		this->_conn.sendCommand({0x02, 0x01}, DATA_TYPE::DATA_MDR_NO2);
+		this->_conn.sendCommand({0x36,0x01}, DATA_TYPE::DATA_MDR_NO2);
 	}
 }
 
 void Headphones::queryState()
 {
+	// Right now only one query is placed in here
+	// When adding more queries only the first query is ACK'd
+	// This is because query commands do not follow the same rule as other commands regarding sequence number
+	// The logic is quite weird
+	// TODO: fix this
 	this->queryMultiPointSetting();
-	this->queryDevices();
-	// this->queryS2C();
-	// this->queryS2COptions();
 }
 
 void Headphones::setStateFromReply(BtMessage replyMessage)
@@ -403,7 +406,7 @@ void Headphones::queryMultiPointSetting()
 {
 	this->_conn.sendCommand({
 		static_cast<char>(COMMAND_TYPE::MULTI_POINT_SETTING_QUERY),
-		0x00
+		0x01
 	});
 }
 
