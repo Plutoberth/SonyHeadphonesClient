@@ -95,9 +95,9 @@ enum class COMMAND_TYPE : signed char
 	XM4_OPTIMIZER_RESPONSE = (signed char) 0x85,
 	DEVICES_QUERY_RESPONSE = (signed char) 0x37,
 	DEVICES_STATE_RESPONSE = (signed char) 0x39,
-	MULTI_POINT_SETTING_RESPONSE = (signed char) 0x07,
+	CAPABILITY_QUERY_RESPONSE = (signed char) 0x07,
 
-	MULTI_POINT_SETTING_QUERY = (signed char) 0x06,
+	CAPABILITY_QUERY = (signed char) 0x06,
 	MULTI_POINT_DEVICES_QUERY = (signed char) 0x36,
 	S2C_QUERY = (signed char) 0xf6,
 	S2C_OPTIONS_QUERY = (signed char) 0xfa
@@ -155,13 +155,28 @@ enum class S2C_TOGGLE : signed char
 	INACTIVE = 0
 };
 
-enum class QUERY_RESPONSE_TYPE : signed char
-{
-	DEVICES = (signed char) 0x37,
-};
-
 enum class MULTI_POINT_COMMANDS	: signed char
 {
 	CONNECT = (signed char) 0x01,
-	DISCONNECT = (signed char) 0x00
+	DISCONNECT = (signed char) 0x00,
+	UNPAIR = (signed char) 0x02
+};
+
+enum DEVICE_CAPABILITIES
+{
+	NC_ASM = 0x01 << 0,
+	VPT = 0x01 << 1,
+	MULTI_POINT = 0x01 << 2,
+	OPTIMIZER = 0x01 << 3,
+	SPEAK_TO_CHAT = 0x01 << 4,
+
+};
+
+enum class FUNCTION_TYPE : signed char
+{
+	DEVICE_MANAGEMENT = 56,
+	VPT = 65,
+	OPTIMIZER = -127,
+	NC_ASM = 98,
+	SMART_TALKING_MODE = -11
 };

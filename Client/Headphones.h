@@ -61,11 +61,15 @@ public:
 	void queryState();
 	void setStateFromReply(BtMessage replyMessage);
 
-	void queryMultiPointSetting();
+	void queryDeviceCapabilities();
 	void queryDevices();
 	void queryS2C();
 	void queryS2COptions();
+	
+	unsigned int getCapabilities();
 private:
+	unsigned int _capabilities = 0;
+
 	Property<bool> _ambientSoundControl = { 0 };
 	Property<bool> _focusOnVoice = { 0 };
 	Property<int> _asmLevel = { 0 };

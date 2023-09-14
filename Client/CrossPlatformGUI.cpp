@@ -1,4 +1,4 @@
-﻿#include "CrossPlatformGUI.h"
+#include "CrossPlatformGUI.h"
 
 bool CrossPlatformGUI::performGUIPass()
 {
@@ -25,19 +25,21 @@ bool CrossPlatformGUI::performGUIPass()
 
 		if (this->_bt.isConnected())
 		{
+			unsigned int cap = this->_headphones.getCapabilities();
+
 			// ImGui::Spacing();
 			ImGui::Separator();
-			this->_drawASMControls();
-			if (this->_bt.isConnected() && (this->_connectedDevice.name) == "WH-1000XM4"){
+			if (cap & DEVICE_CAPABILITIES::NC_ASM)
+				this->_drawASMControls();
+			if (cap & DEVICE_CAPABILITIES::VPT)
+				this->_drawSurroundControls();
+			if (cap & DEVICE_CAPABILITIES::SPEAK_TO_CHAT)
 				this->_drawSpeakToChat();
-				if (this->_headphones.getMultiPointSetting())
-					this->_drawMultiPointConn();
+			if (cap & DEVICE_CAPABILITIES::MULTI_POINT)
+				this->_drawMultiPointConn();
+			if (cap & DEVICE_CAPABILITIES::OPTIMIZER)
 				ImGui::Separator();
 				this->_drawOptimizerButton();
-			}
-			else {
-				this->_drawSurroundControls();
-			}
 
 			this->_setHeadphoneSettings();
 		}

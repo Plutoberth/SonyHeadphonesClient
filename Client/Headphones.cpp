@@ -297,11 +297,16 @@ void Headphones::setChanges()
 	}
 }
 
+unsigned int Headphones::getCapabilities()
+{
+	return this->_capabilities;
+}
+
 void Headphones::queryState()
 {
 	this->_conn.sendCommand({0x00,0x00}); // Init
 	this->_conn.sendCommand({0x02,0x00}); // get mac address of device
-	this->queryMultiPointSetting();
+	this->queryDeviceCapabilities();
 	this->queryDevices();
 }
 
@@ -376,12 +381,32 @@ void Headphones::setStateFromReply(BtMessage replyMessage)
 		break;
 	}
 
-	case COMMAND_TYPE::MULTI_POINT_SETTING_RESPONSE:
+	case COMMAND_TYPE::CAPABILITY_QUERY_RESPONSE:
 	{
-		if (bytes[4] == 0x38)
-			this->_multiPointSetting = true;
-		else
-			this->_multiPointSetting = false;
+		for (char c: bytes){
+			switch (c)
+			{
+			case static_cast<char>(FUNCTION_TYPE::DEVICE_MANAGEMENT):
+				this->_capabilities |= DEVICE_CAPABILITIES::MULTI_POINT;
+				break;
+			
+			case static_cast<char>(FUNCTION_TYPE::VPT):
+				this->_capabilities |= DEVICE_CAPABILITIES::VPT;
+				break;
+			
+			case static_cast<char>(FUNCTION_TYPE::OPTIMIZER):
+				this->_capabilities |= DEVICE_CAPABILITIES::OPTIMIZER;
+				break;
+			
+			case static_cast<char>(FUNCTION_TYPE::NC_ASM):
+				this->_capabilities |= DEVICE_CAPABILITIES::NC_ASM;
+				break;
+			
+			case static_cast<char>(FUNCTION_TYPE::SMART_TALKING_MODE):
+				this->_capabilities |= DEVICE_CAPABILITIES::SPEAK_TO_CHAT;
+				break;
+			}
+		}
 		
 		break;
 	}
@@ -391,10 +416,10 @@ void Headphones::setStateFromReply(BtMessage replyMessage)
 	}
 }
 
-void Headphones::queryMultiPointSetting()
+void Headphones::queryDeviceCapabilities()
 {
 	this->_conn.sendCommand({
-		static_cast<char>(COMMAND_TYPE::MULTI_POINT_SETTING_QUERY),
+		static_cast<char>(COMMAND_TYPE::CAPABILITY_QUERY),
 		0x01
 	});
 }
