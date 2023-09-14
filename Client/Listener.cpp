@@ -23,10 +23,10 @@ inline BtMessage Listener::parse(Buffer msg)
 void Listener::handle_message(Buffer msg)
 {
     BtMessage m = this->parse(msg);
-    this->_bt.setSeqNumber(m.seqNumber);
 
     if (m.dataType == DATA_TYPE::ACK)
     {
+        this->_bt.setSeqNumber(m.seqNumber);
         this->_bt.postAck();
         this->_bt._ack.notify_all();
     } 
@@ -34,6 +34,6 @@ void Listener::handle_message(Buffer msg)
     {
         // Set these values as current values of Headphone property
         this->_headphones.setStateFromReply(m);
-        this->_bt.sendAck();
+        this->_bt.sendAck(m.seqNumber);
     }
 }

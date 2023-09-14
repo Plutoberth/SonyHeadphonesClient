@@ -295,25 +295,14 @@ void Headphones::setChanges()
 		std::lock_guard guard(this->_propertyMtx);
 		this->_dev2.desired = this->_dev2.current;
 	}
-
-	// THIS IS A WORKAROUND
-	// My XM4 do not respond when 2 commands of the same function are sent back to back
-	// This command breaks the chain and makes it respond every time
-	// And I can't seem to be able to fix it
-	// This also queries paired devices
-	{
-		this->_conn.sendCommand({0x36,0x01}, DATA_TYPE::DATA_MDR_NO2);
-	}
 }
 
 void Headphones::queryState()
 {
-	// Right now only one query is placed in here
-	// When adding more queries only the first query is ACK'd
-	// This is because query commands do not follow the same rule as other commands regarding sequence number
-	// The logic is quite weird
-	// TODO: fix this
+	this->_conn.sendCommand({0x00,0x00}); // Init
+	this->_conn.sendCommand({0x02,0x00}); // get mac address of device
 	this->queryMultiPointSetting();
+	this->queryDevices();
 }
 
 void Headphones::setStateFromReply(BtMessage replyMessage)

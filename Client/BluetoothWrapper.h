@@ -23,7 +23,7 @@ public:
 	BluetoothWrapper& operator=(BluetoothWrapper&& other) noexcept;
 
 	int sendCommand(const std::vector<char>& bytes, DATA_TYPE dtype = DATA_TYPE::DATA_MDR);
-	void sendAck();
+	void sendAck(unsigned int seqNumber);
 
 	Buffer readReplies();
 
@@ -42,7 +42,14 @@ private:
 	std::unique_ptr<IBluetoothConnector> _connector;
 	std::mutex _connectorMtx;
 	std::mutex _dataMtx;
-	unsigned char _seqNumber = 0x01;
+	
+	/*
+		seqNumber logic:
+			every command that client sends has the inverse seqNumber of the last ACK packet sent by the headphones
+			every ACK packet sent by the client has the inverse seqNumber as the response being ACK'd (this is passed as a parameter to sendACK)
+			both seqNumbers are independent of each other
+	*/
+	unsigned char _seqNumber = 0;
 	unsigned int _ackBuffer = 0;
 
 public:

@@ -26,7 +26,7 @@ int BluetoothWrapper::sendCommand(const std::vector<char>& bytes, DATA_TYPE dtyp
 {
 	int bytesSent;
 	std::lock_guard guard(this->_connectorMtx);
-	auto data = CommandSerializer::packageDataForBt(bytes, dtype, this->_seqNumber ^ 0x01);
+	auto data = CommandSerializer::packageDataForBt(bytes, dtype, this->_seqNumber);
 	bytesSent = this->_connector->send(data.data(), data.size());
 
 	if (dtype != DATA_TYPE::ACK)
@@ -35,9 +35,9 @@ int BluetoothWrapper::sendCommand(const std::vector<char>& bytes, DATA_TYPE dtyp
 	return bytesSent;
 }
 
-void BluetoothWrapper::sendAck()
+void BluetoothWrapper::sendAck(unsigned int seqNumber)
 {
-	auto data = CommandSerializer::packageDataForBt({}, DATA_TYPE::ACK, this->_seqNumber ^ 0x01);
+	auto data = CommandSerializer::packageDataForBt({}, DATA_TYPE::ACK, seqNumber ^ 0x01);
 	this->_connector->send(data.data(), data.size());
 }
 
