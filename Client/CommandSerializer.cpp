@@ -3,7 +3,7 @@
 /* 
  * Because 
  * 	0x3E represents beginning of packet
- * 	0xeC represents end of packet
+ * 	0x3C represents end of packet
  * we need to escape these in the packet payload
 */
 constexpr unsigned char ESCAPED_BYTE_SENTRY = 61;   // 0x3D
