@@ -1,9 +1,17 @@
 #include "CommandSerializer.h"
 
-constexpr unsigned char ESCAPED_BYTE_SENTRY = 61;
-constexpr unsigned char ESCAPED_60 = 44;
-constexpr unsigned char ESCAPED_61 = 45;
-constexpr unsigned char ESCAPED_62 = 46;
+/* 
+ * Because 
+ * 	0x3E represents beginning of packet
+ * 	0x3C represents end of packet
+ * we need to escape these in the packet payload
+*/
+constexpr unsigned char ESCAPED_BYTE_SENTRY = 61;   // 0x3D
+constexpr unsigned char ESCAPED_60 = 44;	    // 0x2C
+constexpr unsigned char ESCAPED_61 = 45;	    // 0x2D
+constexpr unsigned char ESCAPED_62 = 46;   	    // 0x2E
+
+
 constexpr int MAX_STEPS_WH_1000_XM3 = 19;
 
 namespace CommandSerializer
@@ -133,23 +141,25 @@ namespace CommandSerializer
 		return ret;
 	}
 
-	Message unpackBtMessage(const Buffer& src)
+	BtMessage unpackBtMessage(const Buffer& src)
 	{
 		//Message data format: ESCAPE_SPECIALS(<DATA_TYPE><SEQ_NUMBER><BIG ENDIAN 4 BYTE SIZE OF UNESCAPED DATA><DATA><1 BYTE CHECKSUM>)
 		auto unescaped = _unescapeSpecials(src);
 
-		if (src.size() < 7)
+		if (unescaped.size() < 7)
 		{
 			throw std::runtime_error("Invalid message: Smaller than the minimum message size");
 		}
 
-		Message ret;
-		ret.dataType = static_cast<DATA_TYPE>(src[0]);
-		ret.seqNumber = src[1];
-		if ((unsigned char)src[src.size() - 1] != _sumChecksum(src.data(), src.size() - 1))
+		BtMessage ret;
+		ret.dataType = static_cast<DATA_TYPE>(unescaped[0]);
+		ret.seqNumber = unescaped[1];
+		if ((unsigned char)unescaped[unescaped.size() - 1] != _sumChecksum(unescaped.data(), unescaped.size() - 1))
 		{
 			throw RecoverableException("Invalid checksum!", true);
 		}
+		unsigned char numMsgBytes = static_cast<unsigned char>(unescaped[5]);
+		ret.messageBytes.insert(ret.messageBytes.end(), unescaped.begin() + 6, unescaped.begin() + 6 + numMsgBytes); 
 		return ret;
 	}
 
@@ -169,6 +179,16 @@ namespace CommandSerializer
 			val = NC_DUAL_SINGLE_VALUE::DUAL;
 		}
 		return val;
+	}
+
+	Buffer serializeXM4OptimizeCommand(OPTIMIZER_STATE state)
+	{
+	    Buffer ret;
+	    ret.push_back(static_cast<unsigned char>(COMMAND_TYPE::XM4_OPTIMIZER_PARAM));
+	    ret.push_back(static_cast<unsigned char>(0x01));
+	    ret.push_back(static_cast<unsigned char>(0x00));
+	    ret.push_back(static_cast<unsigned char>(state));
+	    return ret;
 	}
 
 	Buffer serializeNcAndAsmSetting(NC_ASM_EFFECT ncAsmEffect, NC_ASM_SETTING_TYPE ncAsmSettingType, ASM_SETTING_TYPE asmSettingType, ASM_ID asmId, char asmLevel)
@@ -195,5 +215,40 @@ namespace CommandSerializer
 		return ret;
 	}
 
+	Buffer serializeXM4SpeakToChat(S2C_TOGGLE s2cState)
+	{
+		Buffer ret;
+		ret.push_back(static_cast<unsigned char>(COMMAND_TYPE::XM4_S2C_TOGGLE_PARAM));
+		ret.push_back(static_cast<unsigned char>(0x05));
+		ret.push_back(static_cast<unsigned char>(0x01));
+		ret.push_back(static_cast<unsigned char>(s2cState));
+		return ret;
+	}
+
+	Buffer serializeXM4_S2C_Options(unsigned char sensitivity, unsigned char voice, unsigned char offTime)
+	{
+		Buffer ret;
+		ret.push_back(static_cast<unsigned char>(COMMAND_TYPE::XM4_S2C_OPTIONS_PARAM));
+		ret.push_back(static_cast<unsigned char>(0x05));
+		ret.push_back(static_cast<unsigned char>(0x00));
+		ret.push_back(static_cast<unsigned char>(sensitivity));
+		ret.push_back(static_cast<unsigned char>(voice));
+		ret.push_back(static_cast<unsigned char>(offTime));
+		return ret;
+	}
+
+	Buffer serializeMultiPointCommand(MULTI_POINT_COMMANDS cmd, std::string macAddr)
+	{
+		Buffer ret;
+		ret.push_back(static_cast<unsigned char>(COMMAND_TYPE::MULTI_POINT_PARAM));
+		ret.push_back(static_cast<unsigned char>(0x01));
+		ret.push_back(static_cast<unsigned char>(0x00));
+		ret.push_back(static_cast<unsigned char>(cmd));
+		for (unsigned char c: macAddr)
+		{
+			ret.push_back(c);
+		}
+		return ret;
+	}
 }
 

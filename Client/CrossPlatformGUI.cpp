@@ -1,4 +1,4 @@
-﻿#include "CrossPlatformGUI.h"
+#include "CrossPlatformGUI.h"
 
 bool CrossPlatformGUI::performGUIPass()
 {
@@ -25,9 +25,22 @@ bool CrossPlatformGUI::performGUIPass()
 
 		if (this->_bt.isConnected())
 		{
-			ImGui::Spacing();
-			this->_drawASMControls();
-			this->_drawSurroundControls();
+			unsigned int cap = this->_headphones.getCapabilities();
+
+			// ImGui::Spacing();
+			ImGui::Separator();
+			if (cap & DEVICE_CAPABILITIES::NC_ASM)
+				this->_drawASMControls();
+			if (cap & DEVICE_CAPABILITIES::VPT)
+				this->_drawSurroundControls();
+			if (cap & DEVICE_CAPABILITIES::SPEAK_TO_CHAT)
+				this->_drawSpeakToChat();
+			if (cap & DEVICE_CAPABILITIES::MULTI_POINT)
+				this->_drawMultiPointConn();
+			if (cap & DEVICE_CAPABILITIES::OPTIMIZER)
+				ImGui::Separator();
+				this->_drawOptimizerButton();
+
 			this->_setHeadphoneSettings();
 		}
 	}
@@ -112,7 +125,16 @@ void CrossPlatformGUI::_drawDeviceDiscovery()
 					if (selectedDevice != -1)
 					{
 						this->_connectedDevice = connectedDevices[selectedDevice];
-						this->_connectFuture.setFromAsync([this]() { this->_bt.connect(this->_connectedDevice.mac); });
+						this->_connectFuture.setFromAsync([this]() { 
+								this->_bt.connect(this->_connectedDevice.mac); 
+
+								// Add post-connection setup here
+								this->_listener = std::make_unique<Listener>(this->_headphones, this->_bt);
+								auto useless_future = std::async(std::launch::async, &Listener::listen, this->_listener.get());
+								if (this->_connectedDevice.name == "WH-1000XM4")
+									this->_headphones.queryState();
+							}
+						);
 					}
 				}
 			}
@@ -209,6 +231,140 @@ void CrossPlatformGUI::_drawSurroundControls()
 		this->_headphones.setSurroundPosition(SOUND_POSITION_PRESET_ARRAY[soundPosition]);
 		this->_headphones.setVptType(vptType);
 	}
+}
+
+void CrossPlatformGUI::_drawOptimizerButton()
+{
+	if (this->_headphones.getOptimizerState() == OPTIMIZER_STATE::IDLE)
+	{
+		if (ImGui::Button("Optimize"))
+		{
+			this->_headphones.setOptimizerState(OPTIMIZER_STATE::OPTIMIZING);
+		}
+	}
+	else {
+		// TODO: Change button to show cancel option while optimizing state
+		if (ImGui::Button("Optimizing... (Press To Cancel)"))
+		{
+			this->_headphones.setOptimizerState(OPTIMIZER_STATE::IDLE);
+		}
+	}
+}
+
+void CrossPlatformGUI::_drawSpeakToChat()
+{
+	enum Sensitivity { Sens_Auto, Sens_High, Sens_Low, Sens_count};
+	const char* Sens_hints[Sens_count] = { "Auto", "High", "Low" };
+
+	enum AutoOff { Time_Short, Time_Std, Time_Long, Time_Inf, Time_count};
+	const char* Time_hints[Time_count] = { "Short", "Standard", "Long", "Off" };
+
+	static bool S2Ctoggle_check = false;
+	static int S2C_Sens = Sens_Auto;
+	static bool S2C_Voice = 0;
+	static int S2C_AutoOff = Time_Short;
+	
+	const char* Sens_name = (S2C_Sens >= 0 && S2C_Sens < Sens_count) ? Sens_hints[S2C_Sens] : "Unknown";
+	const char* Time_name = (S2C_AutoOff >= 0 && S2C_AutoOff < Time_count) ? Time_hints[S2C_AutoOff] : "Unknown";
+
+	if (ImGui::CollapsingHeader("Speak To Chat Controls", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		ImGui::Checkbox("Speak To Chat", &S2Ctoggle_check);
+
+		if (S2Ctoggle_check)
+		{
+			if (S2Ctoggle_check){
+				// ImGui::SameLine();
+				ImGui::SliderInt("Speak to chat sensitivity", &S2C_Sens, 0, Sens_count - 1, Sens_name);
+				ImGui::SliderInt("Speak to chat Auto close", &S2C_AutoOff, 0, Time_count - 1, Time_name);
+				ImGui::Checkbox("Voice passthrough", &S2C_Voice);
+			}
+			else {
+			}
+		}
+	}
+
+	if (S2Ctoggle_check)
+		this->_headphones.setS2CToggle(S2C_TOGGLE::ACTIVE);
+	else
+		this->_headphones.setS2CToggle(S2C_TOGGLE::INACTIVE);
+
+	this->_headphones.setS2COptions(S2C_Sens, S2C_Voice, S2C_AutoOff);
+
+}
+
+void CrossPlatformGUI::_drawMultiPointConn()
+{
+	auto devices = this->_headphones.getDevices();
+	auto connectedDevices = this->_headphones.getConnectedDevices();
+
+	int dev1 = connectedDevices.first;
+	int dev2 = connectedDevices.second;
+	int old_dev1 = dev1;
+	int old_dev2 = dev2;
+	
+	if(ImGui::CollapsingHeader("Connected Devices", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		if (devices[dev1].name!="")
+		{
+			ImGui::Text(devices[dev1].name.c_str());
+			ImGui::SameLine();
+			if (ImGui::Button("Disconnect device 1"))
+			{
+				this->_headphones.setMultiPointConnection(1, 0, dev1);
+			}
+		}
+
+		if (devices[dev1].name=="" || devices[dev2].name=="")
+		{
+			// const char* combo_preview_value = devices[dev1].name // &(devices[dev1].name);
+			if (ImGui::BeginCombo("Connect", ""))
+			{
+				for (int i = 0; i < devices.size(); i++)
+				{
+					if (i==dev2 || i==dev1)
+						continue;
+
+					const bool is_selected = false;
+					if (ImGui::Selectable(devices[i].name.c_str(), is_selected))
+					{
+						if (devices[dev1].name=="")
+						{
+							dev1 = i;
+							this->_headphones.setMultiPointConnection(1, dev1, 0);
+						}
+						else {
+							dev2 = i;
+							this->_headphones.setMultiPointConnection(2, dev2, 0);
+						}
+					}
+
+					// Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+					if (is_selected)
+						ImGui::SetItemDefaultFocus();
+				}
+				ImGui::EndCombo();
+			}
+		
+			ImGui::SameLine();
+			if (devices[dev1].name=="")
+				ImGui::Text("Device 1");
+			else 
+				ImGui::Text("Device 2");
+		}
+
+		if (devices[dev2].name!="")
+		{
+			ImGui::Text(devices[dev2].name.c_str());
+			ImGui::SameLine();
+			if (ImGui::Button("Disconnect device 2"))
+			{
+				this->_headphones.setMultiPointConnection(2,0,dev2);				
+			}
+		}
+		
+	}
+
 }
 
 void CrossPlatformGUI::_setHeadphoneSettings() {
