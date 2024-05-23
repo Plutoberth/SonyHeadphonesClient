@@ -85,7 +85,11 @@ Sniffing messages - See [this helpful comment](https://github.com/Plutoberth/Son
 ### Compiling
 
 #### Windows
+Install [cmake](https://cmake.org/download/) (3.29.3 works) and install [Visual Studio Community 2022](https://visualstudio.microsoft.com/vs/) the C++ components:
+* MSVC - VS 2022 C++ x64/x86 build tools
+* Windows SDK
 
+From within Visual Studio Run the `Tools --> Command Line --> Developer Command Prompt` and then:
 ```
 cd Client
 mkdir build
