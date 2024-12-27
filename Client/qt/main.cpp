@@ -1,4 +1,7 @@
 #include <QtWidgets/QApplication>
+#include <QFile>
+#include <QString>
+#include <QLatin1String> 
 
 #include <memory>
 #include <iostream>
@@ -22,9 +25,22 @@ int main(int argc, char *argv[]) {
 	try
 	{
 		QApplication app(argc, argv);
+
+		// Load an application style
+		QFile styleFile(QLatin1String("D:\\Kuroi.qss"));
+		styleFile.open(QFile::ReadOnly);
+
+		// Apply the loaded stylesheet
+		QString style =
+			QString::fromStdString(styleFile.readAll().toStdString());
+		app.setStyleSheet(style);
+
 		BluetoothWrapper bt(std::make_unique<BluetoothConnector>());
 		Dialog dialog(std::move(bt));
+		app.setStyleSheet(style);
+		
 		dialog.show();
+
 		return app.exec();
 	}
 	catch(const std::exception& e)

@@ -12,14 +12,8 @@ add_executable(SonyHeadphonesClient BluetoothWrapper.cpp ByteMagic.cpp
                                     Headphones.cpp)
 
 if(NOT APPLE)
-  find_package(Qt6 REQUIRED COMPONENTS Widgets)
-  qt_standard_project_setup()
-  target_link_libraries(SonyHeadphonesClient PRIVATE Qt6::Widgets)
-
-  target_sources(SonyHeadphonesClient PRIVATE qt/Dialog.cpp qt/main.cpp qt/dialog.ui)
-
   add_definitions(
-    -DQT_NO_CAST_FROM_ASCII
+    -DQT_NO_CAST_FROM_ASCII 
     -DQT_NO_CAST_FROM_BYTEARRAY
     -DQT_NO_CAST_TO_ASCII
     -DQT_NO_SIGNALS_SLOTS_KEYWORDS
@@ -27,6 +21,18 @@ if(NOT APPLE)
     -DQT_STRICT_ITERATORS
     -DQT_USE_FAST_OPERATOR_PLUS
     -DQT_USE_QSTRINGBUILDER)
+
+  find_package(Qt6 REQUIRED COMPONENTS Widgets)
+  qt_standard_project_setup()
+  target_link_libraries(SonyHeadphonesClient PRIVATE Qt6::Widgets)
+
+  target_sources(SonyHeadphonesClient PRIVATE qt/Dialog.cpp qt/main.cpp qt/dialog.ui)
+
+  qt_add_resources(SonyHeadphonesClient "stylesheet"
+    PREFIX "/"
+    FILES
+     qt/resources/Kuroi.qss
+  )
 endif()
 
 if(NOT APPLE)
