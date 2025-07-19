@@ -530,3 +530,7 @@ Client/imgui.ini
 
 # linux build
 Client/linux/sonyheadphonesclient.build/
+
+# build folders
+build-win/
+build-linux/

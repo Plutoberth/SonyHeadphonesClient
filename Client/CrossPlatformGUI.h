@@ -10,8 +10,11 @@
 #include "SingleInstanceFuture.h"
 #include "CascadiaCodeFont.h"
 #include "Headphones.h"
+#include "Listener.h"
 
+#include <iostream>
 #include <future>
+#include <string>
 
 constexpr auto GUI_MAX_MESSAGES = 5;
 constexpr auto GUI_HEIGHT = 380;
@@ -36,6 +39,9 @@ private:
 	void _drawASMControls();
 	void _drawSurroundControls();
 	void _setHeadphoneSettings();
+	void _drawOptimizerButton();
+	void _drawSpeakToChat();
+	void _drawMultiPointConn();
 
 	BluetoothDevice _connectedDevice;
 	BluetoothWrapper _bt;
@@ -44,6 +50,8 @@ private:
 	SingleInstanceFuture<void> _connectFuture;
 	TimedMessageQueue _mq;
 	Headphones _headphones;
+	// Listener _listener;
+	std::unique_ptr<Listener> _listener;
 };
 
 
