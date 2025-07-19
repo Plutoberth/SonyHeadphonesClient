@@ -1,3 +1,12 @@
+# Archival
+
+This project is now archived. Thanks to all the users - I hope that you had as much fun using it as I had making it :)
+I was very happy to see that this program, originally created out of my own need, turned out to be useful to so many people.
+The app will, of course, continue to work indefinitely for the devices it supports.
+
+There are some forks that add support for other devices, like WF-1000XM5 or WH-1000XM4 - they might work, but I haven't tested or reviewed them myself. You're welcome to try those if your device is unsupported.
+
+# Archived Page
 <p class="aligncenter">
   <a href="https://github.com/Plutoberth/SonyHeadphonesClient">
     <!-- img src="" alt="Logo" width="80" height="80"-->
